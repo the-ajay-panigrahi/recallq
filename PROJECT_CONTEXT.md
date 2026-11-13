@@ -1,0 +1,362 @@
+# RecallQ Project Context
+
+Planning baseline: November 13, 2026. Product name: RecallQ, pronounced Recall Q. Suggested tagline: Find where you learned it.
+
+This is the implementation brief for a new application. Requirements below come from the project discussion. Proposed engineering defaults are labeled. Nothing in this file establishes that the application, deployment, transcript accuracy, or performance has already been verified.
+
+Read this file and `DESIGN.md` before implementation. Keep both updated when decisions change. The user will create and clone the GitHub repository, copy these files to its root, and open that folder in Codex. Application coding begins when the user instructs Codex to start.
+
+## 1 Product requirements
+
+### Problem and purpose
+
+Students remember a concept or problem from a long YouTube course but cannot find the video and moment where it was explained. Titles do not expose every subtopic. RecallQ searches the spoken content and returns useful places to resume watching.
+
+The main product is lecture navigation. A short, source-based summary supports it. This is also a personal tool the owner intends to use while learning DSA, and a portfolio project for full-stack and AI engineering roles alongside Orbit.
+
+Build an original implementation. The tutorial is a reference and a possible transcript source, not code to copy wholesale. Interview value should come from a working product, measured retrieval, understandable decisions, and clearly stated limitations.
+
+### Agreed MVP
+
+| Priority | Feature | Expected behavior |
+| --- | --- | --- |
+| P0 | One curated DSA corpus | Search the selected playlist lessons that have usable transcripts. Show indexed coverage. |
+| P0 | Personal Gemini key | Require a visitor-supplied key before the first search. No owner-funded public demo key. |
+| P0 | Key storage choice | Default to page memory. An unchecked Remember on this device checkbox opts into local storage. Include Forget key. |
+| P0 | Independent searches | Accept a topic or question in English or romanized Hinglish. No conversational history. |
+| P0 | Ranked video moments | Show strongest relevant matches first, with video title, timestamp or range, and transcript excerpt. |
+| P0 | Video navigation | Selecting a result loads or seeks the embedded YouTube player. Include Open on YouTube. |
+| P0 | Lecture summary on request | Generate only after Summarize is clicked. Use retrieved lecture text and clickable citations. Follow the query language. |
+| P0 | Clear failure states | Handle invalid keys, provider limits, unsupported requests, weak retrieval, missing data, and playback failures. |
+| P0 | Lovable design | Follow the user-supplied guide in DESIGN.md. Provide desktop and mobile layouts. |
+| P1 | Retrieval verification | Check real revision questions against manually identified video passages. Report measured results. |
+| P1 | Deployed application | Deploy React and FastAPI on Vercel, with Qdrant Cloud external to Vercel. |
+
+Proposed result presentation: fetch a bounded set once, display five results initially, then reveal more without repeating the embedding request. Remove redundant overlapping passages while preserving distinct useful moments from the same video.
+
+Pure Hindi script is optional and must be tested before advertising support. English and romanized Hinglish are the required query languages.
+
+### Outside this MVP
+
+Accounts, authentication, bookmarks, personal notes, saved search history, private content, public playlist submission, multiple providers, multi-turn chat, quizzes, generated study plans, and general explanations outside the lectures are deferred. Do not add demo quotas or an owner-funded summary allowance. Provider-enforced limits remain real and must be explained when encountered.
+
+### Main user journey
+
+1. Open RecallQ and see the playlist context and example searches.
+2. On the first search, enter a personal Gemini key and choose whether to remember it.
+3. Search a topic such as sliding window, or a question such as memoization aur tabulation ka difference kahan bataya hai.
+4. Read ranked excerpts. Select a timestamp to watch the relevant moment.
+5. Click Summarize if an explanation is wanted. Follow its citations back to the source moments.
+6. Change or forget the key through a small settings control.
+
+## 2 Stack and system architecture
+
+### Settled stack
+
+| Layer | Choice | Role |
+| --- | --- | --- |
+| UI | React and TypeScript | Search, result selection, player control, summary and key state |
+| Styling | Tailwind CSS | Implement the Lovable guide with consistent tokens |
+| Frontend tooling | Vite | Development server and production assets |
+| Backend | Python and FastAPI | Validate requests, call Gemini, search Qdrant, build citations |
+| Vector storage | Qdrant Cloud | Shared public lecture index and associated text metadata |
+| AI provider | Gemini only | Query and document embeddings, and requested summaries |
+| Deployment | Vercel | Serve the React build and Python API |
+| Offline processing | Local Python scripts | Transcript checks, optional transcription, chunking, indexing |
+
+A relational/document database is unnecessary for the agreed scope. Raw transcripts and manifests are files. Qdrant stores vectors and the text needed to answer. Browser storage holds only the visitor's chosen local preferences and optionally their Gemini key. Do not introduce extra hosted services without a concrete need.
+
+### Two separate processing paths
+
+```mermaid
+flowchart TD
+    T[Local transcript files] --> V[Validate and sample against audio]
+    V --> C[Build timestamp preserving chunks]
+    C --> E[Gemini document embeddings using owner ingestion key]
+    E --> Q[(Qdrant Cloud)]
+    B[React browser and visitor key] --> A[FastAPI on Vercel]
+    A --> G[Gemini query embedding using visitor key]
+    G --> A
+    A --> Q
+    Q --> A
+    A --> B
+    B --> Y[YouTube embedded player]
+    B --> S[Summarize request with query and source IDs]
+    S --> A
+    A --> L[Gemini lecture summary using visitor key]
+    L --> A
+```
+
+The owner indexes the corpus once using a local ingestion key. Visitors do not re-embed the playlist. Each search may consume the visitor's embedding quota; Summarize consumes their generation quota. Their keys do not pay for the owner's hosting or Qdrant resources.
+
+### Proposed Gemini defaults
+
+Start by testing `gemini-embedding-001` for text embeddings at 768 dimensions, with normalized vectors and Qdrant cosine similarity. Use RETRIEVAL_DOCUMENT for indexed passages and RETRIEVAL_QUERY for questions. Confirm current SDK support and actual project access before indexing. This is a proposed default, not a completed model evaluation.
+
+Select a currently available generation model with suitable free API access during the preflight. Put its identifier in configuration rather than scattering it through the code. Do not assume the owner's Google AI Pro subscription increases backend API quotas, or that every visitor has identical access.
+
+Document and query vectors must use the same embedding model, dimensions, and normalization policy. Re-embed the corpus when changing to an incompatible model. Do not load the tutorial's prebuilt vectors into a Gemini-based collection.
+
+### Deployment shape
+
+Prefer a single Vercel project: static frontend assets plus `/api/*` FastAPI routes. Verify this with a minimal deployment early. Keep Qdrant external and keep all ingestion outside request handlers and deployment startup. Vercel function memory, execution duration, package size, and free-plan usage limits apply.
+
+Use same-origin API requests in production. Restrict development CORS to the actual frontend origin if separate local servers require it. Do not add Next.js merely for hosting. Deployment address availability for recallq has not been confirmed; a longer slug is acceptable without changing the product name.
+
+## 3 Key handling and application boundaries
+
+Proposed simple implementation: the browser sends the visitor key over HTTPS in `X-Gemini-API-Key` to FastAPI for that request. FastAPI forwards it to the configured Gemini API. It is not stored in a database, transcript, Qdrant payload, server file, shared client configuration, or application cache.
+
+The UI must say that the key is forwarded through the backend to Google and whether it is remembered in this browser. Do not claim the server never sees it. Never place keys in URLs, application source, public Vite variables, error responses, analytics, or request logs. Redact validation errors so they do not echo secrets. Keep per-request credentials isolated; never mutate a shared client's key across users.
+
+Use an in-memory variable or state for the default. Refreshing or closing the page removes that temporary value. If Remember on this device is checked, save the key in local storage and restore it on later visits. Forget key clears both locations. If the user turns remembering off, remove any previously saved key. Disabling browser storage must leave temporary mode usable.
+
+Local storage is readable by scripts running on our origin. An unrelated website normally cannot read it, but compromised same-origin scripts or privileged extensions can. Render model and transcript text safely; do not inject untrusted HTML. Keep the choice explicit and avoid claims of complete protection.
+
+The Qdrant credential belongs only on the server. Use a collection-scoped read credential for serving where supported; local ingestion uses a separate write credential. Anonymous visitors search one public corpus. There is no tenant isolation claim and no account boundary in this MVP.
+
+## 4 Transcript preparation and retrieval
+
+### Existing reference and findings
+
+Local reference repository, for inspection only:
+
+`/Users/theajay/Documents/Programming/Personal/padho-with-pratyush-ai-engineer`
+
+Relevant locations are `notes/15c-converting-60-hour-dsa-playlist-to-rag.md` and `week-3/ytscraper`. Read that repository's instructions before working inside it. Do not alter it to build RecallQ.
+
+Playlist: https://www.youtube.com/playlist?list=PLbJhGqY-mq47k_WLUtzVjmarUm1EuXPj2
+
+Audit snapshot from November 13, 2026:
+
+- 126 local transcript JSON files, containing 9,844 segments and about 68.7 hours of video-duration metadata.
+- All files record model large-v3 and language en. The inspected implementation uses yt-dlp audio downloads and faster-whisper. Metadata is consistent with that process but does not independently prove every file's provenance.
+- Basic checks found no empty transcripts, invalid or unordered segment timestamps, or identical segment strings repeated at least five times within a video. These checks do not establish speech accuracy or rule out every hallucination.
+- Text inspection found likely technical-term errors, including lead code for LeetCode and Cadence Algorithm in Kadane lecture transcripts. Audio comparison is still required.
+- The current playlist listing returned 126 entries and 125 unique video IDs. Local transcripts matched 121 of those unique IDs. Five local transcripts were absent from the current listing; they are older prefix-sum lessons and must not be silently treated as current playlist members.
+
+Missing transcript IDs in that snapshot:
+
+| Video ID | Listed title or status |
+| --- | --- |
+| pNd8NnYoQVM | Prefix Sum Easy Hai Yaar; appears twice in the playlist |
+| mFVj745MLmU | How Does A Senior Engineer Solve Leetcode? |
+| Z9CI_OVhXNs | I converted my 60 Hour DSA Playlist to a RAG! |
+| 83iS3DZPn9g | No title was returned; availability unverified |
+
+Recheck the playlist before ingestion. Curate the teaching corpus; the RAG demo video can be excluded deliberately. Coverage in the UI must come from the actual manifest and successful index, not the historical file count. Deleted, unavailable, excluded, pending, and indexed are different statuses.
+
+### Quality gate and ingestion
+
+Sample original audio from several videos, including technical names and later passages. Check meaning, technical terminology, and timing. The decision to reuse all existing transcripts is conditional on this sampling. Re-transcribe poor or missing lessons selectively. Re-running the same model and settings is not evidence of improvement.
+
+Preserve raw transcripts. Store verified corrections separately with provenance. Do not globally replace ambiguous words without checking context. Do not ask an LLM to invent missing teaching content. If full preparation takes too long, ship a clearly labeled subset of validated lessons and process the remainder later.
+
+Proposed chunking baseline: 60 to 90 second, segment-aligned windows with modest overlap. Preserve constituent segment boundaries and prefix embedding input with the video title. Store clean transcript text separately from that prefix. Retain raw start/end seconds; do not derive timestamps from generated prose.
+
+Indexing must be resumable and idempotent. Checkpoint per video, cache reusable embeddings with model/version metadata, and replace stale video chunks when re-chunking. Transcription and embedding calls must never rerun on server startup. Avoid committing downloaded audio, credentials, caches, or generated vectors unnecessarily.
+
+### Search and summaries
+
+Search Qdrant for a bounded candidate set, rank by relevance, and remove near-duplicate overlapping windows. Use the title and transcript as evidence. Add lexical reranking or verified technical-term aliases only when labeled queries show a benefit. A similarity score is not a probability of correctness; tune weak-match behavior on this corpus.
+
+Select a segment-level playback anchor when supported by the retrieved passage. Otherwise show an honest passage time range. A chunk timestamp is not proof of the exact second a concept begins. A small rewind can improve context, but keep playback time separate from the source start time.
+
+Selecting a result uses the YouTube IFrame API to load a new video or seek within the current video. Respect user gestures and browser playback restrictions. If embedding or autoplay fails, retain the source and offer Open on YouTube at the same time.
+
+Summarize only the selected retrieved evidence for the current query, in English or Hinglish as appropriate. Use short answers with valid source IDs. Resolve citation URLs and timestamps on the server from indexed data. If evidence is insufficient, say it was not found in the indexed material, rather than claiming the full course never teaches it.
+
+Valid citation IDs do not prove that every sentence is supported. Check factual support in evaluation. Treat transcript instructions as source content, not instructions for the application. Show search results even when summarization fails, and never generate a summary automatically after a search.
+
+## 5 Data design
+
+Use JSON files for raw transcripts and a corpus manifest. The manifest records the selected playlist, curation decisions, per-video status, transcript source/hash, and indexing configuration. It contains no API keys. Qdrant points hold one vector plus the payload needed for search and citations.
+
+Proposed point identity: deterministic UUID derived from corpus ID, video ID, transcript revision, chunking version, and segment range. A new revision must replace or exclude old points so retries cannot create visible duplicates.
+
+| Payload field | Purpose |
+| --- | --- |
+| corpus_id | Select the fixed DSA corpus |
+| video_id and video_title | Identify and label the source |
+| source_id | Stable point UUID used by API citations |
+| start_sec and end_sec | Original passage interval |
+| segments | Constituent start/end/text records for anchoring |
+| text | Transcript passage presented as evidence |
+| transcript_hash and transcript_source | Trace the passage to its input |
+| chunk_version | Identify the chunking policy |
+| embedding_model and embedding_dimension | Prevent incompatible search configuration |
+
+Record a collection or corpus revision for API responses. Do not label model-generated summaries as original transcript excerpts. Build watch URLs from stored video IDs and validated numeric times.
+
+## 6 Proposed API contract
+
+All routes use `/api`. JSON field names use snake_case consistently. These contracts are a starting design; update this file and frontend types together if implementation changes them. Public keys below are placeholders only.
+
+| Method and route | Purpose | Visitor key |
+| --- | --- | --- |
+| GET /api/health | Lightweight process health; no model call | Not required |
+| GET /api/corpus | Playlist identity, corpus revision, actual indexed coverage | Not required |
+| POST /api/search | Embed query and return ranked source passages | Required |
+| POST /api/summarize | Load source IDs and generate supported summary | Required |
+
+Use `X-Gemini-API-Key` for keyed requests. No login token is required. A format check alone does not validate a key; the first real provider operation determines access. Avoid an extra paid validation call on every visit.
+
+### Search
+
+Request:
+
+```json
+{"query":"sliding window kab use karna hai","limit":20}
+```
+
+Proposed bounds: trimmed query from 1 to 1,000 characters, limit from 1 to 20. Reject blank input before model calls. Cancel or ignore stale browser results when a newer search starts.
+
+Response shape:
+
+```json
+{
+  "query": "sliding window kab use karna hai",
+  "corpus_revision": "revision-id",
+  "match_state": "matches",
+  "results": [
+    {
+      "source_id": "point-uuid",
+      "video_id": "youtube-video-id",
+      "video_title": "Lecture title",
+      "start_sec": 340.0,
+      "end_sec": 410.0,
+      "playback_sec": 335.0,
+      "excerpt": "Original transcript passage",
+      "watch_url": "https://www.youtube.com/watch?v=youtube-video-id&t=335s"
+    }
+  ]
+}
+```
+
+The values above illustrate structure and are not measured lecture facts. `match_state` is matches, weak, or none; it is advisory and must be calibrated. If numeric similarity is returned for debugging, do not display it as a confidence percentage.
+
+### Summarize
+
+Request:
+
+```json
+{
+  "query": "sliding window kab use karna hai",
+  "corpus_revision": "revision-id",
+  "source_ids": ["point-uuid"]
+}
+```
+
+Allow at most six unique source IDs and a bounded context size. Load their original text from the configured Qdrant corpus; do not trust client-supplied transcript text or URLs. Reject unknown IDs or an obsolete revision clearly. This endpoint does not need to re-embed the query.
+
+Response:
+
+```json
+{
+  "status": "answered",
+  "summary": "Short lecture-based explanation with [1].",
+  "citations": [
+    {
+      "number": 1,
+      "source_id": "point-uuid",
+      "video_id": "youtube-video-id",
+      "video_title": "Lecture title",
+      "playback_sec": 335.0,
+      "watch_url": "https://www.youtube.com/watch?v=youtube-video-id&t=335s"
+    }
+  ]
+}
+```
+
+Use `status: insufficient_evidence` with an explanatory message and empty citations when needed. Require valid citations for a successful lecture-based answer. Never invent replacement source metadata.
+
+### Errors
+
+Use a consistent safe envelope such as `{"error":{"code":"GEMINI_QUOTA_EXCEEDED","message":"Your Gemini quota is unavailable. Try again later."}}`.
+
+Distinguish input validation, missing/invalid key, unavailable model or project access, upstream quota, missing sources, provider failure, and timeout. Typical statuses are 422, 401, 403, 404 or 409 for stale data, 429 for upstream quota, 503, and 504. Map real provider errors carefully; not every upstream 400 is invalid user input. Hide secrets and internal stack traces. Do not retry invalid keys or quota failures in an unbounded loop.
+
+## 7 Interface design and implementation shape
+
+`DESIGN.md` is the visual authority. The user chose the supplied Lovable guide, including Camera Plain Variable where legitimately available. Do not silently replace it with Inter, mix the Arc/Clay/OpenAI systems into it, or add unrelated marketing sections.
+
+Keep a small header with RecallQ and key settings. Before search, show the actual playlist and useful examples. After search, make the evidence list and player easy to scan together. Display full or sensibly wrapped titles, readable excerpts, precise timestamp controls, a clear selected result, and the optional summary. On narrow screens stack the workspace without horizontal overflow.
+
+Cover empty, searching, matches, weak/no matches, player unavailable, summarizing, summary ready, invalid key, quota exhausted, and service failure states. Keyboard users must be able to reach search, results, key settings, summary citations, and player controls. Keep focus visible and status changes understandable without relying on color.
+
+Suggested small repository structure, to adapt as needed:
+
+```text
+PROJECT_CONTEXT.md
+DESIGN.md
+frontend/          React source and Vite configuration
+backend/           FastAPI routes, schemas, retrieval, Gemini integration
+scripts/           Local transcript checks, chunking, indexing and evaluation
+data/              Manifest, verified corrections, evaluation labels
+tests/             Meaningful backend and workflow checks
+README.md
+.env.example       Names and placeholders only
+```
+
+Prefer direct SDK calls and simple modules. Use normal TypeScript interfaces, inferred types, and straightforward React state. Keep Python readable with functions, small Pydantic request/response models, and explicit errors. Use async provider/database calls or avoid blocking the event loop. Avoid abstractions whose only purpose is adding technologies to the resume.
+
+## 8 Build order and completion checks
+
+1. Inspect the actual new repository and its instructions. Confirm the documented font asset and the available Gemini/Qdrant project access without printing secrets.
+2. Build a small React/FastAPI deployment on Vercel and confirm `/api/health` and frontend routing. Retain the deployment configuration for the real app.
+3. Validate and sample a few transcript files, record failures, and index a small verified subset. Check embedding compatibility before processing the full corpus.
+4. Implement one complete keyed search through Gemini and Qdrant. Confirm returned times against source passages.
+5. Build the Lovable interface, key controls, result navigation and YouTube playback around that real search.
+6. Add explicit Summarize with source resolution and citations. Preserve search results through summary errors.
+7. Check failure cases, retrieval labels, mobile/keyboard use, and concurrent requests. Deploy the complete supported subset and write setup instructions.
+8. Expand the corpus and fix measured retrieval problems. Keep the UI honest about coverage.
+
+Completion means a real visitor can enter their key, search actual indexed lessons, watch a returned moment, and request a supported summary. Hardcoded answers and mocked provider responses are useful during development but do not establish completion.
+
+Create 15 to 20 manually checked queries spanning topics, English/Hinglish phrasing, difficult technical terms, and questions outside the indexed material. Record expected video IDs and approximate time intervals. Measure video hit rate separately from passage overlap within an explicit tolerance. Explain the tolerance and small sample size. Check summary support and weak-match behavior manually as well. Do not claim 100 percent grounding or exact timestamp accuracy from a similarity threshold.
+
+Add meaningful checks for timestamp/link conversion, idempotent chunk replacement, source-ID validation, error redaction, incompatible embeddings, and isolation of simultaneous visitor keys. Exercise a full search-to-playback-to-summary flow. Test 5 to 10 concurrent users or equivalent requests as a target; do not claim capacity until measured under stated conditions.
+
+Keep a short record of an actual failure, the change made, and its measured effect. No latency, accuracy, traffic, or resume metrics are established at planning time.
+
+## 9 Collaboration and learning expectations
+
+The owner knows React/JavaScript and basic Python, but is new to TypeScript and FastAPI. Codex will implement and review the application while the owner guides decisions and checks the output. Build the working application first. Save the detailed teaching and interview walkthrough for afterward, unless the owner asks earlier.
+
+During implementation, give concise progress updates and explain material tradeoffs. Keep a short decision log in the repository rather than delivering long lessons after every edit. At the end, explain:
+
+- The complete request journey from React to FastAPI, Gemini, Qdrant and back.
+- TypeScript types, interfaces, nullable state, props, API response types, and the difference between compile-time types and runtime validation, using the actual code.
+- Python dictionaries, type hints, imports, Pydantic models, route decorators, async/await, dependencies and error handling that were actually used.
+- Comparisons with Express routes, JavaScript objects, Zod-style validation, middleware and familiar database concepts where accurate.
+- Chunking, embeddings, ranking, timestamp limits, citations, failure handling, deployment, and why the chosen architecture fits this scope.
+- Likely interview questions, supported by implementation details and measured results rather than memorized claims.
+
+Keep communication simple, short and direct. Ask only for real blockers or unresolved product choices. The user creates the GitHub repository and provides the cloned workspace. Do not publish, create accounts or repositories, or change the agreed product scope merely because this brief mentions future steps.
+
+## 10 Decisions to verify during implementation
+
+The product name, Lovable design direction, TypeScript/FastAPI stack, Gemini-only access, personal-key flow, Qdrant Cloud and Vercel hosting are settled. The following details still need evidence or an implementation choice:
+
+- Legitimate availability of Camera Plain Variable; the guide supplies fallback families but no font binary or font license.
+- Final generation model, actual key/project access, embedding baseline quality, and calibrated weak-match behavior.
+- Audio accuracy of existing transcripts, curation decisions, and final indexed coverage.
+- Working deployment routing and available deployment slug. The product name is not a reserved URL.
+- Actual timing quality, response latency, and concurrency results.
+
+Do not fabricate results or silently treat these as completed checks.
+
+## 11 Reference documentation
+
+Consult current official documentation when implementing library or hosting details. These links support capabilities, not claims that RecallQ is already working.
+
+- [FastAPI](https://fastapi.tiangolo.com/)
+- [Gemini embeddings](https://ai.google.dev/gemini-api/docs/embeddings)
+- [Gemini API keys](https://ai.google.dev/gemini-api/docs/api-key)
+- [Gemini project rate limits](https://ai.google.dev/gemini-api/docs/rate-limits)
+- [Qdrant points and payloads](https://qdrant.tech/documentation/concepts/points/)
+- [FastAPI on Vercel](https://vercel.com/docs/frameworks/backend/fastapi)
+- [Vercel Hobby plan](https://vercel.com/docs/plans/hobby)
+- [YouTube IFrame Player API](https://developers.google.com/youtube/iframe_api_reference)
+- [Lovable design reference supplied by the user](https://opendesignmd.com/designs/lovable-dev/)
+- [OpenDesignMD license information](https://opendesignmd.com/licenses/)
