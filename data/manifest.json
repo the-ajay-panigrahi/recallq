@@ -1,1 +1,765 @@
-{"playlist_id":"PLbJhGqY-mq47k_WLUtzVjmarUm1EuXPj2","title":"DSA Patterns with Pratyush","revision":"initial","videos":[],"quality_status":"Audio verification pending. No lessons indexed yet."}
+{
+  "playlist_id": "PLbJhGqY-mq47k_WLUtzVjmarUm1EuXPj2",
+  "title": "DSA Patterns with Pratyush",
+  "revision": "initial",
+  "videos": [
+    {
+      "video_id": "qH2VQY48mg4",
+      "title": "The Best and Fastest Way To Learn DSA in 2026 | DSA Patterns by IITian",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "S8tpzqrwnHk",
+      "title": "Episode 2 \u2013 DSA Patterns Roadmap 2025 (Beginner to Advanced)",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "Fu7LD_mIo00",
+      "title": "Episode 3 \u2013Master DSA Patterns with 2 Pointers Technique",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "PvyEr3CeKzE",
+      "title": "Episode - 4 | Master DSA Patterns with the 2 Pointer Technique",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "nPdxCoVHC90",
+      "title": "Episode 5 - 2 Pointer DSA Pattern | DSA PATTERNS ROADMAP 2025",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "oFwHwCkSoGw",
+      "title": "DSA Patterns Episode 6 - What If You Could Master Time Complexity in Just 30 Minutes?",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "rM9EthMlXnw",
+      "title": "DSA Patterns Episode 7: Two Pointers Pattern: More Interview Questions",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "ljJJcYql6Bc",
+      "title": "DSA PATTERNS Episode 8 | Two Pointers Pattern: Most Important Questions",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "n7v0SokbF4I",
+      "title": "DSA PAtterns Episode 9 | Two Pointers Pattern: Complete Revision in One Video",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "V6pRTnOZ7Mc",
+      "title": "DSA PATTERNS Episode 10 | Introduction to Sliding Window",
+      "status": "indexed",
+      "transcript_hash": "aef1e4614cd20488882f3f5223c2a125dffc8ee950cd2236d5870270dda887ff",
+      "audio_verified": false,
+      "chunks": 12
+    },
+    {
+      "video_id": "DL8LSXUsfWE",
+      "title": "DSA PATTERNS Episode 11 Sliding Window Pattern: Easy & Medium Questions",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "v4pIgiBQMh8",
+      "title": "DSA PATTERNS Episode 12 Sliding Window Pattern: Core Interview Questions",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "2HZ12B2ZPAQ",
+      "title": "DSA PATTERNS Episode 13 Sliding Window Pattern: Important Questions",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "lyZp-49pdzQ",
+      "title": "DSA PATTERNS Episode 14 Sliding Window Pattern Revision (Part 1)",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "IR3oL6ltbJ8",
+      "title": "DSA PATTERNS Episode 15 | Sliding Window Pattern Revision (Part 2)",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "9wc8HZH_sh4",
+      "title": "DSA PATTERNS Episode 16 | Sliding Window Pattern: Amazon Interview Question",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "IxxlDYwMrZ8",
+      "title": "DSA PATTERNS Episode 17 | Linked List Slow & Fast Pointer Technique: Introduction",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "7ztFXqo8nZo",
+      "title": "My 4 Year DSA Learning JOURNEY | Mistakes | Striver Love Babbar Pepcoding Apna College",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "jDP1NkjVjWQ",
+      "title": "DSA PATTERNS Episode 18 | Linked List Slow\u2013Fast Pointer: Important Questions",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "NSh5oNElD84",
+      "title": "DSA PATTERNS Episode 19 | Linked List Basics for Beginners",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "RNpZBhZBtJc",
+      "title": "DSA PATTERNS Episode 20 | Linked List Slow\u2013Fast Pointer: Important Questions",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "ftpI12-e3zs",
+      "title": "DSA PATTERNS Episode 21 | Linked List Slow\u2013Fast Pointer Complete Revision",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "N8vJ8RyQEes",
+      "title": "DSA PATTERNS Episode 22 | Kadane\u2019s Algorithm Pattern: Introduction & Intuition",
+      "status": "indexed",
+      "transcript_hash": "2f3f84be536d69da2fc94faed0465871ebaf67ee5f2139b11842f594a594a8bf",
+      "audio_verified": false,
+      "chunks": 38
+    },
+    {
+      "video_id": "EcQN1jziwDo",
+      "title": "The DSA Revolution Has Started \u2014 And People Are Not Happy",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "JUV-Hdtuzsw",
+      "title": "DSA PATTERNS Episode 23 | Kadane\u2019s Algorithm: Most Important Interview Question",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "Bt9rgQgGf64",
+      "title": "DSA PATTERNS Episode 24 | Kadane\u2019s Algorithm Pattern: Quick Revision",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "p8efFVGuqyI",
+      "title": "DSA PATTERNS Episode 25 | Linked List Start of Cycle Logic Explained",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "pNd8NnYoQVM",
+      "title": "Prefix Sum Easy Hai Yaar",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "dQ4amKJuE7I",
+      "title": "DSA Patterns Course 2025 | Big Announcement | Best Way To Learn DSA in 2025",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "aH5aeejuJU8",
+      "title": "DSA Patterns L31 | Master Merge Interval DSA Patterns | MERGE INTERVALS LEETCODE",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "yAopxaHmRn0",
+      "title": "L32 | Master DSA Pattern Merge Interval | Leetcode Merge Intervals",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "yoh0p_Ag7Q4",
+      "title": "DSA Patterns L33 | Merge Intervals | Master DSA Patterns in 2025",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "b-qtjXsGfqo",
+      "title": "L34 DSA Patterns 2025 | Merge Overlapping Intervals | Merge Interval DSA Pattern",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "o-ozvzzFpKA",
+      "title": "35. DSA PATTERNS 2025 | Master Merge Interval With Interview Questions | FAANG",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "V0wJuik3WSE",
+      "title": "Master STACK in DSA Patterns 2025 | Introduction to Stack | CPP JAVA PYTHON",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "K1idN2Rqcmw",
+      "title": "Learn DSA Like Never Before | Master Stack DSA Pattern With This Simple Trick",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "YutYOZFt6sQ",
+      "title": "Most Important STACK Question For FAANG Interviews | Master DSA Patterns",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "gFqOIPfAEjw",
+      "title": "Next Greater Element | Stack and Queue DSA Pattern 2025",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "mMKZmo3iyyM",
+      "title": "Master Stack DSA Pattern With 3 Questions | DSA Patterns Course",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "XpHIIQwVxvI",
+      "title": "Revise Stack Data Structure in 10 Minutes | DSA Patterns Course",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "9a4A6CbrLCo",
+      "title": "The Only Video You Need TO Master HASHMAPS | DSA Patterns Course Cpp JAVA Python",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "ICggOtnixBk",
+      "title": "4 Questions to Master HASHMAPS in C++ JAVA Python | DSA Patterns Course 2026",
+      "status": "indexed",
+      "transcript_hash": "a3a609f484e036506dd21e583bb5c6f7bf0f555b39e496a616b8e83dcc5e786a",
+      "audio_verified": false,
+      "chunks": 68
+    },
+    {
+      "video_id": "7gOCx1vbx0k",
+      "title": "Linked List Reversal In the Easiest Way Possible | DSA Patterns Course 2026 CPP JAVA Python",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "jIz4zcFuUU8",
+      "title": "Best Explanation Of Kadane One Deletion On The Internet | DSA Pattern Course CPP JAVA",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "BdpT6_jotcM",
+      "title": "Best Explanation on Reverse LinkList Nodes in K Group | DSA Patterns CPP JAVA Python",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "5IV8CgWnf04",
+      "title": "Rotate A Linked List | Master DSA in 2026 With DSA Patterns",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "S0E1Ix67qbc",
+      "title": "Believe Me, You DON'T Know The Binary Search Algorithm | DSA Patterns Course 2026",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "zEEwwS9_fwA",
+      "title": "This is The Best Intro To Binary Search | DSA Patterns 2026",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "RuBcXYteHj0",
+      "title": "Most Important Question in BINARY Search Algorithm | Find Mountain peak Leetcode",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "91qkzhmEO48",
+      "title": "I Will make Binary Search Easy For You | DSA Patterns Course | C++ Java Python",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "TIBZsd-Qlrg",
+      "title": "Don't Miss This Binary Search Interview Question | DSA Patterns 2026 Cpp Java Python",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "0Kxg0LPGwFo",
+      "title": "One Video To Solve All Binary Search Interview Questions | DSA Patterns 2026",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "TF53eWL47ws",
+      "title": "Best Explanation of Aggressive Cows Leetcode | Binary Search DSA Pattern",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "TqxB7zruBm4",
+      "title": "Do Not Miss This Amazon Interview Question | Binary Search DSA Patterns Cpp Java Python",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "stji3QvQ-OU",
+      "title": "Binary Search on 2D Array | Best Video On Binary Search DSA Patterns CPP Java Python",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "DSGtYGZKEZ4",
+      "title": "I Failed a 40 LPA Interview Because Of This Binary Search Question | Do not Miss This",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "_1AbrkD8pak",
+      "title": "Introduction To Heap DSA Pattern | One Of The Most Important Patterns For Coding Interviews",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "zzu-k85RLGs",
+      "title": "The Best Video To Learn HEAP Data Structure | DSA Patterns 2026 CPP JAVA Python",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "I1-0ALAJxZI",
+      "title": "HEAP On Pairs Explained in One Shot | CPP JAVA PYTHON | DSA Patterns",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "5Net0Dd7NAA",
+      "title": "Solve Any HEAP Question By This Template | Top K frequent Elements Leetcode",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "ks8rocoXbJk",
+      "title": "5 Step Template To Solve any HEAP Problem | DSA PATTERNS 2026",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "SCe8N_v-8Ls",
+      "title": "You Will Never Forget The HEAP Greedy DSA Pattern After This Video",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "DYBWbmhisiM",
+      "title": "Google Interview Question On Heap Dsa Pattern Made Simple | IPO Leetcode",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "55aenUfSIhQ",
+      "title": "Best Explanation Of Merge K Sorted Lists | HEAP DSA Pattern",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "1yax0YQOb8w",
+      "title": "Let's Revise HEAP Data Structure With This Leetcode Hard Question | CPU Task Scheduler",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "HdPb_thlF5s",
+      "title": "Intro To Recursion DSA Pattern | Beginner To Advanced | Best Recursion Series",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "Qh_U6NYf99o",
+      "title": "Recursion Fixed Template For All Questions | One Template To Solve Recursion Problems",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "I081UkZCLlc",
+      "title": "Recursion & Backtracking Explained Once and For All | DSA for Beginners",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "j4wjZqzhMqc",
+      "title": "Learn Recursion Like A Pro",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "-gC-QEdpvO4",
+      "title": "What If You Could Master Recursion in 3 Easy Questions",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "PqwlS4bcr1Y",
+      "title": "Start Learning Recursion Backtracking With This Question | Best Recursion Explanation",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "IKfIT6uFOcs",
+      "title": "5 Point Template To Crack any Recursion Leetcode Question | DSA Patterns 2026",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "AflRvP5LFFc",
+      "title": "Stop Struggling with Recursion: Combination Sum Explained Simply",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "GNz8F8MCOsU",
+      "title": "Next Phase Plan For The DSA Pattern Series | Comment Your Thoughts",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "VdujirLGDDE",
+      "title": "Starting TREE Series!",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "ZvYJT_QwnEw",
+      "title": "Tree Traversals Made Simple! Preorder Inorder Postorder",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "-g6h0Ok1Buk",
+      "title": "EP 03: Level Order Traversal In Binary Tree | Intuition and Template",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "nkWopJZsqXc",
+      "title": "One Pattern To Solve Any Tree Question On Leetcode!",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "dXJdiFMLdZQ",
+      "title": "Tree Series Ep-05: Check for Symmetrical Binary Trees | C++ | Java",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "_UoIHF3KUpE",
+      "title": "Better Than STRIVER ! LCA in Binary TREE Explanation with Intuition",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "CDo0V5Jbb2o",
+      "title": "Introduction to Binary Search Tree! Don't Miss",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "QopDohCvJVA",
+      "title": "LCA in Binary Search Tree \u2013 Don't Miss This Trick! | Trees Ep 08 | DSA Series",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "Zr2z8DD6TuQ",
+      "title": "Definitely Better Than Striver.. Two Sum in Binary search Tree!",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "Sat-0sqezpM",
+      "title": "Path Sum Problem in 5 Minutes - No Confusion",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "_V7J7exlyzk",
+      "title": "Diameter of Binary Tree | Check Complete Binary Tree | Tree DSA Series",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "5PrzZfhk1OQ",
+      "title": "The BST Validation Problem Everyone Gets Wrong",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "14NH9aD7XeY",
+      "title": "Tree Series Last Video Construct a Binary Tree from Preorder and Inorder Traversal",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "vcx1HWoHK1o",
+      "title": "Intro To Graphs DSA Pattern | Master Graphs in 12 Days | Zero",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "WR-hWofGb_U",
+      "title": "Graph Representation: Adjacency Matrix vs Adjacency List \u2013 Which is Better?",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "O04KAy7cLBs",
+      "title": "Master DFS/BFS in Graphs | Graph series DSA Patterns",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "mbSYZzBjs4U",
+      "title": "Most Asked Graphs Question in FAANG Interviews | Number of Islands Leetcode",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "4L4MYtxGh9s",
+      "title": "Rotten Oranges: Multi-Source BFS | Graph Series",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "D5jgZ4PnU5o",
+      "title": "DFS Cycle Detection | From Basics to Advanced | DSA Pattern Graph Series",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "OSYgRvaWFSI",
+      "title": "No one has explained Topological sort like This!",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "LIGrIglQ7TY",
+      "title": "The Graph Algorithm Used In Amazon! Bipartite graph/ Graph Coloring| CPP JAVA Python",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "6ZtNHvGeEu4",
+      "title": "Easiest Graphs question Surrounded Regions | DSA Patterns 2026",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "HBI6DQOT_qk",
+      "title": "Graph Series Episode 10 - Shorted Path In Non Weighted graph",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "93copdtW4ZQ",
+      "title": "No one Has Explained Dijkstra's Algorithm Like This On The Internet!",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "Mb01XUSuLjE",
+      "title": "2 Of The Most Important Questions in Dijkstra's Algorithm | Graph series DSA Patterns 2026",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "A3sZWwalzz4",
+      "title": "We Crossed 50K! Let's Study Bellman-Ford NOW",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "Gq81OeJNTwI",
+      "title": "Graph Leetcode Hard Question Explained Like Crazy! Swim in Rising Water Leetcode",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "u0SH8wO85m0",
+      "title": "Prim's Algorithm - Minimum Spanning Tree - C++ JAVA DSA Patterns Graph Series 2026",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "-AEEZEWOA-E",
+      "title": "Master Bellman-Ford: Cheapest Flights Within K Stops",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "HpsjPUwQHfw",
+      "title": "Word Ladder Explained Like a Pro! DSA Patterns Graph Series",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "cmSh2xbyX7g",
+      "title": "Introduction To Dynamic Programming | Dynamic Programming in 15 days",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "-CvRpL_iUKo",
+      "title": "DP Series Episode-2 : When And How To Use DP",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "JLdrJE7udZo",
+      "title": "DP in 15 Days Episode 3: Climbing Stairs | Learn 1D Dynamic Programming",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "FMhXZU-eUNQ",
+      "title": "DP in 15 Days Episode 4 House Robber Dynamic Programming",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "Yp1G_KY7-wY",
+      "title": "DP In 15 Days Episode 5 : 0/1 Knapsack | Master Dynamic Programming",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "yEwnsPI_tUY",
+      "title": "DP in 15 Days Episode 06 : No One Has Explained Tabulation Like This",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "LWDYXNN4SHU",
+      "title": "Back After Break! 0-1 Knapsack Tabulation | Best DP Playlist 2026",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "M0XjVs41H2s",
+      "title": "DP in 15 Days Episode 08 | Subset Sum Equals to Target",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "QqDR0Fo9ayM",
+      "title": "Epiosde 09 of DP in 15 Days | 3 Problems in 30 Minutes",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "CdGBURVBMn4",
+      "title": "Episode 10 of DP in 15 Days | Longest Increasing subsequence part 1",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "w9qndpVOHks",
+      "title": "DP Series Episode 11 LIS: From Recursion to Tabulation",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "YkM-xfnZ4DY",
+      "title": "DP in 15 Days Episode 12 : LCS In 20 Minutes",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "lAdOVqukPCI",
+      "title": "Easiest DP Question Ever! DP Series episode 14",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "6XSrjOmTJio",
+      "title": "Today You Will Know Why I Am The Best DSA Teacher | DP Series Episode 14",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "wKao8Ttesqk",
+      "title": "Most Teachers Skip This Problem Because It is HARD | DP Series Episode 15",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "dyG4JBKh6tA",
+      "title": "DP Full Revision and Next Steps | DP Series Episode 16",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "T56nhL8Y1po",
+      "title": "Master Bit Manipulation in One Video | XOR Tricks + Interview Questions",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "OaHw9ZZHknw",
+      "title": "Greedy Algorithms: From Zero to Interview-Ready",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "Z9CI_OVhXNs",
+      "title": "I converted my 60 Hour DSA Playlist to a RAG!",
+      "status": "excluded",
+      "audio_verified": false
+    },
+    {
+      "video_id": "83iS3DZPn9g",
+      "title": "Unidentified playlist entry",
+      "status": "pending",
+      "audio_verified": false
+    },
+    {
+      "video_id": "mFVj745MLmU",
+      "title": "How Does A Senior Engineer Solve Leetcode?",
+      "status": "pending",
+      "audio_verified": false
+    }
+  ],
+  "quality_status": "Tutorial transcripts. Audio verification pending; timestamps identify approximate passages.",
+  "playlist_snapshot_date": "2026-11-13"
+}
