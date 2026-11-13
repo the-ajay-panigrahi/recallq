@@ -71,12 +71,22 @@ test("temporary key clears on refresh; search and summary are independent", asyn
   await expect(
     page.getByRole("heading", { name: "Moments to revisit" }),
   ).toBeVisible();
+  // The native player is already present before any result is played.
+  await expect(page.getByTitle("Selected lecture video")).toBeVisible();
+  await expect(page.getByTitle("Selected lecture video")).toHaveAttribute(
+    "src",
+    /autoplay=0/,
+  );
   expect(summaries).toBe(0);
   expect(await page.evaluate(() => localStorage.length)).toBe(0);
   await page.getByRole("button", { name: /Play Kadane/ }).click();
   await expect(page.getByTitle("Selected lecture video")).toHaveAttribute(
     "src",
     /start=335/,
+  );
+  await expect(page.getByTitle("Selected lecture video")).toHaveAttribute(
+    "src",
+    /autoplay=1/,
   );
   await page.getByRole("button", { name: "Summarize these moments" }).click();
   await expect(
