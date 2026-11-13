@@ -1,0 +1,15 @@
+node_modules/
+.venv/
+.env
+.env.*
+!.env.example
+__pycache__/
+.pytest_cache/
+*.pyc
+dist/
+work/
+.vercel/
+test-results/
+playwright-report/
+data/transcripts/
+data/embedding-cache/
