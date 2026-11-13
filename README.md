@@ -49,7 +49,7 @@ Playwright tests run on desktop and mobile with explicitly mocked API/YouTube re
 
 Vercel detects backend.main:app through pyproject.toml. Its build command builds the Vite assets into dist; FastAPI mounts that directory after API routes. Keep ingestion off the server. Configure only runtime QDRANT_URL, read-only QDRANT_API_KEY, collection and model settings in Vercel. Do not deploy GEMINI_INGEST_KEY or the ingestion write key. All public search/summary calls require the visitor's key.
 
-Initial deployment: https://recallq-three.vercel.app on Vercel Hobby, using Qdrant Free. No billing was enabled during setup. The index contains 118 passages across three seed videos, with 125 unique videos in the saved playlist listing. Generation uses gemini-3.5-flash-lite after the older default was unavailable for the new project. Actual access and quotas still vary by visitor.
+Initial deployment: https://recallq-app.vercel.app on Vercel Hobby, using Qdrant Free. No billing was enabled during setup. The index contains 118 passages across three seed videos, with 125 unique videos in the saved playlist listing. Generation uses gemini-3.5-flash-lite after the older default was unavailable for the new project. Actual access and quotas still vary by visitor.
 
 The CLI deployment works. Automatic GitHub deployments are not connected yet; the Vercel GitHub integration needs account-side authorization. To deploy manually from this linked checkout, run `npx vercel --prod`. The local `.vercel` directory is ignored.
 

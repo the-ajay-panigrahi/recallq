@@ -9,7 +9,7 @@ Read this file and `DESIGN.md` before implementation. Keep both updated when dec
 
 ## Implementation status
 
-The first implementation is available at https://recallq-three.vercel.app. The GitHub repository is public. React, FastAPI, personal-key handling, Qdrant search, optional Gemini summaries and source navigation are implemented. Three seed videos contain 118 indexed passages; the saved playlist listing has 125 unique video IDs. Audio verification and a labeled retrieval benchmark are still pending. The UI discloses the provisional transcript quality.
+The first implementation is available at https://recallq-app.vercel.app. The GitHub repository is public. React, FastAPI, personal-key handling, Qdrant search, optional Gemini summaries and source navigation are implemented. Three seed videos contain 118 indexed passages; the saved playlist listing has 125 unique video IDs. Audio verification and a labeled retrieval benchmark are still pending. The UI discloses the provisional transcript quality.
 
 Serving credentials are read-only and scoped to the RecallQ collection; local ingestion has a separate scoped write key. The existing Qdrant free cluster was reactivated without altering its existing credentials. The new Gemini RecallQ project remains on the free tier; no billing was enabled. Runtime generation uses gemini-3.5-flash-lite after checking actual project access. The custom font asset was not supplied, so the documented system fallback is currently active. Vercel CLI deployment works, but automatic GitHub integration remains unconnected. See README.md for commands and verification details.
 
