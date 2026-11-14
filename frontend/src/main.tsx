@@ -228,6 +228,22 @@ function App() {
       if (!controller.signal.aborted) setBusy(false);
     }
   }
+  function editQuery(value: string) {
+    setQuery(value);
+    if (value.trim()) return;
+    searchController.current?.abort();
+    summaryController.current?.abort();
+    setBusy(false);
+    setSummaryBusy(false);
+    setResults(null);
+    setSelected(null);
+    setPlayerStarted(false);
+    setSummary(null);
+    setError("");
+    setSummaryError("");
+    setShowAllResults(false);
+    setExpandedPassage(null);
+  }
   function saveKey() {
     const clean = draft.trim();
     if (!clean) return;
@@ -385,7 +401,7 @@ function App() {
               <SmoothInput
                 id="query"
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                onChange={(e) => editQuery(e.target.value)}
                 placeholder="What would you like to revisit?"
                 maxLength={1000}
               />

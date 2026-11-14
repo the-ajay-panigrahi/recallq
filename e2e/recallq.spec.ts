@@ -525,3 +525,53 @@ test("search rate limit keeps previous results and allows retry", async ({
   await expect(page.getByRole("alert")).toHaveCount(0);
   await expect(page.locator(".result-query")).toContainText("Sliding window");
 });
+
+test("editing keeps labelled results, clearing resets and cancels pending search", async ({
+  page,
+}) => {
+  await mock(page);
+  await page.goto("/");
+  const input = page.getByRole("textbox", { name: "Search lectures" });
+  const submit = page.getByRole("button", { name: "Find a moment" });
+  await input.fill("Kadane");
+  await submit.click();
+  await expect(page.locator("article.result")).toHaveCount(1);
+  await input.fill("Sliding window");
+  await expect(page.locator(".result-query")).toContainText("Kadane");
+  await input.fill("");
+  await expect(page.locator("article.result")).toHaveCount(0);
+  await expect(page.locator(".library")).toBeVisible();
+  await expect(submit).toBeDisabled();
+  let release!: () => void;
+  let finish!: () => void;
+  const held = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  const finished = new Promise<void>((resolve) => {
+    finish = resolve;
+  });
+  await page.route("**/api/search", async (route) => {
+    await held;
+    await route
+      .fulfill({
+        json: {
+          query: "Slow query",
+          corpus_revision: "initial",
+          match_state: "matches",
+          results: [source],
+        },
+      })
+      .catch(() => {});
+    finish();
+  });
+  await input.fill("Slow query");
+  const request = page.waitForRequest("**/api/search");
+  await submit.click();
+  await request;
+  await input.fill("   ");
+  await expect(page.locator(".library")).toBeVisible();
+  release();
+  await finished;
+  await expect(page.locator("article.result")).toHaveCount(0);
+  await expect(page.locator(".searching")).toHaveCount(0);
+});
