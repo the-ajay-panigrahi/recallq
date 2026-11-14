@@ -87,7 +87,9 @@ test("search needs no key; summary requests one and temporary key clears on refr
     /autoplay=1/,
   );
   await page.getByRole("button", { name: "Summarize these moments" }).click();
-  await page.getByLabel("Gemini API key", { exact: true }).fill("test-key-not-real");
+  await page
+    .getByLabel("Gemini API key", { exact: true })
+    .fill("test-key-not-real");
   await page.getByRole("button", { name: "Continue", exact: true }).click();
   await expect(
     page.getByRole("button", { name: "Play source 1" }),
@@ -143,4 +145,107 @@ test("quota failure preserves results and mobile has no overflow", async ({
       () => document.documentElement.scrollWidth <= innerWidth,
     ),
   ).toBeTruthy();
+});
+
+test("five focused results, real font, and persistent animated themes", async ({
+  page,
+}, info) => {
+  await mock(page);
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.route("**/api/search", (route) => {
+    expect(route.request().postDataJSON().limit).toBe(5);
+    return route.fulfill({
+      json: {
+        query: "Kadane",
+        corpus_revision: "initial",
+        match_state: "matches",
+        // Oversized response checks the UI's defensive result cap as well.
+        results: Array.from({ length: 7 }, (_, index) => ({
+          ...source,
+          source_id: source.source_id.slice(0, -1) + index,
+          start_sec: 340 + index * 80,
+          end_sec: 410 + index * 80,
+        })),
+      },
+    });
+  });
+  await page.goto("/");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await expect(page.locator(".tiny-line")).toHaveCount(0);
+  await page.evaluate(() => document.fonts.ready);
+  expect(
+    await page.evaluate(() =>
+      [...document.fonts].some(
+        (font) => font.family.includes("DM Sans") && font.status === "loaded",
+      ),
+    ),
+  ).toBeTruthy();
+  await page.screenshot({
+    path: `work/ui/${info.project.name}-home-dark.png`,
+    fullPage: true,
+  });
+  await page.getByRole("textbox", { name: "Search lectures" }).fill("Kadane");
+  await page.getByRole("button", { name: "Find a moment" }).click();
+  await expect(page.locator("article.result")).toHaveCount(5);
+  await expect(page.getByRole("button", { name: /Show more/ })).toHaveCount(0);
+  await expect(page.getByText("5 top matches", { exact: true })).toBeVisible();
+  await page.screenshot({
+    path: `work/ui/${info.project.name}-results-dark.png`,
+    fullPage: true,
+    animations: "disabled",
+  });
+  await page.evaluate(() => {
+    const native = document.startViewTransition.bind(document);
+    document.startViewTransition = (update) => {
+      document.documentElement.dataset.transitionTested = "yes";
+      return native(update);
+    };
+  });
+  await page.getByRole("button", { name: "Switch to light mode" }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await expect(page.locator("html")).toHaveAttribute(
+    "data-transition-tested",
+    "yes",
+  );
+  await expect(page.locator("html")).not.toHaveClass(/theme-transition/);
+  await page.screenshot({
+    path: `work/ui/${info.project.name}-results-light.png`,
+    fullPage: true,
+  });
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await expect(page.locator("html")).toHaveCSS(
+    "background-color",
+    "rgb(247, 244, 237)",
+  );
+  await page.getByRole("button", { name: "Switch to dark mode" }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await expect(page.locator("html")).not.toHaveClass(/theme-transition/);
+  await page.setViewportSize({ width: 320, height: 760 });
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBeTruthy();
+});
+
+test("reduced motion and blocked storage keep theme switching usable", async ({
+  page,
+}) => {
+  await mock(page);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.addInitScript(() => {
+    Storage.prototype.setItem = () => {
+      throw new Error("Storage unavailable");
+    };
+    document.startViewTransition = () => {
+      throw new Error("Reduced motion must bypass animation");
+    };
+  });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Switch to light mode" }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await expect(page.locator(".theme-icon")).toHaveCSS("animation-name", "none");
+  await page.getByRole("button", { name: "Switch to dark mode" }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
 });

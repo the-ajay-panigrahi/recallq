@@ -157,6 +157,7 @@ def present(payload):
 
 
 async def search(query: str, limit: int, key: str = ""):
+    limit = min(limit, 5)
     if not any(v["status"] == "indexed" for v in manifest()["videos"]):
         raise ServiceError(
             503,

@@ -2,11 +2,20 @@
 
 ## Design authority
 
-The user selected the supplied Lovable design guide as the visual authority for RecallQ. Preserve its palette, font family, typographic character, radii, borders and component treatments. Do not mix in the Clay, Arc or OpenAI guides discussed earlier.
+The user selected the supplied Lovable design guide as the visual authority for RecallQ. Use its warm neutral palette, typographic character, radii, borders and component treatments as the foundation. The dated product updates below take precedence over the original reference where the user has requested changes. Do not mix in the Clay, Arc or OpenAI guides discussed earlier.
 
 The original guide below is reproduced unchanged from the user attachment, including its license notice. The RecallQ application requirements after the guide describe how to apply it to this product. For product scope, architecture and API behavior, read PROJECT_CONTEXT.md.
 
-Camera Plain Variable is the specified font. The supplied guide does not include its font files or establish a license to redistribute that font. Use a legitimately available font asset if supplied or confirmed. The documented ui-sans-serif and system-ui families are fallbacks, not proof that the custom font is loaded. Disclose missing font assets before visual sign-off; do not silently replace the requested font with Inter or another named family. The guide's MIT notice applies to the guide and does not establish rights to third-party font assets.
+### November 14 product update
+
+The user requested stronger typography, a dark option, fewer results, and subtle animated icons and theme changes. Default to warm charcoal (#1c1c1c), with the original parchment (#f7f4ed) as light mode. Both palettes use matching warm surfaces, restrained borders, and readable muted text. Remember an explicitly chosen theme separately from API-key storage.
+
+Camera Plain Variable was not supplied. The application deliberately uses self-hosted DM Sans, an openly licensed variable font, as the chosen replacement for this update. Keep its original SIL Open Font License alongside the font in frontend/public/fonts/OFL.txt. Do not claim the app uses Camera Plain.
+
+Show at most five strongest matches, without Show more or a second results page. The summary uses the visible matches. Remove the decorative line before the lecture eyebrow. Keep source titles and excerpts readable on desktop and mobile.
+
+Use the browser View Transition API for a short circular theme reveal and rotating sun/moon icons. Reference: https://skiper-ui.com/v1/skiper26. The implementation is independent native browser/CSS code and uses no paid Skiper components or extra animation dependency. Add gentle hover cues and brief result entrances; avoid continuous decorative motion. Respect prefers-reduced-motion, blocked browser storage, and browsers without View Transition support.
+
 
 ## Original user supplied guide
 
@@ -332,7 +341,7 @@ Use the product name RecallQ, pronounced Recall Q. The suggested tagline is Find
 
 Each result needs a clear video title, source timestamp or range, readable transcript excerpt and a Play control. Allow titles to wrap instead of truncating every identifying word. Distinguish selected results through the guide's existing charcoal, cream, border and hover treatments, together with a visible label or control state.
 
-Display five matches initially and reveal additional retrieved matches with Show more. The server determines relevance; the UI must not label similarity as a percentage of factual confidence. Repeated overlapping windows should not fill the screen. Distinct explanations from one video remain valid results.
+Display at most five strongest matches, with no Show more or pagination. The server determines relevance; the UI must not label similarity as a percentage of factual confidence. Repeated overlapping windows should not fill the screen. Distinct explanations from one video remain valid results.
 
 Timestamp and citation controls must be real buttons or links with keyboard access. Selecting a different video loads that video; selecting another moment in the current video seeks to it. Keep source labels synchronized with the selected result. Include an Open on YouTube link at the same playback time if embedding or playback fails.
 
@@ -340,7 +349,7 @@ Keep the player at its natural 16 to 9 proportion where possible. Preserve the o
 
 ### Personal Gemini key dialog
 
-Open key setup before the first search that needs a key, or when the visitor chooses key settings. Explain the purpose in a few short sentences. Include:
+Open key setup before the first requested summary when no key is connected, or when the visitor chooses key settings. Search needs no key. Explain the purpose in a few short sentences. Include:
 
 - A masked Gemini key input with a deliberate show or hide control.
 - A link to the official Google AI Studio key page.

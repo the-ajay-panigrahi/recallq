@@ -31,6 +31,17 @@ async def test_search_needs_no_key_summary_does_and_validation_redacts_input(cli
         assert "private-key" not in response.text and "do-not-echo" not in response.text
 
 
+async def test_search_caps_legacy_result_requests_at_five(client, monkeypatch):
+    async def search(query, limit, key):
+        assert limit == 5
+        return {"results": []}
+
+    monkeypatch.setattr(core, "search", search)
+    async with client:
+        assert (await client.post("/api/search", json={"query": "Kadane", "limit": 20})).status_code == 200
+        assert (await client.post("/api/search", json={"query": "Kadane"})).status_code == 200
+
+
 async def test_simultaneous_keys_never_cross_requests(client, monkeypatch):
     async def fake(query, revision, ids, key):
         await asyncio.sleep(0.01)

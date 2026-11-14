@@ -36,7 +36,7 @@ async def validation_error(request: Request, exc: RequestValidationError):
 
 class SearchRequest(BaseModel):
     query: str = Field(min_length=1, max_length=1000)
-    limit: int = Field(default=20, ge=1, le=20)
+    limit: int = Field(default=5, ge=1, le=20, description="Response is capped at five strongest matches.")
 
     @field_validator("query")
     @classmethod
@@ -79,7 +79,7 @@ def corpus():
 async def search(
     body: SearchRequest, x_gemini_api_key: Annotated[str | None, Header()] = None
 ):
-    return await core.search(body.query, body.limit, "")
+    return await core.search(body.query, min(body.limit, 5), "")
 
 
 @app.post("/api/summarize")

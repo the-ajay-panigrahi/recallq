@@ -2,7 +2,7 @@
 
 Find where you learned it. Search a curated YouTube DSA playlist, jump to timestamped explanations, and request summaries grounded in the retrieved passages.
 
-React + TypeScript + Vite, Python + FastAPI, Qdrant Cloud, and MiniLM embeddings. Gemini is used only for optional summaries with the visitor’s own key. Search needs no API key.
+React + TypeScript + Vite, Python + FastAPI, Qdrant Cloud, and MiniLM embeddings. Gemini is used only for optional summaries with the visitor’s own key. Search needs no API key. Results are limited to five strongest matches, without pagination or Show more; summaries use those visible passages.
 
 Live: https://recallq-app.vercel.app
 
@@ -79,6 +79,6 @@ The project uses Vercel Hobby and Qdrant Free. No billing was enabled. CLI deplo
 
 ## Attribution
 
-The Lovable design guide from OpenDesignMD is preserved in DESIGN.md with its MIT notice. The supplied font was unavailable, so the guide’s system fallback is used.
+The Lovable design guide from OpenDesignMD is preserved in DESIGN.md with its MIT notice. The supplied Camera Plain font was unavailable; the user requested an improved replacement, so DM Sans is self-hosted with its SIL Open Font License in frontend/public/fonts/OFL.txt. Warm charcoal is the default theme, and the original cream palette is available through the saved theme toggle. Native View Transitions and CSS animate the switch and icons, with reduced-motion and browser fallbacks. Motion reference: https://skiper-ui.com/v1/skiper26. No paid UI or animation dependency is used.
 
 Transcript source: https://github.com/perryvegehan/padho_with_pratyush_Ai_Enginner. Application code and processing tools are independently implemented. MiniLM model attribution and Apache-2.0 license are in backend/MINILM-LICENSE.txt. PROJECT_CONTEXT.md records product requirements and implementation decisions.

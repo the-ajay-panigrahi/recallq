@@ -1,12 +1,12 @@
 import { StrictMode, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
+import { flushSync } from "react-dom";
 import * as Dialog from "@radix-ui/react-dialog";
 import {
   ArrowRight,
   ArrowUpRight,
   BookOpen,
   Check,
-  ChevronDown,
   Clock3,
   Eye,
   EyeOff,
@@ -15,6 +15,8 @@ import {
   Play,
   Search,
   Sparkles,
+  Sun,
+  Moon,
   X,
 } from "lucide-react";
 import "./style.css";
@@ -48,6 +50,8 @@ type Corpus = {
   index_connected: boolean;
 };
 const STORAGE = "recallq.gemini-key";
+const THEME_STORAGE = "recallq.theme";
+const RESULT_LIMIT = 5;
 const examples = [
   "Sliding window intuition",
   "Memoization vs tabulation",
@@ -74,7 +78,10 @@ async function api<T>(
   const response = await fetch(`/api/${path}`, {
     method: body ? "POST" : "GET",
     headers: body
-      ? { "Content-Type": "application/json", ...(key ? { "X-Gemini-API-Key": key } : {}) }
+      ? {
+          "Content-Type": "application/json",
+          ...(key ? { "X-Gemini-API-Key": key } : {}),
+        }
       : {},
     body: body ? JSON.stringify(body) : undefined,
     signal,
@@ -87,6 +94,53 @@ async function api<T>(
   return data;
 }
 function App() {
+  const [theme, setTheme] = useState<"light" | "dark">(() =>
+    document.documentElement.dataset.theme === "light" ? "light" : "dark",
+  );
+  const themeTransition = useRef<ViewTransition | null>(null);
+  function toggleTheme(button: HTMLButtonElement) {
+    const next = theme === "dark" ? "light" : "dark";
+    const root = document.documentElement;
+    const change = () => {
+      flushSync(() => setTheme(next));
+      root.dataset.theme = next;
+      document
+        .querySelector('meta[name="theme-color"]')
+        ?.setAttribute("content", next === "dark" ? "#1c1c1c" : "#f7f4ed");
+      try {
+        localStorage.setItem(THEME_STORAGE, next);
+      } catch {
+        // Theme switching still works when browser storage is blocked.
+      }
+    };
+    if (
+      !document.startViewTransition ||
+      matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      change();
+      return;
+    }
+    themeTransition.current?.skipTransition();
+    const rect = button.getBoundingClientRect();
+    root.style.setProperty("--theme-x", `${rect.left + rect.width / 2}px`);
+    root.style.setProperty("--theme-y", `${rect.top + rect.height / 2}px`);
+    root.classList.add("theme-transition");
+    try {
+      const transition = document.startViewTransition(change);
+      themeTransition.current = transition;
+      void transition.finished
+        .catch(() => {})
+        .finally(() => {
+          if (themeTransition.current === transition) {
+            root.classList.remove("theme-transition");
+            themeTransition.current = null;
+          }
+        });
+    } catch {
+      root.classList.remove("theme-transition");
+      change();
+    }
+  }
   const [key, setKey] = useState(readKey),
     [draft, setDraft] = useState(""),
     [remember, setRemember] = useState(Boolean(readKey())),
@@ -96,7 +150,6 @@ function App() {
   const [query, setQuery] = useState(""),
     [results, setResults] = useState<Results | null>(null),
     [selected, setSelected] = useState<Source | null>(null),
-    [count, setCount] = useState(5),
     [corpus, setCorpus] = useState<Corpus | null>(null);
   const [busy, setBusy] = useState(false),
     [error, setError] = useState(""),
@@ -135,18 +188,21 @@ function App() {
     setSummaryBusy(false);
     setResults(null);
     setSelected(null);
-    setCount(5);
     setPlayerStarted(false);
     try {
       const found = await api<Results>(
         "search",
         "",
-        { query: text.trim(), limit: 20 },
+        { query: text.trim(), limit: RESULT_LIMIT },
         controller.signal,
       );
       if (!controller.signal.aborted) {
-        setResults(found);
-        setSelected(found.results[0] || null);
+        const topResults = {
+          ...found,
+          results: found.results.slice(0, RESULT_LIMIT),
+        };
+        setResults(topResults);
+        setSelected(topResults.results[0] || null);
       }
     } catch (e) {
       if (!controller.signal.aborted) setError((e as Error).message);
@@ -215,7 +271,7 @@ function App() {
         {
           query: results.query,
           corpus_revision: results.corpus_revision,
-          source_ids: results.results.slice(0, 6).map((r) => r.source_id),
+          source_ids: results.results.map((r) => r.source_id),
         },
         controller.signal,
       );
@@ -255,25 +311,36 @@ function App() {
         <span className="header-note">
           A little less searching. A little more learning.
         </span>
-        <button
-          ref={keyTrigger}
-          className="key-button"
-          onClick={() => {
-            setDraft(key);
-            setPending(false);
-            setOpen(true);
-          }}
-        >
-          <KeyRound size={15} />
-          <span>{key ? "Key connected" : "Connect Gemini"}</span>
-          {key && <span className="status-dot" />}
-        </button>
+        <div className="header-actions">
+          <button
+            className="theme-toggle"
+            onClick={(event) => toggleTheme(event.currentTarget)}
+            aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+            title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+          >
+            <span className="theme-icon" key={theme} aria-hidden="true">
+              {theme === "dark" ? <Sun size={17} /> : <Moon size={17} />}
+            </span>
+          </button>
+          <button
+            ref={keyTrigger}
+            className="key-button"
+            aria-label={key ? "Key connected" : "Connect Gemini"}
+            onClick={() => {
+              setDraft(key);
+              setPending(false);
+              setOpen(true);
+            }}
+          >
+            <KeyRound size={15} />
+            <span>{key ? "Key connected" : "Connect Gemini"}</span>
+            {key && <span className="status-dot" />}
+          </button>
+        </div>
       </header>
       <main>
         <section className={`intro ${results ? "compact" : ""}`}>
-          <div className="eyebrow">
-            <span className="tiny-line" /> YOUR LECTURES, WITH A WAY BACK
-          </div>
+          <div className="eyebrow">YOUR LECTURES, WITH A WAY BACK</div>
           <h1>
             Find where you
             <br className="desktop-break" />{" "}
@@ -373,7 +440,10 @@ function App() {
                     ? "Moments to revisit"
                     : "No matching moments"}
                 </h2>
-                <span>{results.results.length} results</span>
+                <span>
+                  {results.results.length} top{" "}
+                  {results.results.length === 1 ? "match" : "matches"}
+                </span>
               </div>
               <p className="result-query">For “{results.query}”</p>
               {results.match_state !== "matches" && (
@@ -383,10 +453,11 @@ function App() {
                     : "We could not find enough support in the indexed lectures. Try another topic or phrase."}
                 </p>
               )}
-              {results.results.slice(0, count).map((r, i) => (
+              {results.results.map((r, i) => (
                 <article
                   className={`result ${selected?.source_id === r.source_id ? "selected" : ""}`}
                   key={r.source_id}
+                  style={{ animationDelay: `${i * 35}ms` }}
                 >
                   <div className="result-top">
                     <span className="result-number">
@@ -419,14 +490,6 @@ function App() {
                   </div>
                 </article>
               ))}
-              {count < results.results.length && (
-                <button
-                  className="show-more"
-                  onClick={() => setCount((c) => c + 5)}
-                >
-                  Show more moments <ChevronDown size={15} />
-                </button>
-              )}
             </div>
             <aside className="player-column">
               <div className="player-sticky">

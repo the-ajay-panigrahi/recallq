@@ -17,7 +17,7 @@ Qdrant's existing collection is 768-dimensional and its credentials are collecti
 
 MiniLM passages use a 220-token text budget and at most 32 title tokens, within the model's 256-token limit including special tokens. Split long ASR segments at word boundaries, retain original coarse timestamps, and overlap up to 40 tokens using complete pieces. Raw transcript files stay unchanged. scripts/index_minilm.py caches local vectors, checkpoints completed videos, and verifies the remote passage count before promotion. The older Gemini ingestion script and failed MLX experiments are historical tools, not the active workflow.
 
-Serving credentials are read-only and scoped to the RecallQ collection; local ingestion has a separate scoped write key. The existing Qdrant free cluster was reactivated without altering its existing credentials. The new Gemini RecallQ project remains on the free tier; no billing was enabled. Runtime generation uses gemini-3.5-flash-lite after checking actual project access. The custom font asset was not supplied, so the documented system fallback is currently active. Vercel CLI deployment works, but automatic GitHub integration remains unconnected. See README.md for commands and verification details.
+Serving credentials are read-only and scoped to the RecallQ collection; local ingestion has a separate scoped write key. The existing Qdrant free cluster was reactivated without altering its existing credentials. The new Gemini RecallQ project remains on the free tier; no billing was enabled. Runtime generation uses gemini-3.5-flash-lite after checking actual project access. The custom Camera Plain font was not supplied. The user subsequently requested typography improvements; the app now self-hosts DM Sans under its original SIL Open Font License. Dark warm-charcoal mode is the default, with a persistent cream light mode and native animated transitions that respect reduced motion. Vercel CLI deployment works, but automatic GitHub integration remains unconnected. See README.md for commands and verification details.
 
 ## 1 Product requirements
 
@@ -45,7 +45,7 @@ Build an original implementation. The tutorial is a reference and a possible tra
 | P1 | Retrieval verification | Check real revision questions against manually identified video passages. Report measured results. |
 | P1 | Deployed application | Deploy React and FastAPI on Vercel, with Qdrant Cloud external to Vercel. |
 
-Proposed result presentation: fetch a bounded set once, display five results initially, then reveal more without repeating the embedding request. Remove redundant overlapping passages while preserving distinct useful moments from the same video.
+Current result presentation: return and display at most five strongest matches. There is no Show more or pagination. Summaries use these visible matches. Remove redundant overlapping passages while preserving distinct useful moments from the same video.
 
 Pure Hindi script is optional and must be tested before advertising support. English and romanized Hinglish are the required query languages.
 
@@ -242,10 +242,10 @@ Use `X-Gemini-API-Key` for keyed requests. No login token is required. A format 
 Request:
 
 ```json
-{"query":"sliding window kab use karna hai","limit":20}
+{"query":"sliding window kab use karna hai","limit":5}
 ```
 
-Proposed bounds: trimmed query from 1 to 1,000 characters, limit from 1 to 20. Reject blank input before model calls. Cancel or ignore stale browser results when a newer search starts.
+Current bounds: trimmed query from 1 to 1,000 characters, default and maximum response count of five. Older requests with a limit up to 20 are accepted but clamped to five for compatibility. Reject blank input before model calls. Cancel or ignore stale browser results when a newer search starts.
 
 Response shape:
 
