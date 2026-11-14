@@ -1,14 +1,135 @@
 {
   "corpus_revision": "tutorial-minilm-2026-11-14-v1",
-  "cases": 12,
-  "topic_checks_passed": 12,
+  "cases": 15,
+  "topic_checks_passed": 15,
   "method": "Expected topic appears in a top-five video title; not manually labeled passage accuracy or a general model comparison.",
   "results": [
     {
+      "query": "HashMap kab use karna hai?",
+      "expected_topic_pattern": "hashmap",
+      "topic_present_in_top_2": true,
+      "topic_present_in_top_5": true,
+      "elapsed_seconds": 1.8,
+      "match_state": "matches",
+      "sources": [
+        {
+          "video_id": "ICggOtnixBk",
+          "video_title": "4 Questions to Master HASHMAPS in C++ JAVA Python | DSA Patterns Course 2026",
+          "start_sec": 27.79,
+          "watch_url": "https://www.youtube.com/watch?v=ICggOtnixBk&t=22s"
+        },
+        {
+          "video_id": "ICggOtnixBk",
+          "video_title": "4 Questions to Master HASHMAPS in C++ JAVA Python | DSA Patterns Course 2026",
+          "start_sec": 426.96,
+          "watch_url": "https://www.youtube.com/watch?v=ICggOtnixBk&t=421s"
+        },
+        {
+          "video_id": "9a4A6CbrLCo",
+          "video_title": "The Only Video You Need TO Master HASHMAPS | DSA Patterns Course Cpp JAVA Python",
+          "start_sec": 917.04,
+          "watch_url": "https://www.youtube.com/watch?v=9a4A6CbrLCo&t=912s"
+        },
+        {
+          "video_id": "ICggOtnixBk",
+          "video_title": "4 Questions to Master HASHMAPS in C++ JAVA Python | DSA Patterns Course 2026",
+          "start_sec": 1610.08,
+          "watch_url": "https://www.youtube.com/watch?v=ICggOtnixBk&t=1605s"
+        },
+        {
+          "video_id": "9a4A6CbrLCo",
+          "video_title": "The Only Video You Need TO Master HASHMAPS | DSA Patterns Course Cpp JAVA Python",
+          "start_sec": 1070.93,
+          "watch_url": "https://www.youtube.com/watch?v=9a4A6CbrLCo&t=1065s"
+        }
+      ]
+    },
+    {
+      "query": "Hash map kab nahi use karna hai?",
+      "expected_topic_pattern": "hashmap",
+      "topic_present_in_top_2": true,
+      "topic_present_in_top_5": true,
+      "elapsed_seconds": 1.53,
+      "match_state": "matches",
+      "sources": [
+        {
+          "video_id": "ICggOtnixBk",
+          "video_title": "4 Questions to Master HASHMAPS in C++ JAVA Python | DSA Patterns Course 2026",
+          "start_sec": 27.79,
+          "watch_url": "https://www.youtube.com/watch?v=ICggOtnixBk&t=22s"
+        },
+        {
+          "video_id": "9a4A6CbrLCo",
+          "video_title": "The Only Video You Need TO Master HASHMAPS | DSA Patterns Course Cpp JAVA Python",
+          "start_sec": 917.04,
+          "watch_url": "https://www.youtube.com/watch?v=9a4A6CbrLCo&t=912s"
+        },
+        {
+          "video_id": "ICggOtnixBk",
+          "video_title": "4 Questions to Master HASHMAPS in C++ JAVA Python | DSA Patterns Course 2026",
+          "start_sec": 1610.08,
+          "watch_url": "https://www.youtube.com/watch?v=ICggOtnixBk&t=1605s"
+        },
+        {
+          "video_id": "ICggOtnixBk",
+          "video_title": "4 Questions to Master HASHMAPS in C++ JAVA Python | DSA Patterns Course 2026",
+          "start_sec": 426.96,
+          "watch_url": "https://www.youtube.com/watch?v=ICggOtnixBk&t=421s"
+        },
+        {
+          "video_id": "9a4A6CbrLCo",
+          "video_title": "The Only Video You Need TO Master HASHMAPS | DSA Patterns Course Cpp JAVA Python",
+          "start_sec": 1070.93,
+          "watch_url": "https://www.youtube.com/watch?v=9a4A6CbrLCo&t=1065s"
+        }
+      ]
+    },
+    {
+      "query": "HashMap kya hai?",
+      "expected_topic_pattern": "hashmap",
+      "topic_present_in_top_2": true,
+      "topic_present_in_top_5": true,
+      "elapsed_seconds": 1.58,
+      "match_state": "matches",
+      "sources": [
+        {
+          "video_id": "9a4A6CbrLCo",
+          "video_title": "The Only Video You Need TO Master HASHMAPS | DSA Patterns Course Cpp JAVA Python",
+          "start_sec": 1070.93,
+          "watch_url": "https://www.youtube.com/watch?v=9a4A6CbrLCo&t=1065s"
+        },
+        {
+          "video_id": "ICggOtnixBk",
+          "video_title": "4 Questions to Master HASHMAPS in C++ JAVA Python | DSA Patterns Course 2026",
+          "start_sec": 1610.08,
+          "watch_url": "https://www.youtube.com/watch?v=ICggOtnixBk&t=1605s"
+        },
+        {
+          "video_id": "ICggOtnixBk",
+          "video_title": "4 Questions to Master HASHMAPS in C++ JAVA Python | DSA Patterns Course 2026",
+          "start_sec": 3736.78,
+          "watch_url": "https://www.youtube.com/watch?v=ICggOtnixBk&t=3731s"
+        },
+        {
+          "video_id": "ICggOtnixBk",
+          "video_title": "4 Questions to Master HASHMAPS in C++ JAVA Python | DSA Patterns Course 2026",
+          "start_sec": 826.91,
+          "watch_url": "https://www.youtube.com/watch?v=ICggOtnixBk&t=821s"
+        },
+        {
+          "video_id": "9a4A6CbrLCo",
+          "video_title": "The Only Video You Need TO Master HASHMAPS | DSA Patterns Course Cpp JAVA Python",
+          "start_sec": 1560.26,
+          "watch_url": "https://www.youtube.com/watch?v=9a4A6CbrLCo&t=1555s"
+        }
+      ]
+    },
+    {
       "query": "How does Kadane's algorithm find the maximum sum subarray?",
       "expected_topic_pattern": "kadane",
+      "topic_present_in_top_2": true,
       "topic_present_in_top_5": true,
-      "elapsed_seconds": 1.48,
+      "elapsed_seconds": 1.12,
       "match_state": "matches",
       "sources": [
         {
@@ -46,8 +167,9 @@
     {
       "query": "Remove duplicates from a sorted array using two pointers",
       "expected_topic_pattern": "pointer",
+      "topic_present_in_top_2": true,
       "topic_present_in_top_5": true,
-      "elapsed_seconds": 1.34,
+      "elapsed_seconds": 1.11,
       "match_state": "matches",
       "sources": [
         {
@@ -85,8 +207,9 @@
     {
       "query": "Longest substring without repeating characters using sliding window",
       "expected_topic_pattern": "sliding",
+      "topic_present_in_top_2": true,
       "topic_present_in_top_5": true,
-      "elapsed_seconds": 1.32,
+      "elapsed_seconds": 1.07,
       "match_state": "matches",
       "sources": [
         {
@@ -124,8 +247,9 @@
     {
       "query": "Detect a linked list cycle using slow and fast pointers",
       "expected_topic_pattern": "linked|slow|fast",
+      "topic_present_in_top_2": true,
       "topic_present_in_top_5": true,
-      "elapsed_seconds": 1.09,
+      "elapsed_seconds": 1.11,
       "match_state": "matches",
       "sources": [
         {
@@ -163,8 +287,9 @@
     {
       "query": "How does binary search work on a sorted array?",
       "expected_topic_pattern": "binary",
+      "topic_present_in_top_2": true,
       "topic_present_in_top_5": true,
-      "elapsed_seconds": 1.04,
+      "elapsed_seconds": 1.06,
       "match_state": "matches",
       "sources": [
         {
@@ -202,6 +327,7 @@
     {
       "query": "What is a base case in recursion?",
       "expected_topic_pattern": "recursion",
+      "topic_present_in_top_2": true,
       "topic_present_in_top_5": true,
       "elapsed_seconds": 1.09,
       "match_state": "matches",
@@ -241,8 +367,9 @@
     {
       "query": "Explain memoization and tabulation in dynamic programming",
       "expected_topic_pattern": "dynamic|dp|memoization|tabulation",
+      "topic_present_in_top_2": true,
       "topic_present_in_top_5": true,
-      "elapsed_seconds": 1.07,
+      "elapsed_seconds": 1.08,
       "match_state": "matches",
       "sources": [
         {
@@ -280,8 +407,9 @@
     {
       "query": "How do min heaps and priority queues work?",
       "expected_topic_pattern": "heap|priority",
+      "topic_present_in_top_2": true,
       "topic_present_in_top_5": true,
-      "elapsed_seconds": 1.05,
+      "elapsed_seconds": 1.1,
       "match_state": "matches",
       "sources": [
         {
@@ -319,8 +447,9 @@
     {
       "query": "How do I merge overlapping intervals?",
       "expected_topic_pattern": "interval",
+      "topic_present_in_top_2": true,
       "topic_present_in_top_5": true,
-      "elapsed_seconds": 1.06,
+      "elapsed_seconds": 1.14,
       "match_state": "matches",
       "sources": [
         {
@@ -358,8 +487,9 @@
     {
       "query": "Graph representation using adjacency matrix and adjacency list",
       "expected_topic_pattern": "graph|adjacency",
+      "topic_present_in_top_2": true,
       "topic_present_in_top_5": true,
-      "elapsed_seconds": 1.14,
+      "elapsed_seconds": 1.05,
       "match_state": "matches",
       "sources": [
         {
@@ -397,16 +527,11 @@
     {
       "query": "sliding window mein window kab shrink karna chahiye?",
       "expected_topic_pattern": "sliding",
+      "topic_present_in_top_2": true,
       "topic_present_in_top_5": true,
-      "elapsed_seconds": 1.18,
+      "elapsed_seconds": 1.13,
       "match_state": "matches",
       "sources": [
-        {
-          "video_id": "DL8LSXUsfWE",
-          "video_title": "DSA PATTERNS Episode 11 Sliding Window Pattern: Easy & Medium Questions",
-          "start_sec": 507.18,
-          "watch_url": "https://www.youtube.com/watch?v=DL8LSXUsfWE&t=502s"
-        },
         {
           "video_id": "9wc8HZH_sh4",
           "video_title": "DSA PATTERNS Episode 16 | Sliding Window Pattern: Amazon Interview Question",
@@ -416,36 +541,37 @@
         {
           "video_id": "DL8LSXUsfWE",
           "video_title": "DSA PATTERNS Episode 11 Sliding Window Pattern: Easy & Medium Questions",
-          "start_sec": 3919.47,
-          "watch_url": "https://www.youtube.com/watch?v=DL8LSXUsfWE&t=3914s"
-        },
-        {
-          "video_id": "lyZp-49pdzQ",
-          "video_title": "DSA PATTERNS Episode 14 Sliding Window Pattern Revision (Part 1)",
-          "start_sec": 140.3,
-          "watch_url": "https://www.youtube.com/watch?v=lyZp-49pdzQ&t=135s"
+          "start_sec": 888.78,
+          "watch_url": "https://www.youtube.com/watch?v=DL8LSXUsfWE&t=883s"
         },
         {
           "video_id": "DL8LSXUsfWE",
           "video_title": "DSA PATTERNS Episode 11 Sliding Window Pattern: Easy & Medium Questions",
-          "start_sec": 888.78,
-          "watch_url": "https://www.youtube.com/watch?v=DL8LSXUsfWE&t=883s"
+          "start_sec": 323.28,
+          "watch_url": "https://www.youtube.com/watch?v=DL8LSXUsfWE&t=318s"
+        },
+        {
+          "video_id": "V6pRTnOZ7Mc",
+          "video_title": "DSA PATTERNS Episode 10 | Introduction to Sliding Window",
+          "start_sec": 0.24,
+          "watch_url": "https://www.youtube.com/watch?v=V6pRTnOZ7Mc&t=0s"
+        },
+        {
+          "video_id": "DL8LSXUsfWE",
+          "video_title": "DSA PATTERNS Episode 11 Sliding Window Pattern: Easy & Medium Questions",
+          "start_sec": 370.22,
+          "watch_url": "https://www.youtube.com/watch?v=DL8LSXUsfWE&t=365s"
         }
       ]
     },
     {
       "query": "linked list mein cycle detect karne ke liye slow aur fast pointer kaise use kare?",
       "expected_topic_pattern": "linked|slow|fast",
+      "topic_present_in_top_2": true,
       "topic_present_in_top_5": true,
-      "elapsed_seconds": 1.16,
+      "elapsed_seconds": 1.06,
       "match_state": "matches",
       "sources": [
-        {
-          "video_id": "ftpI12-e3zs",
-          "video_title": "DSA PATTERNS Episode 21 | Linked List Slow–Fast Pointer Complete Revision",
-          "start_sec": 107.39,
-          "watch_url": "https://www.youtube.com/watch?v=ftpI12-e3zs&t=102s"
-        },
         {
           "video_id": "RNpZBhZBtJc",
           "video_title": "DSA PATTERNS Episode 20 | Linked List Slow–Fast Pointer: Important Questions",
@@ -453,22 +579,28 @@
           "watch_url": "https://www.youtube.com/watch?v=RNpZBhZBtJc&t=77s"
         },
         {
+          "video_id": "jDP1NkjVjWQ",
+          "video_title": "DSA PATTERNS Episode 18 | Linked List Slow–Fast Pointer: Important Questions",
+          "start_sec": 1374.78,
+          "watch_url": "https://www.youtube.com/watch?v=jDP1NkjVjWQ&t=1369s"
+        },
+        {
+          "video_id": "ftpI12-e3zs",
+          "video_title": "DSA PATTERNS Episode 21 | Linked List Slow–Fast Pointer Complete Revision",
+          "start_sec": 107.39,
+          "watch_url": "https://www.youtube.com/watch?v=ftpI12-e3zs&t=102s"
+        },
+        {
+          "video_id": "IxxlDYwMrZ8",
+          "video_title": "DSA PATTERNS Episode 17 | Linked List Slow & Fast Pointer Technique: Introduction",
+          "start_sec": 1206.18,
+          "watch_url": "https://www.youtube.com/watch?v=IxxlDYwMrZ8&t=1201s"
+        },
+        {
           "video_id": "IxxlDYwMrZ8",
           "video_title": "DSA PATTERNS Episode 17 | Linked List Slow & Fast Pointer Technique: Introduction",
           "start_sec": 656.61,
           "watch_url": "https://www.youtube.com/watch?v=IxxlDYwMrZ8&t=651s"
-        },
-        {
-          "video_id": "jDP1NkjVjWQ",
-          "video_title": "DSA PATTERNS Episode 18 | Linked List Slow–Fast Pointer: Important Questions",
-          "start_sec": 1431.86,
-          "watch_url": "https://www.youtube.com/watch?v=jDP1NkjVjWQ&t=1426s"
-        },
-        {
-          "video_id": "IxxlDYwMrZ8",
-          "video_title": "DSA PATTERNS Episode 17 | Linked List Slow & Fast Pointer Technique: Introduction",
-          "start_sec": 773.04,
-          "watch_url": "https://www.youtube.com/watch?v=IxxlDYwMrZ8&t=768s"
         }
       ]
     }

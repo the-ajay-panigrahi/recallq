@@ -122,6 +122,35 @@ def corpus_filter():
     }
 
 
+def retrieval_query(text):
+    """Normalize common study phrasing for the English MiniLM encoder.
+
+    This is deliberately a small deterministic rewrite, not translation or
+    answer generation. Keep the original question for the UI and summaries.
+    """
+    text = text.strip().lower()
+    for pattern, replacement in [(r"\bhashmaps?\b", "hash map"),
+                                  (r"\bhashsets?\b", "hash set"),
+                                  (r"\blinkedlist\b", "linked list"),
+                                  (r"\bbinarysearch\b", "binary search"),
+                                  (r"\bslidingwindow\b", "sliding window")]:
+        text = re.sub(pattern, replacement, text)
+    words = re.findall(r"[a-z0-9]+", text)
+    hindi = {"kab", "kaise", "kya", "kyun", "kyu", "hai", "hain", "karna", "kare", "mein", "nahi", "bina"}
+    if not hindi.intersection(words):
+        return text
+    filler = {"kab", "kaise", "kya", "kyun", "kyu", "hai", "hain", "karna", "kare", "karen", "karta", "karte",
+              "ka", "ki", "ke", "mein", "me", "ko", "se", "aur", "liye", "karne", "chahiye"}
+    translations = {"nahi": "not", "bina": "without"}
+    meaningful = [translations.get(w, w) for w in words if w not in filler]
+    if "kab" in words and "use" in words:
+        negative = "not " if "nahi" in words else ""
+        topic = " ".join(w for w in meaningful if w not in {"use", "not"})
+        return f"when should I {negative}use {topic}" if topic else text
+    prefix = "how " if "kaise" in words else "why " if {"kyun", "kyu"}.intersection(words) else ""
+    return prefix + " ".join(meaningful) if meaningful else text
+
+
 def retrieval_terms(text):
     ignored = set("the a an to in of for from with using how what when why do does is are i and or explain ka ki ke hai hain mein me aur se ko kya kaise karna chahiye use give tell please about works work solution example examples simple simply best good learn learning taught lecture lectures video videos teach find think want need".split())
     words = re.findall(r"[a-z0-9]+", text.lower())
@@ -167,7 +196,8 @@ async def search(query: str, limit: int, key: str = ""):
             "CORPUS_EMPTY",
             "No lectures have been indexed yet. Please check back after setup.",
         )
-    vector = await embed(query, key)
+    normalized = retrieval_query(query)
+    vector = await embed(normalized, key)
     response = await qdrant(
         "/points/query",
         {
@@ -180,7 +210,7 @@ async def search(query: str, limit: int, key: str = ""):
     hits = response["result"]["points"]
     results = []
     best_score = hits[0]["score"] if hits else 0
-    for hit in rerank(query, hits):
+    for hit in rerank(normalized, hits):
         p = hit["payload"]
         from backend.embeddings import MODEL, REVISION
         if (p.get("embedding_model") != MODEL
@@ -194,7 +224,7 @@ async def search(query: str, limit: int, key: str = ""):
         # Cosine similarity is not a probability of relevance. Low-scoring
         # candidates also need a concrete query term in the source passage.
         score = hit["score"]
-        wanted = retrieval_terms(query)
+        wanted = retrieval_terms(normalized)
         anchors = wanted & retrieval_terms(p["video_title"] + " " + p["text"])
         if score < max(.30, best_score - .15) or (score < .45 and len(anchors) < min(2, max(1, len(wanted)))):
             continue

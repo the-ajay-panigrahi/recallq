@@ -9,6 +9,9 @@ from backend import core
 from scripts.files import atomic_json
 
 CASES = [
+    ("HashMap kab use karna hai?", "hashmap"),
+    ("Hash map kab nahi use karna hai?", "hashmap"),
+    ("HashMap kya hai?", "hashmap"),
     ("How does Kadane's algorithm find the maximum sum subarray?", "kadane"),
     ("Remove duplicates from a sorted array using two pointers", "pointer"),
     ("Longest substring without repeating characters using sliding window", "sliding"),
@@ -34,6 +37,7 @@ async def main():
             sources = [{k: p[k] for k in ("video_id", "video_title", "start_sec", "watch_url")}
                        for p in result["results"]]
             return {"query": query, "expected_topic_pattern": expected,
+                    "topic_present_in_top_2": any(re.search(expected, p["video_title"], re.I) for p in sources[:2]),
                     "topic_present_in_top_5": any(re.search(expected, p["video_title"], re.I) for p in sources),
                     "elapsed_seconds": round(time.monotonic() - started, 2),
                     "match_state": result["match_state"], "sources": sources}

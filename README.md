@@ -114,3 +114,5 @@ Search editing keeps the last results labelled with their original question. Cle
 Summary repair: use all retrieved top matches (up to five) as evidence even when only two cards are expanded. Gemini returns a structured status and individually cited sentences; the backend validates source numbers and renders the existing plain-text summary response. Partial but relevant evidence can produce a limited summary. Empty, malformed, blocked, or invalidly cited model output is a retryable provider error, not a false insufficient-evidence answer. Genuine lack of support still produces an honest no-evidence response.
 
 Temporary Gemini HTTP 500/502/503/504 failures are retried once after a short delay; key, quota, and validation errors are not automatically retried.
+
+Search normalizes common Hinglish study phrasing and compact terms such as HashMap before embedding. For example, “HashMap kab use karna hai?” becomes “when should I use hash map”. This small deterministic rewrite preserves negation, needs no Gemini call, and leaves the displayed question and summary language unchanged. It is not a general Hindi translator.

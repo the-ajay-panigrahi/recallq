@@ -98,3 +98,26 @@ async def test_relevance_filter_rejects_unrelated_and_weak_candidates(monkeypatc
 
 async def fake_embedding():
     return [1.] + [0.] * 383
+
+
+def test_hinglish_query_normalization_preserves_topic_and_negation():
+    assert core.retrieval_query("HashMap kab use karna hai?") == "when should I use hash map"
+    assert core.retrieval_query("HashMap kab nahi use karna hai?") == "when should I not use hash map"
+    assert core.retrieval_query("HashMap kya hai?") == "hash map"
+    assert core.retrieval_query("Binary search without recursion") == "binary search without recursion"
+    assert "without" in core.retrieval_query("recursion bina loop kaise kare")
+
+
+async def test_search_embeds_normalized_text_but_returns_original_question(monkeypatch):
+    seen=[]
+    async def embed(text,key):
+        seen.append(text)
+        return [1.] + [0.] * 383
+    async def points(*args):
+        return {"result":{"points":[]}}
+    monkeypatch.setattr(core,"embed",embed)
+    monkeypatch.setattr(core,"qdrant",points)
+    monkeypatch.setattr(core,"manifest",lambda:{"revision":"test","videos":[{"status":"indexed"}]})
+    result=await core.search("HashMap kab use karna hai?",5)
+    assert seen == ["when should I use hash map"]
+    assert result["query"] == "HashMap kab use karna hai?"
