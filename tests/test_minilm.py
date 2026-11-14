@@ -71,3 +71,30 @@ async def test_search_uses_local_embeddings_and_rejects_other_model_vectors(monk
     with pytest.raises(core.ServiceError) as exc:
         await core.search("Kadane", 3)
     assert exc.value.code == "INDEX_INCOMPATIBLE"
+
+
+@pytest.mark.asyncio
+async def test_relevance_filter_rejects_unrelated_and_weak_candidates(monkeypatch):
+    monkeypatch.setattr(core, "embed", lambda *args: fake_embedding())
+    monkeypatch.setattr(core, "manifest", lambda: {"revision": "test", "videos": [{"status": "indexed"}]})
+    def payload(title, text, start):
+        return {"source_id": str(start), "video_id": "N8vJ8RyQEes", "video_title": title,
+                "text": text, "start_sec": start, "end_sec": start + 30,
+                "embedding_model": embeddings.MODEL, "embedding_revision": embeddings.REVISION,
+                "embedding_dimension": 384}
+    hits = [{"score": .40, "payload": payload("Combination Sum", "Best explanation of recursion using chocolate as an analogy", 0)}]
+    async def points(*args):
+        return {"result": {"points": hits}}
+    monkeypatch.setattr(core, "qdrant", points)
+    rejected = await core.search("What is the best chocolate cake recipe?", 5)
+    assert rejected["match_state"] == "none"
+    assert rejected["results"] == []
+    hits[:] = [{"score": .60, "payload": payload("Kadane", "maximum subarray sum", 0)},
+               {"score": .32, "payload": payload("Kadane", "maximum subarray sum", 80)}]
+    assert len((await core.search("Kadane maximum subarray", 5))["results"]) == 1
+    hits[:] = [{"score": .34, "payload": payload("Sliding window", "shrink window", 0)}]
+    assert len((await core.search("sliding window kab shrink kare", 5))["results"]) == 1
+
+
+async def fake_embedding():
+    return [1.] + [0.] * 383

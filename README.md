@@ -2,9 +2,9 @@
 
 Find where you learned it. Search a curated YouTube DSA playlist, jump to timestamped explanations, and request summaries grounded in the retrieved passages.
 
-React + TypeScript + Vite, Python + FastAPI, Qdrant Cloud, and MiniLM embeddings. Gemini is used only for optional summaries with the visitor’s own key. Search needs no API key. Results are limited to five strongest matches, without pagination or Show more; summaries use those visible passages.
+React + TypeScript + Vite, Python + FastAPI, Qdrant Cloud, and MiniLM embeddings. Gemini is used only for optional summaries with the visitor’s own key. Search needs no API key. Two matches are shown first, with Show more revealing up to five. Summaries use the currently visible passages.
 
-Live: https://recallq-app.vercel.app
+[Live demo](https://recallq-app.vercel.app) · [GitHub repository](https://github.com/the-ajay-panigrahi/recallq)
 
 ## Run locally
 
@@ -34,7 +34,7 @@ Passages contain at most 220 text tokens plus at most 32 title tokens and two sp
 
 ## Transcript corpus and indexing
 
-The November 14 audit found 126 playlist entries, one duplicate, and 125 unique videos. The tutorial repository contains 121 matching transcripts, copied byte-for-byte into ignored data/transcripts/. Five older prefix-sum lessons outside the current playlist were not imported. See data/transcript-audit.json for missing links. Transcript recognition errors remain possible; no full-corpus speech-accuracy claim is made.
+The November 14 audit found 126 playlist entries, one duplicate, and 125 unique videos. The index includes 121 video transcripts. See data/transcript-audit.json for missing links. Automatic recognition errors remain possible; the corpus has not been fully checked against the audio.
 
 With source files in data/transcripts/:
 
@@ -45,9 +45,7 @@ uv run python -m scripts.index_minilm
 
 The script performs local inference without Gemini or OpenAI calls. Vectors are cached locally, completed videos are checkpointed, and deterministic IDs make upserts repeatable. A staged manifest and remote point-count verification precede promotion to data/manifest.json and deployment. Rerun after an interrupted operation to reuse completed work. Inspect work/minilm/result.json for measured timing. Raw transcripts, downloaded audio, models, and vector caches are excluded from Git.
 
-The production app reports actual indexed coverage from data/manifest.json. Missing videos remain pending, and the tutorial’s RAG demonstration is deliberately excluded. No additional transcription is running.
-
-One separate local Lecture 4 transcription took 83m13s for 30m10s of audio using faster-whisper large-v3. Six sampled comparisons did not establish a consistent improvement over the tutorial transcript, so a full-playlist transcription run was rejected. Older MLX experiments and the Gemini ingestion script remain development references, not the active workflow.
+The production app reports indexed coverage from data/manifest.json. Missing lessons remain pending. No additional transcription is running.
 
 ## Optional summaries and key handling
 
@@ -81,7 +79,7 @@ The project uses Vercel Hobby and Qdrant Free. No billing was enabled. CLI deplo
 
 The Lovable design guide from OpenDesignMD is preserved in DESIGN.md with its MIT notice. The supplied Camera Plain font was unavailable; the user requested an improved replacement, so DM Sans is self-hosted with its SIL Open Font License in frontend/public/fonts/OFL.txt. Warm charcoal is the default theme, and the original cream palette is available through the saved theme toggle. Native View Transitions and CSS animate the switch and icons, with reduced-motion and browser fallbacks. Motion reference: https://skiper-ui.com/v1/skiper26. No paid UI or animation dependency is used.
 
-Transcript source: https://github.com/perryvegehan/padho_with_pratyush_Ai_Enginner. Application code and processing tools are independently implemented. MiniLM model attribution and Apache-2.0 license are in backend/MINILM-LICENSE.txt. PROJECT_CONTEXT.md records product requirements and implementation decisions.
+MiniLM model attribution and Apache-2.0 license are in backend/MINILM-LICENSE.txt. PROJECT_CONTEXT.md records product requirements and implementation decisions.
 
 
 ### Skiper UI refinements
@@ -96,4 +94,6 @@ The side flower/scroll illustration is removed. Results retain five accessible c
 
 “Keep learning at your own pace.” sits above the headline. The shared main container is capped at 1440px with responsive gutters; the query stays within 840px and reading prose within 70 characters. The footer follows the main container width, with playlist, source, and back-to-top links.
 
-Responsive refinement: the key dialog portal uses explicit overlay/content layers (100/101), above the page and filtered canvas. Short laptop screens place hero copy and the larger crowd side by side above search; smaller screens stack them. The middle header tagline is removed. Crowd opacity is full with stronger monochrome contrast, and body/supporting text is larger. The dialog scrolls internally on small screens.
+Responsive refinement: the key dialog portal uses explicit overlay/content layers (100/101), above the page and filtered canvas. Short laptop screens place hero copy and the larger crowd side by side above search; smaller screens stack them. The middle header tagline is removed. Crowd uses balanced monochrome tones, and body/supporting text is larger. The dialog scrolls internally on small screens.
+
+Search displays two results initially, with Show more revealing at most five. Low semantic scores and candidates too far below the leading match are removed; lower-scoring candidates also need meaningful query terms in their passage or title. This is a relevance heuristic, not a guarantee of correctness. Summary generation uses the currently visible passages. The bookshelf uses a linked cover image from the playlist's opening video.

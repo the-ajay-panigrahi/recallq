@@ -159,6 +159,7 @@ function App() {
     [showKey, setShowKey] = useState(false),
     [open, setOpen] = useState(false),
     [pending, setPending] = useState(false);
+  const [showAllResults, setShowAllResults] = useState(false);
   const [query, setQuery] = useState(""),
     [results, setResults] = useState<Results | null>(null),
     [selected, setSelected] = useState<Source | null>(null),
@@ -194,6 +195,7 @@ function App() {
     summaryController.current?.abort();
     const controller = new AbortController();
     searchController.current = controller;
+    setShowAllResults(false);
     setBusy(true);
     setError("");
     setSummary(null);
@@ -284,7 +286,9 @@ function App() {
         {
           query: results.query,
           corpus_revision: results.corpus_revision,
-          source_ids: results.results.map((r) => r.source_id),
+          source_ids: results.results
+            .slice(0, showAllResults ? RESULT_LIMIT : 2)
+            .map((r) => r.source_id),
         },
         controller.signal,
       );
@@ -466,64 +470,81 @@ function App() {
                     : "We could not find enough support in the indexed lectures. Try another topic or phrase."}
                 </p>
               )}
-              {results.results.map((r, i) => (
-                <motion.article
-                  className={`result ${selected?.source_id === r.source_id ? "selected" : ""} ${expandedPassage === r.source_id ? "expanded" : ""}`}
-                  key={r.source_id}
-                  layout="position"
-                  initial={reducedMotion ? false : { opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{
-                    opacity: { duration: 0.2, delay: i * 0.035 },
-                    y: { duration: 0.25, delay: i * 0.035 },
-                    layout: { type: "spring", stiffness: 380, damping: 34 },
+              {results.results
+                .slice(0, showAllResults ? RESULT_LIMIT : 2)
+                .map((r, i) => (
+                  <motion.article
+                    className={`result ${selected?.source_id === r.source_id ? "selected" : ""} ${expandedPassage === r.source_id ? "expanded" : ""}`}
+                    key={r.source_id}
+                    layout="position"
+                    initial={reducedMotion ? false : { opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      opacity: { duration: 0.2, delay: i * 0.035 },
+                      y: { duration: 0.25, delay: i * 0.035 },
+                      layout: { type: "spring", stiffness: 380, damping: 34 },
+                    }}
+                  >
+                    <div className="result-top">
+                      <span className="result-number">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <button
+                        className="timestamp"
+                        onClick={() => select(r)}
+                        aria-label={`Play ${r.video_title} at ${time(r.playback_sec)}`}
+                      >
+                        <Play size={11} fill="currentColor" />
+                        {time(r.playback_sec)}
+                      </button>
+                    </div>
+                    <h3>
+                      <button onClick={() => select(r)}>{r.video_title}</button>
+                    </h3>
+                    <p id={`passage-${r.source_id}`}>{r.excerpt}</p>
+                    <button
+                      className="passage-expand"
+                      aria-expanded={expandedPassage === r.source_id}
+                      aria-controls={`passage-${r.source_id}`}
+                      onClick={() =>
+                        setExpandedPassage(
+                          expandedPassage === r.source_id ? null : r.source_id,
+                        )
+                      }
+                    >
+                      {expandedPassage === r.source_id
+                        ? "Collapse passage"
+                        : "Read full passage"}
+                    </button>
+                    <div className="result-bottom">
+                      <span>
+                        <Clock3 size={12} />
+                        Passage {time(r.start_sec)}–{time(r.end_sec)}
+                      </span>
+                      {selected?.source_id === r.source_id && (
+                        <span>
+                          <Check size={12} />
+                          Selected
+                        </span>
+                      )}
+                    </div>
+                  </motion.article>
+                ))}
+              {results.results.length > 2 && !showAllResults && (
+                <button
+                  className="show-more-results"
+                  onClick={() => {
+                    setShowAllResults(true);
+                    summaryController.current?.abort();
+                    setSummary(null);
+                    setSummaryBusy(false);
+                    setSummaryError("");
                   }}
                 >
-                  <div className="result-top">
-                    <span className="result-number">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <button
-                      className="timestamp"
-                      onClick={() => select(r)}
-                      aria-label={`Play ${r.video_title} at ${time(r.playback_sec)}`}
-                    >
-                      <Play size={11} fill="currentColor" />
-                      {time(r.playback_sec)}
-                    </button>
-                  </div>
-                  <h3>
-                    <button onClick={() => select(r)}>{r.video_title}</button>
-                  </h3>
-                  <p id={`passage-${r.source_id}`}>{r.excerpt}</p>
-                  <button
-                    className="passage-expand"
-                    aria-expanded={expandedPassage === r.source_id}
-                    aria-controls={`passage-${r.source_id}`}
-                    onClick={() =>
-                      setExpandedPassage(
-                        expandedPassage === r.source_id ? null : r.source_id,
-                      )
-                    }
-                  >
-                    {expandedPassage === r.source_id
-                      ? "Collapse passage"
-                      : "Read full passage"}
-                  </button>
-                  <div className="result-bottom">
-                    <span>
-                      <Clock3 size={12} />
-                      Passage {time(r.start_sec)}–{time(r.end_sec)}
-                    </span>
-                    {selected?.source_id === r.source_id && (
-                      <span>
-                        <Check size={12} />
-                        Selected
-                      </span>
-                    )}
-                  </div>
-                </motion.article>
-              ))}
+                  Show more matches ({results.results.length - 2}){" "}
+                  <ArrowRight size={16} />
+                </button>
+              )}
             </div>
             <aside className="player-column">
               <div className="player-sticky">
@@ -639,15 +660,27 @@ function App() {
               <span>01 PLAYLIST</span>
             </div>
             <div className="library-body">
-              <div className="course-art" aria-hidden="true">
-                <span>DSA</span>
-                <small>PATTERNS & PRACTICE</small>
-                <div className="course-lines">
-                  <i />
-                  <i />
-                  <i />
-                </div>
-              </div>
+              <a
+                className="playlist-cover"
+                href="https://www.youtube.com/playlist?list=PLbJhGqY-mq47k_WLUtzVjmarUm1EuXPj2"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Open DSA playlist on YouTube"
+              >
+                <img
+                  src="https://i.ytimg.com/vi/qH2VQY48mg4/hqdefault.jpg"
+                  alt="Cover video of the DSA Patterns playlist"
+                  loading="lazy"
+                  width="480"
+                  height="360"
+                  onError={(event) => {
+                    event.currentTarget.style.display = "none";
+                  }}
+                />
+                <span className="playlist-cover-label">
+                  <Play size={15} fill="currentColor" /> DSA Patterns · Playlist
+                </span>
+              </a>
               <div className="course-info">
                 <span className="small-label">PADHO WITH PRATYUSH</span>
                 <h2>One playlist. A clearer way back.</h2>

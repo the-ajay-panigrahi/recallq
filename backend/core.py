@@ -119,20 +119,20 @@ def corpus_filter():
     }
 
 
+def retrieval_terms(text):
+    ignored = set("the a an to in of for from with using how what when why do does is are i and or explain ka ki ke hai hain mein me aur se ko kya kaise karna chahiye use give tell please about works work solution example examples simple simply best good learn learning taught lecture lectures video videos teach find think want need".split())
+    words = re.findall(r"[a-z0-9]+", text.lower())
+    return {("two" if w == "2" else w[:-1] if w.endswith("s") and len(w) > 4 else w)
+            for w in words if w not in ignored and (len(w) > 2 or w == "2")}
+
+
 def rerank(query, hits):
     """Use a small keyword tie-breaker when semantic scores are close."""
-    ignored = set("the a an to in of for from with using how what when why do does is are i and or explain ka ki ke hai hain mein me aur se ko kya kaise karna chahiye use".split())
-
-    def terms(text):
-        words = re.findall(r"[a-z0-9]+", text.lower())
-        return {("two" if w == "2" else w[:-1] if w.endswith("s") and len(w) > 4 else w)
-                for w in words if w not in ignored and (len(w) > 2 or w == "2")}
-
-    wanted = terms(query)
+    wanted = retrieval_terms(query)
 
     def score(hit):
         payload = hit["payload"]
-        found = terms(payload["video_title"] + " " + payload["text"])
+        found = retrieval_terms(payload["video_title"] + " " + payload["text"])
         return hit["score"] + .08 * len(wanted & found) / max(len(wanted), 1)
 
     return sorted(hits, key=score, reverse=True)
@@ -188,6 +188,13 @@ async def search(query: str, limit: int, key: str = ""):
                 "INDEX_INCOMPATIBLE",
                 "The index needs rebuilding with the configured embedding model.",
             )
+        # Cosine similarity is not a probability of relevance. Low-scoring
+        # candidates also need a concrete query term in the source passage.
+        score = hit["score"]
+        wanted = retrieval_terms(query)
+        anchors = wanted & retrieval_terms(p["video_title"] + " " + p["text"])
+        if score < max(.30, best_score - .15) or (score < .45 and len(anchors) < min(2, max(1, len(wanted)))):
+            continue
         if any(
             r["video_id"] == p["video_id"]
             and min(r["end_sec"], p["end_sec"]) - max(r["start_sec"], p["start_sec"])

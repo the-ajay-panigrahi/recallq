@@ -147,7 +147,7 @@ test("quota failure preserves results and mobile has no overflow", async ({
   ).toBeTruthy();
 });
 
-test("five focused results, real font, and persistent animated themes", async ({
+test("two initial matches expand to five, real font, and persistent animated themes", async ({
   page,
 }, info) => {
   await mock(page);
@@ -186,6 +186,8 @@ test("five focused results, real font, and persistent animated themes", async ({
   });
   await page.getByRole("textbox", { name: "Search lectures" }).fill("Kadane");
   await page.getByRole("button", { name: "Find a moment" }).click();
+  await expect(page.locator("article.result")).toHaveCount(2);
+  await page.getByRole("button", { name: "Show more matches (3)" }).click();
   await expect(page.locator("article.result")).toHaveCount(5);
   await expect(page.getByRole("button", { name: /Show more/ })).toHaveCount(0);
   await expect(page.getByText("5 top matches", { exact: true })).toBeVisible();
@@ -227,6 +229,14 @@ test("five focused results, real font, and persistent animated themes", async ({
       () => document.documentElement.scrollWidth <= innerWidth,
     ),
   ).toBeTruthy();
+  await page
+    .getByRole("textbox", { name: "Search lectures" })
+    .fill("Sliding window");
+  await page.getByRole("button", { name: "Find a moment" }).click();
+  await expect(page.locator("article.result")).toHaveCount(2);
+  await expect(
+    page.getByRole("button", { name: "Show more matches (3)" }),
+  ).toBeVisible();
 });
 
 test("reduced motion and blocked storage keep theme switching usable", async ({
@@ -412,6 +422,10 @@ test("modal stays above content and laptop layout keeps search in view", async (
     await page.setViewportSize(size);
     await page.goto("/");
     await expect(page.locator(".header-note")).toHaveCount(0);
+    await expect(page.locator(".playlist-cover img")).toHaveAttribute(
+      "src",
+      /i.ytimg.com/,
+    );
     const search = await page.locator(".search-box").boundingBox();
     expect(search!.y + search!.height).toBeLessThan(size.height);
     expect(
@@ -419,7 +433,7 @@ test("modal stays above content and laptop layout keeps search in view", async (
         () => document.documentElement.scrollWidth <= innerWidth,
       ),
     ).toBe(true);
-    await expect(page.locator(".crowd-canvas")).toHaveCSS("opacity", "1");
+    await expect(page.locator(".crowd-canvas")).toHaveCSS("opacity", "0.82");
     await page.getByRole("button", { name: "Connect Gemini" }).click();
     const dialog = page.getByRole("dialog");
     await expect(dialog).toBeVisible();
