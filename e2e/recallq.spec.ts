@@ -21,16 +21,17 @@ async function mock(page: Page) {
       },
     }),
   );
-  await page.route("**/api/search", (r) =>
-    r.fulfill({
+  await page.route("**/api/search", (r) => {
+    expect(r.request().headers()["x-gemini-api-key"]).toBeUndefined();
+    return r.fulfill({
       json: {
         query: "Kadane",
         corpus_revision: "initial",
         match_state: "matches",
         results: [source],
       },
-    }),
-  );
+    });
+  });
   await page.route("**/www.youtube.com/**", (r) =>
     r.fulfill({
       body: "<html><body>Player placeholder for automated UI testing</body></html>",
@@ -46,7 +47,7 @@ async function connect(page: Page, remember = false) {
   if (remember) await page.getByLabel("Remember on this device").check();
   await page.getByRole("button", { name: "Continue", exact: true }).click();
 }
-test("temporary key clears on refresh; search and summary are independent", async ({
+test("search needs no key; summary requests one and temporary key clears on refresh", async ({
   page,
 }) => {
   await mock(page);
@@ -64,10 +65,6 @@ test("temporary key clears on refresh; search and summary are independent", asyn
   await page.goto("/");
   await page.getByRole("textbox", { name: "Search lectures" }).fill("Kadane");
   await page.getByRole("button", { name: "Find a moment" }).click();
-  await page
-    .getByLabel("Gemini API key", { exact: true })
-    .fill("test-key-not-real");
-  await page.getByRole("button", { name: "Continue", exact: true }).click();
   await expect(
     page.getByRole("heading", { name: "Moments to revisit" }),
   ).toBeVisible();
@@ -90,6 +87,8 @@ test("temporary key clears on refresh; search and summary are independent", asyn
     /autoplay=1/,
   );
   await page.getByRole("button", { name: "Summarize these moments" }).click();
+  await page.getByLabel("Gemini API key", { exact: true }).fill("test-key-not-real");
+  await page.getByRole("button", { name: "Continue", exact: true }).click();
   await expect(
     page.getByRole("button", { name: "Play source 1" }),
   ).toBeVisible();

@@ -1,12 +1,17 @@
 .env
 .env.*
 .venv/
+.venv-baseline/
+.venv-transcription/
 work/
 data/transcripts/
 data/embedding-cache/
+data/local-transcription/
+data/tutorial-backup/
 test-results/
 playwright-report/
 node_modules/
 e2e/
 tests/
 __pycache__/
+backend/assets/minilm/

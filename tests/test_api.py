@@ -13,11 +13,15 @@ def client():
     )
 
 
-async def test_key_required_and_validation_redacts_input(client):
+async def test_search_needs_no_key_summary_does_and_validation_redacts_input(client, monkeypatch):
+    async def search(*args):
+        return {"results": []}
+    monkeypatch.setattr(core, "search", search)
     async with client:
         assert (
             await client.post("/api/search", json={"query": "DP"})
-        ).status_code == 401
+        ).status_code == 200
+        assert (await client.post("/api/summarize", json={"query": "DP", "corpus_revision": "v1", "source_ids": [str(uuid4())]})).status_code == 401
         response = await client.post(
             "/api/search",
             json={"query": " ", "secret": "do-not-echo"},
@@ -28,18 +32,18 @@ async def test_key_required_and_validation_redacts_input(client):
 
 
 async def test_simultaneous_keys_never_cross_requests(client, monkeypatch):
-    async def fake(query, limit, key):
+    async def fake(query, revision, ids, key):
         await asyncio.sleep(0.01)
         assert key == f"key-{query}"
         return {"results": [], "query": query}
 
-    monkeypatch.setattr(core, "search", fake)
+    monkeypatch.setattr(core, "summarize", fake)
     async with client:
         responses = await asyncio.gather(
             *[
                 client.post(
-                    "/api/search",
-                    json={"query": str(i)},
+                    "/api/summarize",
+                    json={"query": str(i), "corpus_revision": "v1", "source_ids": [str(uuid4())]},
                     headers={"X-Gemini-API-Key": f"key-{i}"},
                 )
                 for i in range(10)

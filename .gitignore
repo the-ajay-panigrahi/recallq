@@ -1,5 +1,7 @@
 node_modules/
 .venv/
+.venv-transcription/
+.venv-baseline/
 .env
 .env.*
 !.env.example
@@ -13,5 +15,9 @@ test-results/
 playwright-report/
 data/transcripts/
 data/embedding-cache/
+data/local-transcription/
+data/tutorial-backup/
+.DS_Store
+backend/assets/minilm/
 .vercel
 .env*

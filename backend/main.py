@@ -79,7 +79,7 @@ def corpus():
 async def search(
     body: SearchRequest, x_gemini_api_key: Annotated[str | None, Header()] = None
 ):
-    return await core.search(body.query, body.limit, require_key(x_gemini_api_key))
+    return await core.search(body.query, body.limit, "")
 
 
 @app.post("/api/summarize")

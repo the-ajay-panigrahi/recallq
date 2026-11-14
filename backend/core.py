@@ -1,5 +1,6 @@
 """Small, asynchronous HTTP adapters. Visitor credentials never enter shared state."""
 
+import asyncio
 import json
 import math
 import os
@@ -73,27 +74,24 @@ async def request_json(method: str, url: str, *, headers: dict, body=None):
     return response.json()
 
 
-async def embed(text: str, key: str, *, document: bool = False) -> list[float]:
-    dimension = int(config("EMBEDDING_DIMENSION", "768"))
-    data = await request_json(
-        "POST",
-        f"{GEMINI}/{config('EMBEDDING_MODEL', 'gemini-embedding-001')}:embedContent",
-        headers={"x-goog-api-key": key},
-        body={
-            "content": {"parts": [{"text": text}]},
-            "taskType": "RETRIEVAL_DOCUMENT" if document else "RETRIEVAL_QUERY",
-            "outputDimensionality": dimension,
-        },
-    )
-    values = data.get("embedding", {}).get("values", [])
-    norm = math.sqrt(sum(v * v for v in values))
-    if len(values) != dimension or not math.isfinite(norm) or norm == 0:
-        raise ServiceError(
-            503,
-            "EMBEDDING_INVALID",
-            "The embedding configuration is incompatible with the index.",
-        )
-    return [v / norm for v in values]
+async def embed(text: str, key: str = "", *, document: bool = False) -> list[float]:
+    from backend.embeddings import encode, token_count
+    if not document and token_count(text) > 254:
+        raise ServiceError(422, "QUERY_TOO_LONG", "Please shorten your question and try again.")
+    try:
+        return (await asyncio.to_thread(encode, [text]))[0]
+    except (OSError, RuntimeError, ValueError):
+        raise ServiceError(503, "EMBEDDING_UNAVAILABLE",
+                           "The search model is unavailable. Please try again shortly.") from None
+
+
+def storage_vector(vector):
+    # Existing collection permissions cover a 768-dim collection. Appending zeroes
+    # preserves MiniLM's cosine similarities exactly, with no model mixing.
+    size = int(config("QDRANT_VECTOR_DIMENSION", "768"))
+    if len(vector) > size:
+        raise ServiceError(503, "INDEX_INCOMPATIBLE", "The vector collection needs updating.")
+    return vector + [0.0] * (size - len(vector))
 
 
 def manifest():
@@ -121,6 +119,25 @@ def corpus_filter():
     }
 
 
+def rerank(query, hits):
+    """Use a small keyword tie-breaker when semantic scores are close."""
+    ignored = set("the a an to in of for from with using how what when why do does is are i and or explain ka ki ke hai hain mein me aur se ko kya kaise karna chahiye use".split())
+
+    def terms(text):
+        words = re.findall(r"[a-z0-9]+", text.lower())
+        return {("two" if w == "2" else w[:-1] if w.endswith("s") and len(w) > 4 else w)
+                for w in words if w not in ignored and (len(w) > 2 or w == "2")}
+
+    wanted = terms(query)
+
+    def score(hit):
+        payload = hit["payload"]
+        found = terms(payload["video_title"] + " " + payload["text"])
+        return hit["score"] + .08 * len(wanted & found) / max(len(wanted), 1)
+
+    return sorted(hits, key=score, reverse=True)
+
+
 def present(payload):
     start = max(0, float(payload["start_sec"]))
     playback = max(0, int(start) - 5)
@@ -139,7 +156,7 @@ def present(payload):
     }
 
 
-async def search(query: str, limit: int, key: str):
+async def search(query: str, limit: int, key: str = ""):
     if not any(v["status"] == "indexed" for v in manifest()["videos"]):
         raise ServiceError(
             503,
@@ -150,7 +167,7 @@ async def search(query: str, limit: int, key: str):
     response = await qdrant(
         "/points/query",
         {
-            "query": vector,
+            "query": storage_vector(vector),
             "limit": min(limit * 3, 60),
             "filter": corpus_filter(),
             "with_payload": True,
@@ -159,11 +176,12 @@ async def search(query: str, limit: int, key: str):
     hits = response["result"]["points"]
     results = []
     best_score = hits[0]["score"] if hits else 0
-    for hit in hits:
+    for hit in rerank(query, hits):
         p = hit["payload"]
-        if p.get("embedding_model") != config(
-            "EMBEDDING_MODEL", "gemini-embedding-001"
-        ) or p.get("embedding_dimension") != len(vector):
+        from backend.embeddings import MODEL, REVISION
+        if (p.get("embedding_model") != MODEL
+            or p.get("embedding_revision") != REVISION
+            or p.get("embedding_dimension") != len(vector)):
             raise ServiceError(
                 503,
                 "INDEX_INCOMPATIBLE",
@@ -183,7 +201,7 @@ async def search(query: str, limit: int, key: str):
         "none"
         if not results
         else "matches"
-        if best_score >= float(config("MATCH_THRESHOLD", ".50"))
+        if best_score >= float(config("MATCH_THRESHOLD", ".30"))
         else "weak"
     )
     return {

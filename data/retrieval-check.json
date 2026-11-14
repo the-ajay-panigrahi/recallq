@@ -1,0 +1,476 @@
+{
+  "corpus_revision": "tutorial-minilm-2026-11-14-v1",
+  "cases": 12,
+  "topic_checks_passed": 12,
+  "method": "Expected topic appears in a top-five video title; not manually labeled passage accuracy or a general model comparison.",
+  "results": [
+    {
+      "query": "How does Kadane's algorithm find the maximum sum subarray?",
+      "expected_topic_pattern": "kadane",
+      "topic_present_in_top_5": true,
+      "elapsed_seconds": 1.57,
+      "match_state": "matches",
+      "sources": [
+        {
+          "video_id": "Bt9rgQgGf64",
+          "video_title": "DSA PATTERNS Episode 24 | Kadane’s Algorithm Pattern: Quick Revision",
+          "start_sec": 316.54,
+          "watch_url": "https://www.youtube.com/watch?v=Bt9rgQgGf64&t=311s"
+        },
+        {
+          "video_id": "Bt9rgQgGf64",
+          "video_title": "DSA PATTERNS Episode 24 | Kadane’s Algorithm Pattern: Quick Revision",
+          "start_sec": 1305.22,
+          "watch_url": "https://www.youtube.com/watch?v=Bt9rgQgGf64&t=1300s"
+        },
+        {
+          "video_id": "Bt9rgQgGf64",
+          "video_title": "DSA PATTERNS Episode 24 | Kadane’s Algorithm Pattern: Quick Revision",
+          "start_sec": 1336.19,
+          "watch_url": "https://www.youtube.com/watch?v=Bt9rgQgGf64&t=1331s"
+        },
+        {
+          "video_id": "JUV-Hdtuzsw",
+          "video_title": "DSA PATTERNS Episode 23 | Kadane’s Algorithm: Most Important Interview Question",
+          "start_sec": 1440.45,
+          "watch_url": "https://www.youtube.com/watch?v=JUV-Hdtuzsw&t=1435s"
+        },
+        {
+          "video_id": "N8vJ8RyQEes",
+          "video_title": "DSA PATTERNS Episode 22 | Kadane’s Algorithm Pattern: Introduction & Intuition",
+          "start_sec": 1018.48,
+          "watch_url": "https://www.youtube.com/watch?v=N8vJ8RyQEes&t=1013s"
+        }
+      ]
+    },
+    {
+      "query": "Remove duplicates from a sorted array using two pointers",
+      "expected_topic_pattern": "pointer",
+      "topic_present_in_top_5": true,
+      "elapsed_seconds": 1.47,
+      "match_state": "matches",
+      "sources": [
+        {
+          "video_id": "PvyEr3CeKzE",
+          "video_title": "Episode - 4 | Master DSA Patterns with the 2 Pointer Technique",
+          "start_sec": 110.43,
+          "watch_url": "https://www.youtube.com/watch?v=PvyEr3CeKzE&t=105s"
+        },
+        {
+          "video_id": "55aenUfSIhQ",
+          "video_title": "Best Explanation Of Merge K Sorted Lists | HEAP DSA Pattern",
+          "start_sec": 1047.98,
+          "watch_url": "https://www.youtube.com/watch?v=55aenUfSIhQ&t=1042s"
+        },
+        {
+          "video_id": "PvyEr3CeKzE",
+          "video_title": "Episode - 4 | Master DSA Patterns with the 2 Pointer Technique",
+          "start_sec": 186.88,
+          "watch_url": "https://www.youtube.com/watch?v=PvyEr3CeKzE&t=181s"
+        },
+        {
+          "video_id": "Zr2z8DD6TuQ",
+          "video_title": "Definitely Better Than Striver.. Two Sum in Binary search Tree!",
+          "start_sec": 328.69,
+          "watch_url": "https://www.youtube.com/watch?v=Zr2z8DD6TuQ&t=323s"
+        },
+        {
+          "video_id": "n7v0SokbF4I",
+          "video_title": "DSA PAtterns Episode 9 | Two Pointers Pattern: Complete Revision in One Video",
+          "start_sec": 119.74,
+          "watch_url": "https://www.youtube.com/watch?v=n7v0SokbF4I&t=114s"
+        }
+      ]
+    },
+    {
+      "query": "Longest substring without repeating characters using sliding window",
+      "expected_topic_pattern": "sliding",
+      "topic_present_in_top_5": true,
+      "elapsed_seconds": 1.4,
+      "match_state": "matches",
+      "sources": [
+        {
+          "video_id": "9wc8HZH_sh4",
+          "video_title": "DSA PATTERNS Episode 16 | Sliding Window Pattern: Amazon Interview Question",
+          "start_sec": 813.44,
+          "watch_url": "https://www.youtube.com/watch?v=9wc8HZH_sh4&t=808s"
+        },
+        {
+          "video_id": "2HZ12B2ZPAQ",
+          "video_title": "DSA PATTERNS Episode 13 Sliding Window Pattern: Important Questions",
+          "start_sec": 426.0,
+          "watch_url": "https://www.youtube.com/watch?v=2HZ12B2ZPAQ&t=421s"
+        },
+        {
+          "video_id": "2HZ12B2ZPAQ",
+          "video_title": "DSA PATTERNS Episode 13 Sliding Window Pattern: Important Questions",
+          "start_sec": 570.67,
+          "watch_url": "https://www.youtube.com/watch?v=2HZ12B2ZPAQ&t=565s"
+        },
+        {
+          "video_id": "v4pIgiBQMh8",
+          "video_title": "DSA PATTERNS Episode 12 Sliding Window Pattern: Core Interview Questions",
+          "start_sec": 719.74,
+          "watch_url": "https://www.youtube.com/watch?v=v4pIgiBQMh8&t=714s"
+        },
+        {
+          "video_id": "2HZ12B2ZPAQ",
+          "video_title": "DSA PATTERNS Episode 13 Sliding Window Pattern: Important Questions",
+          "start_sec": 367.65,
+          "watch_url": "https://www.youtube.com/watch?v=2HZ12B2ZPAQ&t=362s"
+        }
+      ]
+    },
+    {
+      "query": "Detect a linked list cycle using slow and fast pointers",
+      "expected_topic_pattern": "linked|slow|fast",
+      "topic_present_in_top_5": true,
+      "elapsed_seconds": 1.13,
+      "match_state": "matches",
+      "sources": [
+        {
+          "video_id": "ftpI12-e3zs",
+          "video_title": "DSA PATTERNS Episode 21 | Linked List Slow–Fast Pointer Complete Revision",
+          "start_sec": 107.39,
+          "watch_url": "https://www.youtube.com/watch?v=ftpI12-e3zs&t=102s"
+        },
+        {
+          "video_id": "RNpZBhZBtJc",
+          "video_title": "DSA PATTERNS Episode 20 | Linked List Slow–Fast Pointer: Important Questions",
+          "start_sec": 82.67,
+          "watch_url": "https://www.youtube.com/watch?v=RNpZBhZBtJc&t=77s"
+        },
+        {
+          "video_id": "ftpI12-e3zs",
+          "video_title": "DSA PATTERNS Episode 21 | Linked List Slow–Fast Pointer Complete Revision",
+          "start_sec": 29.12,
+          "watch_url": "https://www.youtube.com/watch?v=ftpI12-e3zs&t=24s"
+        },
+        {
+          "video_id": "IxxlDYwMrZ8",
+          "video_title": "DSA PATTERNS Episode 17 | Linked List Slow & Fast Pointer Technique: Introduction",
+          "start_sec": 656.61,
+          "watch_url": "https://www.youtube.com/watch?v=IxxlDYwMrZ8&t=651s"
+        },
+        {
+          "video_id": "jDP1NkjVjWQ",
+          "video_title": "DSA PATTERNS Episode 18 | Linked List Slow–Fast Pointer: Important Questions",
+          "start_sec": 1374.78,
+          "watch_url": "https://www.youtube.com/watch?v=jDP1NkjVjWQ&t=1369s"
+        }
+      ]
+    },
+    {
+      "query": "How does binary search work on a sorted array?",
+      "expected_topic_pattern": "binary",
+      "topic_present_in_top_5": true,
+      "elapsed_seconds": 1.11,
+      "match_state": "matches",
+      "sources": [
+        {
+          "video_id": "zEEwwS9_fwA",
+          "video_title": "This is The Best Intro To Binary Search | DSA Patterns 2026",
+          "start_sec": 440.67,
+          "watch_url": "https://www.youtube.com/watch?v=zEEwwS9_fwA&t=435s"
+        },
+        {
+          "video_id": "DSGtYGZKEZ4",
+          "video_title": "I Failed a 40 LPA Interview Because Of This Binary Search Question | Do not Miss This",
+          "start_sec": 235.74,
+          "watch_url": "https://www.youtube.com/watch?v=DSGtYGZKEZ4&t=230s"
+        },
+        {
+          "video_id": "91qkzhmEO48",
+          "video_title": "I Will make Binary Search Easy For You | DSA Patterns Course | C++ Java Python",
+          "start_sec": 164.85,
+          "watch_url": "https://www.youtube.com/watch?v=91qkzhmEO48&t=159s"
+        },
+        {
+          "video_id": "S0E1Ix67qbc",
+          "video_title": "Believe Me, You DON'T Know The Binary Search Algorithm | DSA Patterns Course 2026",
+          "start_sec": 2273.07,
+          "watch_url": "https://www.youtube.com/watch?v=S0E1Ix67qbc&t=2268s"
+        },
+        {
+          "video_id": "stji3QvQ-OU",
+          "video_title": "Binary Search on 2D Array | Best Video On Binary Search DSA Patterns CPP Java Python",
+          "start_sec": 462.61,
+          "watch_url": "https://www.youtube.com/watch?v=stji3QvQ-OU&t=457s"
+        }
+      ]
+    },
+    {
+      "query": "What is a base case in recursion?",
+      "expected_topic_pattern": "recursion",
+      "topic_present_in_top_5": true,
+      "elapsed_seconds": 1.07,
+      "match_state": "matches",
+      "sources": [
+        {
+          "video_id": "-CvRpL_iUKo",
+          "video_title": "DP Series Episode-2 : When And How To Use DP",
+          "start_sec": 500.66,
+          "watch_url": "https://www.youtube.com/watch?v=-CvRpL_iUKo&t=495s"
+        },
+        {
+          "video_id": "j4wjZqzhMqc",
+          "video_title": "Learn Recursion Like A Pro",
+          "start_sec": 1970.58,
+          "watch_url": "https://www.youtube.com/watch?v=j4wjZqzhMqc&t=1965s"
+        },
+        {
+          "video_id": "-gC-QEdpvO4",
+          "video_title": "What If You Could Master Recursion in 3 Easy Questions",
+          "start_sec": 1710.82,
+          "watch_url": "https://www.youtube.com/watch?v=-gC-QEdpvO4&t=1705s"
+        },
+        {
+          "video_id": "-gC-QEdpvO4",
+          "video_title": "What If You Could Master Recursion in 3 Easy Questions",
+          "start_sec": 1680.66,
+          "watch_url": "https://www.youtube.com/watch?v=-gC-QEdpvO4&t=1675s"
+        },
+        {
+          "video_id": "Qh_U6NYf99o",
+          "video_title": "Recursion Fixed Template For All Questions | One Template To Solve Recursion Problems",
+          "start_sec": 616.58,
+          "watch_url": "https://www.youtube.com/watch?v=Qh_U6NYf99o&t=611s"
+        }
+      ]
+    },
+    {
+      "query": "Explain memoization and tabulation in dynamic programming",
+      "expected_topic_pattern": "dynamic|dp|memoization|tabulation",
+      "topic_present_in_top_5": true,
+      "elapsed_seconds": 1.12,
+      "match_state": "matches",
+      "sources": [
+        {
+          "video_id": "cmSh2xbyX7g",
+          "video_title": "Introduction To Dynamic Programming | Dynamic Programming in 15 days",
+          "start_sec": 926.88,
+          "watch_url": "https://www.youtube.com/watch?v=cmSh2xbyX7g&t=921s"
+        },
+        {
+          "video_id": "cmSh2xbyX7g",
+          "video_title": "Introduction To Dynamic Programming | Dynamic Programming in 15 days",
+          "start_sec": 867.38,
+          "watch_url": "https://www.youtube.com/watch?v=cmSh2xbyX7g&t=862s"
+        },
+        {
+          "video_id": "yEwnsPI_tUY",
+          "video_title": "DP in 15 Days Episode 06 : No One Has Explained Tabulation Like This",
+          "start_sec": 182.74,
+          "watch_url": "https://www.youtube.com/watch?v=yEwnsPI_tUY&t=177s"
+        },
+        {
+          "video_id": "cmSh2xbyX7g",
+          "video_title": "Introduction To Dynamic Programming | Dynamic Programming in 15 days",
+          "start_sec": 905.09,
+          "watch_url": "https://www.youtube.com/watch?v=cmSh2xbyX7g&t=900s"
+        },
+        {
+          "video_id": "cmSh2xbyX7g",
+          "video_title": "Introduction To Dynamic Programming | Dynamic Programming in 15 days",
+          "start_sec": 783.55,
+          "watch_url": "https://www.youtube.com/watch?v=cmSh2xbyX7g&t=778s"
+        }
+      ]
+    },
+    {
+      "query": "How do min heaps and priority queues work?",
+      "expected_topic_pattern": "heap|priority",
+      "topic_present_in_top_5": true,
+      "elapsed_seconds": 1.04,
+      "match_state": "matches",
+      "sources": [
+        {
+          "video_id": "_1AbrkD8pak",
+          "video_title": "Introduction To Heap DSA Pattern | One Of The Most Important Patterns For Coding Interviews",
+          "start_sec": 1396.61,
+          "watch_url": "https://www.youtube.com/watch?v=_1AbrkD8pak&t=1391s"
+        },
+        {
+          "video_id": "I1-0ALAJxZI",
+          "video_title": "HEAP On Pairs Explained in One Shot | CPP JAVA PYTHON | DSA Patterns",
+          "start_sec": 1091.98,
+          "watch_url": "https://www.youtube.com/watch?v=I1-0ALAJxZI&t=1086s"
+        },
+        {
+          "video_id": "_1AbrkD8pak",
+          "video_title": "Introduction To Heap DSA Pattern | One Of The Most Important Patterns For Coding Interviews",
+          "start_sec": 1346.29,
+          "watch_url": "https://www.youtube.com/watch?v=_1AbrkD8pak&t=1341s"
+        },
+        {
+          "video_id": "I1-0ALAJxZI",
+          "video_title": "HEAP On Pairs Explained in One Shot | CPP JAVA PYTHON | DSA Patterns",
+          "start_sec": 1399.28,
+          "watch_url": "https://www.youtube.com/watch?v=I1-0ALAJxZI&t=1394s"
+        },
+        {
+          "video_id": "_1AbrkD8pak",
+          "video_title": "Introduction To Heap DSA Pattern | One Of The Most Important Patterns For Coding Interviews",
+          "start_sec": 1562.91,
+          "watch_url": "https://www.youtube.com/watch?v=_1AbrkD8pak&t=1557s"
+        }
+      ]
+    },
+    {
+      "query": "How do I merge overlapping intervals?",
+      "expected_topic_pattern": "interval",
+      "topic_present_in_top_5": true,
+      "elapsed_seconds": 1.03,
+      "match_state": "matches",
+      "sources": [
+        {
+          "video_id": "o-ozvzzFpKA",
+          "video_title": "35. DSA PATTERNS 2025 | Master Merge Interval With Interview Questions | FAANG",
+          "start_sec": 1849.44,
+          "watch_url": "https://www.youtube.com/watch?v=o-ozvzzFpKA&t=1844s"
+        },
+        {
+          "video_id": "b-qtjXsGfqo",
+          "video_title": "L34 DSA Patterns 2025 | Merge Overlapping Intervals | Merge Interval DSA Pattern",
+          "start_sec": 117.3,
+          "watch_url": "https://www.youtube.com/watch?v=b-qtjXsGfqo&t=112s"
+        },
+        {
+          "video_id": "aH5aeejuJU8",
+          "video_title": "DSA Patterns L31 | Master Merge Interval DSA Patterns | MERGE INTERVALS LEETCODE",
+          "start_sec": 1319.66,
+          "watch_url": "https://www.youtube.com/watch?v=aH5aeejuJU8&t=1314s"
+        },
+        {
+          "video_id": "yAopxaHmRn0",
+          "video_title": "L32 | Master DSA Pattern Merge Interval | Leetcode Merge Intervals",
+          "start_sec": 223.3,
+          "watch_url": "https://www.youtube.com/watch?v=yAopxaHmRn0&t=218s"
+        },
+        {
+          "video_id": "aH5aeejuJU8",
+          "video_title": "DSA Patterns L31 | Master Merge Interval DSA Patterns | MERGE INTERVALS LEETCODE",
+          "start_sec": 1232.94,
+          "watch_url": "https://www.youtube.com/watch?v=aH5aeejuJU8&t=1227s"
+        }
+      ]
+    },
+    {
+      "query": "Graph representation using adjacency matrix and adjacency list",
+      "expected_topic_pattern": "graph|adjacency",
+      "topic_present_in_top_5": true,
+      "elapsed_seconds": 1.1,
+      "match_state": "matches",
+      "sources": [
+        {
+          "video_id": "WR-hWofGb_U",
+          "video_title": "Graph Representation: Adjacency Matrix vs Adjacency List – Which is Better?",
+          "start_sec": 2308.83,
+          "watch_url": "https://www.youtube.com/watch?v=WR-hWofGb_U&t=2303s"
+        },
+        {
+          "video_id": "WR-hWofGb_U",
+          "video_title": "Graph Representation: Adjacency Matrix vs Adjacency List – Which is Better?",
+          "start_sec": 1645.65,
+          "watch_url": "https://www.youtube.com/watch?v=WR-hWofGb_U&t=1640s"
+        },
+        {
+          "video_id": "WR-hWofGb_U",
+          "video_title": "Graph Representation: Adjacency Matrix vs Adjacency List – Which is Better?",
+          "start_sec": 1673.58,
+          "watch_url": "https://www.youtube.com/watch?v=WR-hWofGb_U&t=1668s"
+        },
+        {
+          "video_id": "WR-hWofGb_U",
+          "video_title": "Graph Representation: Adjacency Matrix vs Adjacency List – Which is Better?",
+          "start_sec": 169.1,
+          "watch_url": "https://www.youtube.com/watch?v=WR-hWofGb_U&t=164s"
+        },
+        {
+          "video_id": "WR-hWofGb_U",
+          "video_title": "Graph Representation: Adjacency Matrix vs Adjacency List – Which is Better?",
+          "start_sec": 0,
+          "watch_url": "https://www.youtube.com/watch?v=WR-hWofGb_U&t=0s"
+        }
+      ]
+    },
+    {
+      "query": "sliding window mein window kab shrink karna chahiye?",
+      "expected_topic_pattern": "sliding",
+      "topic_present_in_top_5": true,
+      "elapsed_seconds": 1.14,
+      "match_state": "matches",
+      "sources": [
+        {
+          "video_id": "DL8LSXUsfWE",
+          "video_title": "DSA PATTERNS Episode 11 Sliding Window Pattern: Easy & Medium Questions",
+          "start_sec": 507.18,
+          "watch_url": "https://www.youtube.com/watch?v=DL8LSXUsfWE&t=502s"
+        },
+        {
+          "video_id": "9wc8HZH_sh4",
+          "video_title": "DSA PATTERNS Episode 16 | Sliding Window Pattern: Amazon Interview Question",
+          "start_sec": 1166.8,
+          "watch_url": "https://www.youtube.com/watch?v=9wc8HZH_sh4&t=1161s"
+        },
+        {
+          "video_id": "DL8LSXUsfWE",
+          "video_title": "DSA PATTERNS Episode 11 Sliding Window Pattern: Easy & Medium Questions",
+          "start_sec": 3919.47,
+          "watch_url": "https://www.youtube.com/watch?v=DL8LSXUsfWE&t=3914s"
+        },
+        {
+          "video_id": "lyZp-49pdzQ",
+          "video_title": "DSA PATTERNS Episode 14 Sliding Window Pattern Revision (Part 1)",
+          "start_sec": 140.3,
+          "watch_url": "https://www.youtube.com/watch?v=lyZp-49pdzQ&t=135s"
+        },
+        {
+          "video_id": "DL8LSXUsfWE",
+          "video_title": "DSA PATTERNS Episode 11 Sliding Window Pattern: Easy & Medium Questions",
+          "start_sec": 888.78,
+          "watch_url": "https://www.youtube.com/watch?v=DL8LSXUsfWE&t=883s"
+        }
+      ]
+    },
+    {
+      "query": "linked list mein cycle detect karne ke liye slow aur fast pointer kaise use kare?",
+      "expected_topic_pattern": "linked|slow|fast",
+      "topic_present_in_top_5": true,
+      "elapsed_seconds": 1.06,
+      "match_state": "matches",
+      "sources": [
+        {
+          "video_id": "ftpI12-e3zs",
+          "video_title": "DSA PATTERNS Episode 21 | Linked List Slow–Fast Pointer Complete Revision",
+          "start_sec": 107.39,
+          "watch_url": "https://www.youtube.com/watch?v=ftpI12-e3zs&t=102s"
+        },
+        {
+          "video_id": "RNpZBhZBtJc",
+          "video_title": "DSA PATTERNS Episode 20 | Linked List Slow–Fast Pointer: Important Questions",
+          "start_sec": 82.67,
+          "watch_url": "https://www.youtube.com/watch?v=RNpZBhZBtJc&t=77s"
+        },
+        {
+          "video_id": "IxxlDYwMrZ8",
+          "video_title": "DSA PATTERNS Episode 17 | Linked List Slow & Fast Pointer Technique: Introduction",
+          "start_sec": 656.61,
+          "watch_url": "https://www.youtube.com/watch?v=IxxlDYwMrZ8&t=651s"
+        },
+        {
+          "video_id": "jDP1NkjVjWQ",
+          "video_title": "DSA PATTERNS Episode 18 | Linked List Slow–Fast Pointer: Important Questions",
+          "start_sec": 1431.86,
+          "watch_url": "https://www.youtube.com/watch?v=jDP1NkjVjWQ&t=1426s"
+        },
+        {
+          "video_id": "IxxlDYwMrZ8",
+          "video_title": "DSA PATTERNS Episode 17 | Linked List Slow & Fast Pointer Technique: Introduction",
+          "start_sec": 773.04,
+          "watch_url": "https://www.youtube.com/watch?v=IxxlDYwMrZ8&t=768s"
+        }
+      ]
+    }
+  ]
+}

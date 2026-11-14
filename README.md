@@ -1,38 +1,59 @@
 # RecallQ
 
-Find where you learned it. A React/TypeScript and FastAPI application for searching a curated YouTube DSA playlist, jumping to transcript passages, and requesting source-based summaries.
+Find where you learned it. Search a curated YouTube DSA playlist, jump to timestamped explanations, and request summaries grounded in the retrieved passages.
+
+React + TypeScript + Vite, Python + FastAPI, Qdrant Cloud, and MiniLM embeddings. Gemini is used only for optional summaries with the visitor’s own key. Search needs no API key.
+
+Live: https://recallq-app.vercel.app
 
 ## Run locally
 
-Requirements: Node 22+ and uv with Python 3.11+.
+Use Node 22+, uv, and Python 3.12.
 
 ```sh
 npm ci
 uv sync --python 3.12
 cp .env.example .env
-```
-
-Set QDRANT_URL and the read-only QDRANT_API_KEY in the ignored `.env`. For local ingestion also set GEMINI_INGEST_KEY and a separate collection-scoped QDRANT_WRITE_KEY. Never prefix a secret with VITE_ or commit `.env`.
-
-```sh
+uv run python -m scripts.prepare_embeddings
 uv run uvicorn backend.main:app --reload --port 8000
-npm run dev
 ```
 
-Open http://127.0.0.1:5173. Enter your own Gemini key through the UI. Temporary keys disappear on refresh; Remember on this device uses browser local storage. The backend receives and forwards each key to Google without storing it. The ingestion key is not an automatic public demo key.
+In another terminal, run `npm run dev` and open http://127.0.0.1:5173. Set the scoped QDRANT_URL, QDRANT_API_KEY, and QDRANT_COLLECTION in the ignored .env. A separate QDRANT_WRITE_KEY is needed only for offline indexing. Never commit keys or use a VITE_ prefix for secrets.
 
-## Index transcripts
+## Embeddings and search
 
-The Qdrant collection must use 768-dimensional cosine vectors and have a keyword index on corpus_revision. The initial collection was created through the Qdrant UI. Serving uses a read-only collection key; ingestion uses a read/write collection key.
+Both documents and questions use the same pinned `sentence-transformers/all-MiniLM-L6-v2` model, recorded in backend/embedding-model.json. The ONNX encoder uses mean pooling and normalized 384-dimensional vectors. ONNX Runtime, tokenizers, and NumPy avoid a PyTorch dependency in the deployed application.
+
+The model and tokenizer are downloaded and SHA-256 checked during the build, then bundled into the Python function. Search does not download a model, call an embedding API, or depend on the owner’s laptop. A warm Vercel instance reuses the loaded encoder. Hosting resource limits still apply.
+
+The existing scoped Qdrant collection has 768 coordinates. The 384 MiniLM coordinates are followed by 384 zeroes for both documents and questions. This preserves cosine similarity exactly. Native dimension, model revision, chunk version, and corpus revision are recorded in payloads. Queries filter the active corpus revision and reject incompatible model metadata. Old Gemini embeddings are not used in MiniLM searches.
+
+Candidates receive a small keyword-overlap boost when semantic scores are close. This improves explicit problem queries such as removing duplicates without replacing semantic retrieval. Weak-match status still uses the original semantic score.
+
+Passages contain at most 220 text tokens plus at most 32 title tokens and two special tokens, avoiding MiniLM’s 256-token truncation. Long ASR segments are split at word boundaries and retain their original timestamps. Overlap uses complete pieces totaling up to 40 tokens. These are approximate passage timestamps, not verified word-level alignment.
+
+## Transcript corpus and indexing
+
+The November 14 audit found 126 playlist entries, one duplicate, and 125 unique videos. The tutorial repository contains 121 matching transcripts, copied byte-for-byte into ignored data/transcripts/. Five older prefix-sum lessons outside the current playlist were not imported. See data/transcript-audit.json for missing links. Transcript recognition errors remain possible; no full-corpus speech-accuracy claim is made.
+
+With source files in data/transcripts/:
 
 ```sh
-uv run python -m scripts.preflight
-uv run python -m scripts.ingest --source /absolute/path/to/transcripts --limit 3
+uv run python -m scripts.prepare_embeddings
+uv run python -m scripts.index_minilm
 ```
 
-The script preserves raw source files locally, validates segment timings, caches embeddings, upserts deterministic IDs and removes superseded IDs from its own per-video checkpoint. Re-running completed work does not re-embed unchanged passages. Do not delete the cache/checkpoints during a partial reindex. Changing embedding models requires a compatible new collection, not mixing vectors.
+The script performs local inference without Gemini or OpenAI calls. Vectors are cached locally, completed videos are checkpointed, and deterministic IDs make upserts repeatable. A staged manifest and remote point-count verification precede promotion to data/manifest.json and deployment. Rerun after an interrupted operation to reuse completed work. Inspect work/minilm/result.json for measured timing. Raw transcripts, downloaded audio, models, and vector caches are excluded from Git.
 
-Only three seed lessons are intended for the first live check. Audio verification is still pending. These are tutorial-supplied faster-whisper large-v3 transcripts; they contain recognition errors and are not certified accurate. The UI shows actual indexed coverage and this limitation. Raw transcripts and embedding caches are ignored. Review and curate further lessons before expanding the manifest. See PROJECT_CONTEXT.md for the dated missing-video audit.
+The production app reports actual indexed coverage from data/manifest.json. Missing videos remain pending, and the tutorial’s RAG demonstration is deliberately excluded. No additional transcription is running.
+
+One separate local Lecture 4 transcription took 83m13s for 30m10s of audio using faster-whisper large-v3. Six sampled comparisons did not establish a consistent improvement over the tutorial transcript, so a full-playlist transcription run was rejected. Older MLX experiments and the Gemini ingestion script remain development references, not the active workflow.
+
+## Optional summaries and key handling
+
+Only Summarize requires a Gemini key. Temporary keys stay in page memory; Remember on this device opts into browser local storage. Forget key removes both. The backend forwards each summary key to Google without persisting it. Keys never enter shared model state, Qdrant payloads, or URLs. Local storage is readable by scripts on the same origin and privileged extensions.
+
+Summaries use only selected source passages and validated citations. They are not guaranteed factually correct. Gemini generation quotas are separate from free local embedding inference. There is no authentication or private per-user corpus in this MVP.
 
 ## Checks
 
@@ -41,29 +62,23 @@ uv run pytest -q
 npm run build
 npx playwright install chromium
 npm run test:e2e
+uv run python -m scripts.preflight
 ```
 
-Playwright tests run on desktop and mobile with explicitly mocked API/YouTube responses. They check temporary and remembered credentials, search-to-timestamp selection, summaries generated only on click, and preserving results on quota errors. They do not prove real video playback, speech accuracy, model quality or production capacity. Backend tests exercise errors, source resolution, timestamps and simultaneous key isolation. Run the live preflight separately.
+Unit checks cover token budgets, preservation of long segments, padding-independent embeddings, cosine preservation, model isolation, credentials, and source resolution. Playwright covers desktop/mobile search without a key, summaries prompted only on click, temporary/remembered keys, thumbnails and playback URLs, and quota errors preserving search results. Mocked UI tests do not prove real YouTube playback or transcription accuracy. Real retrieval and live deployment checks are recorded separately.
 
 ## Deployment
 
-Vercel detects backend.main:app through pyproject.toml. Its build command builds the Vite assets into dist; FastAPI mounts that directory after API routes. Keep ingestion off the server. Configure only runtime QDRANT_URL, read-only QDRANT_API_KEY, collection and model settings in Vercel. Do not deploy GEMINI_INGEST_KEY or the ingestion write key. All public search/summary calls require the visitor's key.
+Vercel serves the Vite build and FastAPI API together. The build prepares pinned MiniLM assets; the Python function runs query embeddings on Vercel’s CPU. Qdrant remains external. Configure only the collection-scoped read key and runtime settings in Vercel; never deploy the write key or an owner Gemini key.
 
-Initial deployment: https://recallq-app.vercel.app on Vercel Hobby, using Qdrant Free. No billing was enabled during setup. The index contains 118 passages across three seed videos, with 125 unique videos in the saved playlist listing. Generation uses gemini-3.5-flash-lite after the older default was unavailable for the new project. Actual access and quotas still vary by visitor.
+```sh
+npx vercel --prod
+```
 
-The CLI deployment works. Automatic GitHub deployments are not connected yet; the Vercel GitHub integration needs account-side authorization. To deploy manually from this linked checkout, run `npx vercel --prod`. The local `.vercel` directory is ignored.
+The project uses Vercel Hobby and Qdrant Free. No billing was enabled. CLI deployments work; automatic GitHub deployments require the account’s GitHub integration. The root .vercel directory is ignored.
 
-## Design and attribution
+## Attribution
 
-The user selected the Lovable guide from OpenDesignMD. Its original MIT notice and reference are preserved in DESIGN.md. Camera Plain Variable was not supplied; the implementation currently uses the guide's system font fallback. No custom font license is implied.
+The Lovable design guide from OpenDesignMD is preserved in DESIGN.md with its MIT notice. The supplied font was unavailable, so the guide’s system fallback is used.
 
-The transcript data comes from the Padho with Pratyush DSA tutorial reference. RecallQ's application and pipeline are independently implemented. Source excerpts remain distinct from generated summaries. PROJECT_CONTEXT.md contains the requirements and the transcript audit; DESIGN.md contains the visual authority.
-
-
-## Initial implementation decisions
-
-- Keys use an explicit request header and a per-request HTTP client, avoiding shared mutable visitor credentials.
-- Gemini embeddings keep the Python service lightweight enough for serverless deployment; Qdrant holds all source passages needed at runtime.
-- Search and generation are separate operations. Source IDs are loaded from the server index before summarization; grouped references such as [1, 2] are normalized and checked before display.
-- The production build uses an explicit FastAPI framework configuration and a cross-platform npm lockfile. The first deployment caught missing Linux optional dependencies; regenerating the lockfile from an empty install context fixed it.
-- Transcript audio accuracy, a labeled retrieval benchmark, full-playlist ingestion, and the requested custom font remain unfinished. No accuracy or capacity claims are made.
+Transcript source: https://github.com/perryvegehan/padho_with_pratyush_Ai_Enginner. Application code and processing tools are independently implemented. MiniLM model attribution and Apache-2.0 license are in backend/MINILM-LICENSE.txt. PROJECT_CONTEXT.md records product requirements and implementation decisions.

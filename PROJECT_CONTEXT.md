@@ -9,7 +9,13 @@ Read this file and `DESIGN.md` before implementation. Keep both updated when dec
 
 ## Implementation status
 
-The first implementation is available at https://recallq-app.vercel.app. The GitHub repository is public. React, FastAPI, personal-key handling, Qdrant search, optional Gemini summaries and source navigation are implemented. Three seed videos contain 118 indexed passages; the saved playlist listing has 125 unique video IDs. Audio verification and a labeled retrieval benchmark are still pending. The UI discloses the provisional transcript quality.
+The implementation is available at https://recallq-app.vercel.app. The GitHub repository is public. React, FastAPI, personal-key handling, Qdrant search, optional Gemini summaries and source navigation are implemented. The current preparation step imports 121 matching tutorial transcripts from a playlist with 125 unique IDs. The active indexed count is recorded in data/manifest.json, not inferred from the file count. Audio accuracy is not certified.
+
+November 14 update: the user selected local MiniLM embeddings after Gemini ingestion hit its free quota. Both indexing and deployed query encoding now use the pinned sentence-transformers/all-MiniLM-L6-v2 ONNX model, mean pooling, and normalized 384-dimensional vectors. Runtime is ONNX Runtime plus tokenizers and NumPy, with no PyTorch. Assets are downloaded and checksum-verified at build time, then bundled into the Vercel Python function. Queries execute on Vercel, independently of the owner's laptop. Search requires no Gemini key; summaries still require the visitor's key.
+
+Qdrant's existing collection is 768-dimensional and its credentials are collection-scoped. MiniLM's 384 normalized coordinates are extended with 384 zeroes for storage and query. This preserves cosine similarity exactly. Payloads retain model, revision, native dimension, and corpus revision; filtering isolates the new corpus from old Gemini points. Never mix vectors from different encoders in one search. A dedicated 384-dimensional collection can replace this compatibility step if collection-management access is added later.
+
+MiniLM passages use a 220-token text budget and at most 32 title tokens, within the model's 256-token limit including special tokens. Split long ASR segments at word boundaries, retain original coarse timestamps, and overlap up to 40 tokens using complete pieces. Raw transcript files stay unchanged. scripts/index_minilm.py caches local vectors, checkpoints completed videos, and verifies the remote passage count before promotion. The older Gemini ingestion script and failed MLX experiments are historical tools, not the active workflow.
 
 Serving credentials are read-only and scoped to the RecallQ collection; local ingestion has a separate scoped write key. The existing Qdrant free cluster was reactivated without altering its existing credentials. The new Gemini RecallQ project remains on the free tier; no billing was enabled. Runtime generation uses gemini-3.5-flash-lite after checking actual project access. The custom font asset was not supplied, so the documented system fallback is currently active. Vercel CLI deployment works, but automatic GitHub integration remains unconnected. See README.md for commands and verification details.
 
@@ -28,7 +34,7 @@ Build an original implementation. The tutorial is a reference and a possible tra
 | Priority | Feature | Expected behavior |
 | --- | --- | --- |
 | P0 | One curated DSA corpus | Search the selected playlist lessons that have usable transcripts. Show indexed coverage. |
-| P0 | Personal Gemini key | Require a visitor-supplied key before the first search. No owner-funded public demo key. |
+| P0 | Personal Gemini key | Require a visitor-supplied key for summaries only. Search uses the bundled MiniLM model. No owner-funded summary key. |
 | P0 | Key storage choice | Default to page memory. An unchecked Remember on this device checkbox opts into local storage. Include Forget key. |
 | P0 | Independent searches | Accept a topic or question in English or romanized Hinglish. No conversational history. |
 | P0 | Ranked video moments | Show strongest relevant matches first, with video title, timestamp or range, and transcript excerpt. |
@@ -50,7 +56,7 @@ Accounts, authentication, bookmarks, personal notes, saved search history, priva
 ### Main user journey
 
 1. Open RecallQ and see the playlist context and example searches.
-2. On the first search, enter a personal Gemini key and choose whether to remember it.
+2. Search immediately without an API key. Connect a Gemini key only if a summary is requested, choosing whether to remember it.
 3. Search a topic such as sliding window, or a question such as memoization aur tabulation ka difference kahan bataya hai.
 4. Read ranked excerpts. Select a timestamp to watch the relevant moment.
 5. Click Summarize if an explanation is wanted. Follow its citations back to the source moments.
@@ -67,7 +73,8 @@ Accounts, authentication, bookmarks, personal notes, saved search history, priva
 | Frontend tooling | Vite | Development server and production assets |
 | Backend | Python and FastAPI | Validate requests, call Gemini, search Qdrant, build citations |
 | Vector storage | Qdrant Cloud | Shared public lecture index and associated text metadata |
-| AI provider | Gemini only | Query and document embeddings, and requested summaries |
+| Embeddings | MiniLM ONNX | Same pinned local encoder for offline documents and deployed queries |
+| Answer generation | Gemini | Requested summaries using the visitor's own key |
 | Deployment | Vercel | Serve the React build and Python API |
 | Offline processing | Local Python scripts | Transcript checks, optional transcription, chunking, indexing |
 
@@ -79,10 +86,10 @@ A relational/document database is unnecessary for the agreed scope. Raw transcri
 flowchart TD
     T[Local transcript files] --> V[Validate and sample against audio]
     V --> C[Build timestamp preserving chunks]
-    C --> E[Gemini document embeddings using owner ingestion key]
+    C --> E[MiniLM document embeddings on owner's computer]
     E --> Q[(Qdrant Cloud)]
-    B[React browser and visitor key] --> A[FastAPI on Vercel]
-    A --> G[Gemini query embedding using visitor key]
+    B[React browser] --> A[FastAPI on Vercel]
+    A --> G[Bundled MiniLM query embedding on Vercel]
     G --> A
     A --> Q
     Q --> A
@@ -94,11 +101,13 @@ flowchart TD
     L --> A
 ```
 
-The owner indexes the corpus once using a local ingestion key. Visitors do not re-embed the playlist. Each search may consume the visitor's embedding quota; Summarize consumes their generation quota. Their keys do not pay for the owner's hosting or Qdrant resources.
+The owner indexes the corpus once using local CPU inference and the scoped Qdrant write key. Visitors do not re-embed the playlist. Search calls no embedding API. Summarize consumes the visitor's Gemini generation quota. Hosting and Qdrant free-plan resource limits still apply.
 
-### Proposed Gemini defaults
+Candidate ranking combines the MiniLM cosine score with a small keyword-overlap boost capped at 0.08. A measured near-tie had a heap analogy above the actual remove-duplicates lesson; keyword overlap improved that ordering without re-embedding. This is a lightweight reranking step, not a separate sparse-vector database. Weak-match status uses the original semantic score.
 
-Start by testing `gemini-embedding-001` for text embeddings at 768 dimensions, with normalized vectors and Qdrant cosine similarity. Use RETRIEVAL_DOCUMENT for indexed passages and RETRIEVAL_QUERY for questions. Confirm current SDK support and actual project access before indexing. This is a proposed default, not a completed model evaluation.
+### Current model configuration
+
+Use the pinned MiniLM model in backend/embedding-model.json for both documents and questions. The previous gemini-embedding-001 attempt stopped on provider quota and is no longer the active encoder. No full-corpus transcription is requested.
 
 Select a currently available generation model with suitable free API access during the preflight. Put its identifier in configuration rather than scattering it through the code. Do not assume the owner's Google AI Pro subscription increases backend API quotas, or that every visitor has identical access.
 
@@ -123,6 +132,22 @@ Local storage is readable by scripts running on our origin. An unrelated website
 The Qdrant credential belongs only on the server. Use a collection-scoped read credential for serving where supported; local ingestion uses a separate write credential. Anonymous visitors search one public corpus. There is no tenant isolation claim and no account boundary in this MVP.
 
 ## 4 Transcript preparation and retrieval
+
+### Approved local pipeline update, November 14, 2026
+
+Keep one fixed DSA playlist. Public playlist imports, browser transcription, accounts and multi-playlist UI are outside this implementation. The owner approved an independently written local pipeline using the tutorial as a reference, not copying its code.
+
+Use full FP16 Whisper large-v3 through MLX on Apple silicon. The existing reference uses faster-whisper large-v3 with an English language hint; its files are mostly English-rendered speech rather than faithful Roman Hinglish. The new pipeline uses transcription, not translation, with a Hindi hint for this Hinglish course. English-only and automatic-language settings are available for local use. Preserve raw ASR and derive a Roman-letter view with local rule-based uroman transliteration; do not use an LLM to rewrite speech. Roman spellings and ASR words can still be wrong.
+
+The retrieval baseline is now 75 seconds with approximately 15 seconds of segment-aligned overlap. It is separate from audio decode windows. A Hindi sample exhausted MLX's default 224 output-token budget at about 14 seconds. Raising it and shortening windows restored that sample, but a real Lecture 4 audit later exposed repeated hallucinations. An experimental 12-second decoder with word alignment, deterministic decoding and a vocabulary hint still failed on one section after a six-second retry. The quality guard stopped the job and retained rejected evidence. Do not claim this MLX configuration is production-ready. The same full large-v3 model is being checked through whisper.cpp as an alternative native engine; do not silently reduce model size or precision.
+
+Latest user scope: test **only Lecture 4, PvyEr3CeKzE**, approximately 30 minutes. The full-playlist worker is stopped. Measure whole-Mac memory, app-family footprints and swap, run a real restart/offline-continuation test, and inspect actual audio samples before recommending a full run. No indexing or live-corpus promotion is authorized by this demo request. The restart/offline test successfully reused the first two saved MLX windows and decoded a further window with outbound networking denied, before the later ASR quality failure. The user reported the Mac usable with noticeable lag. A concurrent React build succeeded in about 2.3 seconds with approximately 284 MiB peak RSS; this is not a guarantee for arbitrary development workloads.
+
+The runner uses one video at a time, a process lock, disk checks (20 GiB to start, 8 GiB reserve while processing), pause/resume controls, network retries and a macOS memory-pressure guard. The speech model is released while waiting on memory pressure. Downloads and cloud indexing need internet; cached audio transcription does not. No billing or paid transcription service is introduced.
+
+Generated audio, raw results, status, and checkpoints live in ignored data/local-transcription. The existing live corpus stays available while new content is prepared. Optional indexing uses an inactive Qdrant corpus revision and a separate manifest; promotion to the live app is a later validation step. Previous local transcript copies are backed up before replacement. Never modify or delete the separate course reference repository.
+
+Actual full-model runtime must be measured. Earlier 48–72-hour discussion was an unmeasured planning allowance, not a verified forecast. A first 50-second sample took about 126 seconds and later samples vary substantially. Do not claim a finished corpus, complete word accuracy, comfortable multitasking, or a fixed completion time based on those samples.
 
 ### Existing reference and findings
 
@@ -154,6 +179,10 @@ Missing transcript IDs in that snapshot:
 Recheck the playlist before ingestion. Curate the teaching corpus; the RAG demo video can be excluded deliberately. Coverage in the UI must come from the actual manifest and successful index, not the historical file count. Deleted, unavailable, excluded, pending, and indexed are different statuses.
 
 ### Quality gate and ingestion
+
+November 14 decision: reuse the tutorial corpus. A fresh playlist listing again returned 126 entries and 125 unique IDs. Copy only the 121 matching transcript files, unchanged; keep five older prefix-sum lessons outside the current playlist out of the index. See data/transcript-audit.json for the dated audit and missing links. Keep the one completed local Lecture 4 transcript as a separate comparison, not an additional video. No further ASR is authorized in this step. Index available material in a staged revision, verify counts and retrieval, then publish it for the user's manual check. Missing videos remain pending.
+
+Six sampled comparisons from Lecture 4 showed broadly similar concepts and errors in both versions. Tutorial English text was easier to read; local Romanized Hinglish did not establish an overall accuracy improvement. The successful CPU baseline measured 83m13s for 30m10s of audio, approximately 4 GiB worker footprint, and memory-pressure warnings. At that speed the selected 67.53-hour playlist would take about 186 hours, excluding downloads and indexing. This cost is not justified by the observed quality difference.
 
 Sample original audio from several videos, including technical names and later passages. Check meaning, technical terminology, and timing. The decision to reuse all existing transcripts is conditional on this sampling. Re-transcribe poor or missing lessons selectively. Re-running the same model and settings is not evidence of improvement.
 

@@ -4,12 +4,10 @@ from backend import core
 
 async def main():
     try:
-        vector = await core.embed(
-            "RecallQ setup check", core.config("GEMINI_INGEST_KEY")
-        )
-        print("Gemini embedding OK:", len(vector), "dimensions")
+        vector = await core.embed("RecallQ setup check")
+        print("Local MiniLM embedding OK:", len(vector), "dimensions")
     except core.ServiceError as exc:
-        print("Gemini check:", exc.code, exc.message)
+        print("Embedding check:", exc.code, exc.message)
     try:
         result = await core.qdrant("", method="GET")
         print(

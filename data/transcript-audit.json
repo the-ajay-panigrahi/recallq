@@ -1,0 +1,83 @@
+{
+  "checked_at": "2026-11-14T11:10:49.640384+00:00",
+  "source_repository": "https://github.com/perryvegehan/padho_with_pratyush_Ai_Enginner",
+  "playlist_url": "https://www.youtube.com/playlist?list=PLbJhGqY-mq47k_WLUtzVjmarUm1EuXPj2",
+  "playlist_entries": 126,
+  "unique_videos": 125,
+  "duplicate_ids": [
+    "pNd8NnYoQVM"
+  ],
+  "source_transcripts": 126,
+  "copied_matching_transcripts": 121,
+  "missing": [
+    {
+      "video_id": "pNd8NnYoQVM",
+      "title": "Prefix Sum Easy Hai Yaar",
+      "status": "pending",
+      "audio_verified": false,
+      "duration": 1976,
+      "watch_url": "https://www.youtube.com/watch?v=pNd8NnYoQVM",
+      "transcript_status": "missing",
+      "missing_reason": "Not present in tutorial transcript repository"
+    },
+    {
+      "video_id": "Z9CI_OVhXNs",
+      "title": "I converted my 60 Hour DSA Playlist to a RAG!",
+      "status": "excluded",
+      "audio_verified": false,
+      "duration": 1047,
+      "watch_url": "https://www.youtube.com/watch?v=Z9CI_OVhXNs",
+      "transcript_status": "missing",
+      "missing_reason": "RAG demonstration, intentionally excluded"
+    },
+    {
+      "video_id": "83iS3DZPn9g",
+      "title": "Unidentified playlist entry",
+      "status": "pending",
+      "audio_verified": false,
+      "duration": null,
+      "watch_url": "https://www.youtube.com/watch?v=83iS3DZPn9g",
+      "transcript_status": "missing",
+      "missing_reason": "Unavailable or private video"
+    },
+    {
+      "video_id": "mFVj745MLmU",
+      "title": "How Does A Senior Engineer Solve Leetcode?",
+      "status": "pending",
+      "audio_verified": false,
+      "duration": 1983,
+      "watch_url": "https://www.youtube.com/watch?v=mFVj745MLmU",
+      "transcript_status": "missing",
+      "missing_reason": "Not present in tutorial transcript repository"
+    }
+  ],
+  "source_files_outside_current_playlist": [
+    {
+      "video_id": "EYpv5sypVdE",
+      "title": "Lecture 29 | The ABSOLUTE BEST Prefix Sum Pattern Hacks for Amazon Interviews"
+    },
+    {
+      "video_id": "F86WfZ5RUC8",
+      "title": "DSA PATTERNS Episode 26 | Prefix Sum Pattern Introduction | DSA ROADMAP 2025"
+    },
+    {
+      "video_id": "XLtRoHIDGs0",
+      "title": "DSA Patterns Episode 27 | Master DSA Patterns With Prefix Sum | Leetcode Patterns"
+    },
+    {
+      "video_id": "oZnLzJCOdPA",
+      "title": "DSA Patterns Lecture 30 | Master Prefix Sum Pattern in 10 Minutes"
+    },
+    {
+      "video_id": "sh0Ng7sjscE",
+      "title": "DSA Patterns Lecture 28 | Master DSA Patterns With Prefix Sum | Interview Questions FAANG"
+    }
+  ],
+  "own_completed_transcripts": 1,
+  "own_transcript_location": "data/local-transcription/baseline-lecture4/transcripts/PvyEr3CeKzE.json",
+  "note": "121 original tutorial transcripts indexed with MiniLM. One own transcription remains separate. Three playlist videos are pending and the RAG demo is excluded.",
+  "previous_gemini_planned_passages": 7800,
+  "indexed_passages": 6390,
+  "indexed_videos": 121,
+  "active_corpus_revision": "tutorial-minilm-2026-11-14-v1"
+}

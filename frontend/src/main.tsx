@@ -74,7 +74,7 @@ async function api<T>(
   const response = await fetch(`/api/${path}`, {
     method: body ? "POST" : "GET",
     headers: body
-      ? { "Content-Type": "application/json", "X-Gemini-API-Key": key }
+      ? { "Content-Type": "application/json", ...(key ? { "X-Gemini-API-Key": key } : {}) }
       : {},
     body: body ? JSON.stringify(body) : undefined,
     signal,
@@ -121,15 +121,9 @@ function App() {
       summaryController.current?.abort();
     };
   }, []);
-  async function search(text = query, credential = key) {
+  async function search(text = query) {
     if (!text.trim()) return;
     setQuery(text);
-    if (!credential) {
-      setPending(true);
-      setDraft("");
-      setOpen(true);
-      return;
-    }
     searchController.current?.abort();
     summaryController.current?.abort();
     const controller = new AbortController();
@@ -146,7 +140,7 @@ function App() {
     try {
       const found = await api<Results>(
         "search",
-        credential,
+        "",
         { query: text.trim(), limit: 20 },
         controller.signal,
       );
@@ -178,7 +172,7 @@ function App() {
     setOpen(false);
     if (pending) {
       setPending(false);
-      void search(query, clean);
+      void summarize(clean);
     }
   }
   function forget() {
@@ -201,8 +195,14 @@ function App() {
     setSelected(source);
     setPlayerStarted(true);
   }
-  async function summarize() {
-    if (!results || !key) return;
+  async function summarize(credential = key) {
+    if (!results) return;
+    if (!credential) {
+      setPending(true);
+      setDraft("");
+      setOpen(true);
+      return;
+    }
     summaryController.current?.abort();
     const controller = new AbortController();
     summaryController.current = controller;
@@ -211,7 +211,7 @@ function App() {
     try {
       const answer = await api<Summary>(
         "summarize",
-        key,
+        credential,
         {
           query: results.query,
           corpus_revision: results.corpus_revision,
@@ -323,7 +323,7 @@ function App() {
             <span>Ask in English or Hinglish</span>
             <span>
               <KeyRound size={12} />
-              Your key. Your quota.
+              Free search. Your key for summaries.
             </span>
           </div>
           {!results && !busy && (
@@ -617,8 +617,7 @@ function App() {
             </div>
             <Dialog.Title>Bring your own Gemini key</Dialog.Title>
             <Dialog.Description>
-              One small setup, then back to learning. Requests use your Gemini
-              quota.
+              Search is free and needs no key. Summaries use your Gemini quota.
             </Dialog.Description>
             <form
               onSubmit={(e) => {
