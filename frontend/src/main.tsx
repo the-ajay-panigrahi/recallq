@@ -362,8 +362,8 @@ function App() {
               <span className="soft">learned it.</span>
             </h1>
             <p>
-              That concept you remember. That explanation you need.
-              <br /> Find the right moment in your DSA lectures.
+              Built for my DSA revision. Find the explanation you need,
+              <br /> with answers grounded only in this playlist.
             </p>
           </section>
           <Crowd />
@@ -668,11 +668,11 @@ function App() {
                 aria-label="Open DSA playlist on YouTube"
               >
                 <img
-                  src="https://i.ytimg.com/vi/qH2VQY48mg4/hqdefault.jpg"
+                  src="https://i.ytimg.com/vi/qH2VQY48mg4/maxresdefault.jpg"
                   alt="Cover video of the DSA Patterns playlist"
                   loading="lazy"
-                  width="480"
-                  height="360"
+                  width="1280"
+                  height="720"
                   onError={(event) => {
                     event.currentTarget.style.display = "none";
                   }}
@@ -683,11 +683,11 @@ function App() {
               </a>
               <div className="course-info">
                 <span className="small-label">PADHO WITH PRATYUSH</span>
-                <h2>One playlist. A clearer way back.</h2>
+                <h2>Your DSA revision companion.</h2>
                 <p>
-                  Arrays, sliding windows, graphs, dynamic programming.
-                  <br />
-                  Search inside the explanations, beyond the video titles.
+                  Ask about this playlist. Revisit the lecture, then get a short
+                  explanation grounded in its transcript. Built to make revision
+                  easier, one concept at a time.
                 </p>
                 <div className="course-meta">
                   <span>

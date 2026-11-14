@@ -119,14 +119,6 @@ export function Crowd() {
         )}
       </div>
       <canvas className="crowd-canvas" ref={canvasRef} aria-hidden="true" />
-      <a
-        className="crowd-credit"
-        href="https://www.openpeeps.com/"
-        target="_blank"
-        rel="noreferrer"
-      >
-        Illustrations by Open Peeps · Motion inspired by Skiper UI
-      </a>
     </section>
   );
 }

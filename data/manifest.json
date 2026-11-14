@@ -1375,7 +1375,7 @@
       "missing_reason": "Not present in tutorial transcript repository"
     }
   ],
-  "quality_status": "Automatic tutorial transcripts; recognition errors remain possible. Timestamps identify approximate passages.",
+  "quality_status": "Search and summaries use only this playlist’s indexed transcripts. Recognition errors remain possible; timestamps identify approximate passages.",
   "playlist_snapshot_date": "2026-11-14",
   "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
   "embedding_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",

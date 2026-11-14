@@ -426,6 +426,12 @@ test("modal stays above content and laptop layout keeps search in view", async (
       "src",
       /i.ytimg.com/,
     );
+    const cover = await page.locator(".playlist-cover").boundingBox();
+    expect(cover!.width / cover!.height).toBeCloseTo(16 / 9, 1);
+    await expect(page.locator(".intro > p")).toContainText(
+      "grounded only in this playlist",
+    );
+    await expect(page.locator(".crowd-credit")).toHaveCount(0);
     const search = await page.locator(".search-box").boundingBox();
     expect(search!.y + search!.height).toBeLessThan(size.height);
     expect(

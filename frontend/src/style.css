@@ -2066,3 +2066,47 @@ main {
     flex-wrap: wrap;
   }
 }
+
+/* Equal visual weight across the bookshelf row, with a real 16:9 cover. */
+.library-body {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(24px, 4vw, 64px);
+  align-items: center;
+}
+.playlist-cover {
+  aspect-ratio: 16 / 9;
+  min-height: 0;
+  width: 100%;
+}
+.playlist-cover img {
+  object-fit: contain;
+}
+.course-info {
+  gap: 14px;
+  padding: 0;
+}
+.course-info h2 {
+  margin: 0;
+  font-size: clamp(24px, 2.2vw, 32px);
+  line-height: 1.2;
+}
+.course-info p {
+  max-width: 55ch;
+  line-height: 1.7;
+}
+.course-meta {
+  margin-top: 8px;
+  align-items: center;
+}
+.course-meta a {
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  padding: 10px 14px;
+  text-decoration: none;
+}
+@media (max-width: 800px) {
+  .library-body {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 22px;
+  }
+}
