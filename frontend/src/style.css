@@ -1214,24 +1214,35 @@ input::placeholder {
   background: var(--ink);
   pointer-events: none;
 }
-/* Skiper UI 26, GIF type 1, blur disabled. */
+/* Stable page reveal; the original GIF is only a small toggle accent. */
+::view-transition-old(root) {
+  animation: theme-old-out 650ms ease both;
+}
 ::view-transition-new(root) {
-  clip-path: none;
-  mask: url("/motion/theme-type1.gif") center / 0 no-repeat;
-  animation: gif-theme-reveal 1.6s both;
+  mask: none;
+  clip-path: circle(0 at var(--theme-x) var(--theme-y));
+  animation: theme-reveal 650ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  mix-blend-mode: normal;
   filter: none;
 }
-@keyframes gif-theme-reveal {
-  0% {
-    mask-size: 0;
+@keyframes theme-old-out {
+  from {
+    opacity: 1;
   }
-  12%,
-  72% {
-    mask-size: 50vmax;
+  to {
+    opacity: 1;
   }
-  100% {
-    mask-size: 2000vmax;
-  }
+}
+.theme-toggle {
+  position: relative;
+}
+.theme-transition .theme-toggle::before {
+  content: "";
+  position: absolute;
+  inset: -12px;
+  background: url("/motion/theme-type1.gif") center / contain no-repeat;
+  opacity: 0.16;
+  pointer-events: none;
 }
 .results-column {
   position: relative;
@@ -1392,4 +1403,37 @@ input::placeholder {
 
 .creative-scroll {
   position: relative;
+}
+
+.creative-scroll {
+  min-height: 280px;
+}
+.creative-scroll svg {
+  width: 170px;
+  height: 280px;
+  color: var(--ink);
+  opacity: 0.7;
+}
+.scroll-hint {
+  display: block;
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--muted);
+}
+@media (max-width: 480px) {
+  .creative-scroll {
+    min-height: 220px;
+  }
+  .creative-scroll svg {
+    width: 110px;
+    height: 220px;
+  }
+  .scroll-hint {
+    font-size: 11px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle::before {
+    display: none;
+  }
 }

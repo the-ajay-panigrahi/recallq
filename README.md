@@ -94,3 +94,6 @@ A scroll-linked SVG rail beside results is inspired by https://skiper-ui.com/v1/
 
 
 The reading rail now measures actual document bounds, clamps to the reachable bottom, and remeasures after passage/viewport changes. Skiper19’s original curved SVG path is also included as a separate scroll-drawn illustration above the crowd. Search selection and autofill use the current warm surface and text palette. Crowd sprites: https://skiper-ui.com/images/peeps/all-peeps.png; original Open Peeps illustrations by Pablo Stanley (https://www.openpeeps.com/, CC0). Native canvas animation follows Skiper39’s crowd concept without adding GSAP. The crowd moves at 30–38px per second; the GIF reveal lasts 1.6 seconds. Offscreen and reduced-motion modes avoid continuous rendering.
+
+
+Latest animation repair: the animated GIF no longer masks the entire page, which could produce frame-to-frame cutouts. A stable 650ms circular View Transition now changes the theme with no blur; the original GIF remains a small accent around the toggle. The curved Skiper19 illustration is larger and uses a 1.4-second viewport-entry stroke animation, replaying when scrolled out and back in. It is a decorative drawing, not a measure of learning progress.
