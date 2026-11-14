@@ -348,18 +348,40 @@ test("reading rail completes after expansion and crowd can be paused", async ({
   ).toBe("rgb(52, 52, 48)");
 });
 
-test("curved illustration visibly draws and replays on scroll", async ({ page }) => {
+test("curved illustration visibly draws and replays on scroll", async ({
+  page,
+}) => {
   await mock(page);
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.goto("/");
   const path = page.locator(".creative-scroll svg path");
-  await expect.poll(() => path.evaluate(el => parseFloat(getComputedStyle(el).strokeDasharray))).toBe(0);
+  await expect
+    .poll(() =>
+      path.evaluate((el) => parseFloat(getComputedStyle(el).strokeDasharray)),
+    )
+    .toBe(0);
   await page.locator(".creative-scroll").scrollIntoViewIfNeeded();
-  await expect.poll(() => path.evaluate(el => parseFloat(getComputedStyle(el).strokeDasharray))).toBeGreaterThan(.98);
-  await page.evaluate(() => window.scrollTo(0,0));
-  await expect.poll(() => path.evaluate(el => parseFloat(getComputedStyle(el).strokeDasharray))).toBe(0);
+  await expect
+    .poll(() =>
+      path.evaluate((el) => parseFloat(getComputedStyle(el).strokeDasharray)),
+    )
+    .toBeGreaterThan(0.98);
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await expect
+    .poll(() =>
+      path.evaluate((el) => parseFloat(getComputedStyle(el).strokeDasharray)),
+    )
+    .toBe(0);
   await page.getByRole("button", { name: "Switch to light mode" }).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
-  expect(await page.evaluate(() => getComputedStyle(document.documentElement, "::view-transition-new(root)").maskImage)).toBe("none");
+  expect(
+    await page.evaluate(
+      () =>
+        getComputedStyle(
+          document.documentElement,
+          "::view-transition-new(root)",
+        ).maskImage,
+    ),
+  ).toBe("none");
   await expect(page.locator("html")).not.toHaveClass(/theme-transition/);
 });
