@@ -575,3 +575,67 @@ test("editing keeps labelled results, clearing resets and cancels pending search
   await expect(page.locator("article.result")).toHaveCount(0);
   await expect(page.locator(".searching")).toHaveCount(0);
 });
+
+test("summary uses collapsed matches too and provider errors can be retried", async ({
+  page,
+}) => {
+  await mock(page);
+  const matches = Array.from({ length: 5 }, (_, i) => ({
+    ...source,
+    source_id: source.source_id.slice(0, -1) + i,
+  }));
+  await page.route("**/api/search", (r) =>
+    r.fulfill({
+      json: {
+        query: "Memoization vs tabulation",
+        corpus_revision: "initial",
+        match_state: "matches",
+        results: matches,
+      },
+    }),
+  );
+  let attempts = 0;
+  await page.route("**/api/summarize", (r) => {
+    expect(r.request().postDataJSON().source_ids).toEqual(
+      matches.map((m) => m.source_id),
+    );
+    attempts++;
+    return attempts === 1
+      ? r.fulfill({
+          status: 503,
+          json: {
+            error: {
+              code: "SUMMARY_FORMAT",
+              message:
+                "Gemini returned an incomplete or invalid summary. Please try again.",
+            },
+          },
+        })
+      : r.fulfill({
+          json: {
+            status: "answered",
+            summary: "Memoization stores earlier results. [3]",
+            citations: [{ ...matches[2], number: 3 }],
+          },
+        });
+  });
+  await page.goto("/");
+  await page
+    .getByRole("textbox", { name: "Search lectures" })
+    .fill("Memoization vs tabulation");
+  await page.getByRole("button", { name: "Find a moment" }).click();
+  await expect(page.locator("article.result")).toHaveCount(2);
+  await connect(page);
+  await page.getByRole("button", { name: "Summarize these moments" }).click();
+  await expect(page.getByRole("alert")).toContainText("invalid summary");
+  await expect(page.locator("article.result")).toHaveCount(2);
+  await page.getByRole("button", { name: "Summarize these moments" }).click();
+  await expect(
+    page.getByRole("button", { name: "Play source 3" }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Show more matches (3)" }).click();
+  await expect(
+    page.getByRole("button", { name: "Play source 3" }),
+  ).toBeVisible();
+  expect(attempts).toBe(2);
+});

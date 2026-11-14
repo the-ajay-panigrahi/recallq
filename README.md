@@ -2,7 +2,7 @@
 
 Find where you learned it. Search a curated YouTube DSA playlist, jump to timestamped explanations, and request summaries grounded in the retrieved passages.
 
-React + TypeScript + Vite, Python + FastAPI, Qdrant Cloud, and MiniLM embeddings. Gemini is used only for optional summaries with the visitor’s own key. Visitors need no Gemini key for search. Two matches are shown first, with Show more revealing up to five. Summaries use the currently visible passages.
+React + TypeScript + Vite, Python + FastAPI, Qdrant Cloud, and MiniLM embeddings. Gemini is used only for optional summaries with the visitor’s own key. Visitors need no Gemini key for search. Two matches are shown first, with Show more revealing up to five. Summaries use all retrieved top matches (up to five), including collapsed cards.
 
 [Live demo](https://recallq-app.vercel.app) · [GitHub repository](https://github.com/the-ajay-panigrahi/recallq)
 
@@ -110,3 +110,5 @@ Search results are cached for five minutes, with at most 128 entries per warm Py
 A limited request shows a short retry message and preserves the last usable results and video. New successful searches replace those results normally. The firewall is managed separately from deployments: inspect with `npx vercel firewall status` and review draft changes with `npx vercel firewall diff`. The source cache implementation is `backend/search_cache.py`.
 
 Search editing keeps the last results labelled with their original question. Clearing the field (including whitespace-only text) cancels pending searches/summaries and returns to the initial library view. Aborted responses cannot restore cleared results.
+
+Summary repair: use all retrieved top matches (up to five) as evidence even when only two cards are expanded. Gemini returns a structured status and individually cited sentences; the backend validates source numbers and renders the existing plain-text summary response. Partial but relevant evidence can produce a limited summary. Empty, malformed, blocked, or invalidly cited model output is a retryable provider error, not a false insufficient-evidence answer. Genuine lack of support still produces an honest no-evidence response.

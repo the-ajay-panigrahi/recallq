@@ -1,4 +1,5 @@
 import asyncio
+import json
 from uuid import uuid4
 import httpx
 import pytest
@@ -103,7 +104,7 @@ def test_playback_link_uses_indexed_time_and_validated_id():
         core.present({"start_sec": 0, "end_sec": 1, "video_id": "<script>"})
 
 
-async def test_grouped_citations_are_validated_and_resolved(monkeypatch):
+async def test_structured_citations_are_validated_and_resolved(monkeypatch):
     ids = [str(uuid4()), str(uuid4())]
     monkeypatch.setattr(core, "manifest", lambda: {"revision": "v1"})
     payloads = [
@@ -128,7 +129,7 @@ async def test_grouped_citations_are_validated_and_resolved(monkeypatch):
                 {
                     "finishReason": "STOP",
                     "content": {
-                        "parts": [{"text": "Keep the best ending sum [1, 2]."}]
+                        "parts": [{"text": json.dumps({"status":"answered", "sentences":[{"text":"Keep the best ending sum.","sources":[1,2]}]})}]
                     },
                 }
             ]
@@ -137,7 +138,7 @@ async def test_grouped_citations_are_validated_and_resolved(monkeypatch):
     monkeypatch.setattr(core, "qdrant", points)
     monkeypatch.setattr(core, "request_json", model)
     response = await core.summarize("Kadane", "v1", ids, "private-key")
-    assert response["summary"].endswith("[1] [2].")
+    assert response["summary"].endswith("[1] [2]")
     assert [c["source_id"] for c in response["citations"]] == ids
 
 

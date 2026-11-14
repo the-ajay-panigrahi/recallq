@@ -305,9 +305,7 @@ function App() {
         {
           query: results.query,
           corpus_revision: results.corpus_revision,
-          source_ids: results.results
-            .slice(0, showAllResults ? RESULT_LIMIT : 2)
-            .map((r) => r.source_id),
+          source_ids: results.results.map((r) => r.source_id),
         },
         controller.signal,
       );
@@ -554,10 +552,6 @@ function App() {
                   className="show-more-results"
                   onClick={() => {
                     setShowAllResults(true);
-                    summaryController.current?.abort();
-                    setSummary(null);
-                    setSummaryBusy(false);
-                    setSummaryError("");
                   }}
                 >
                   Show more matches ({results.results.length - 2}){" "}
@@ -630,7 +624,7 @@ function App() {
                     </div>
                     {!summary && (
                       <p>
-                        A short explanation, grounded in these passages.
+                        A short explanation from up to five top matches.
                         <br />
                         Only generated when you ask.
                       </p>
