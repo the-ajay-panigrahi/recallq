@@ -250,7 +250,9 @@ test("reduced motion and blocked storage keep theme switching usable", async ({
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
 });
 
-test("cancelled native transitions still change the theme without page errors", async ({ page }) => {
+test("cancelled native transitions still change the theme without page errors", async ({
+  page,
+}) => {
   await mock(page);
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.addInitScript(() => {
@@ -262,10 +264,36 @@ test("cancelled native transitions still change the theme without page errors", 
     };
   });
   const errors: string[] = [];
-  page.on("pageerror", error => errors.push(error.message));
+  page.on("pageerror", (error) => errors.push(error.message));
   await page.goto("/");
   await page.getByRole("button", { name: "Switch to light mode" }).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
   await expect(page.locator("html")).not.toHaveClass(/theme-transition/);
   expect(errors).toEqual([]);
+});
+
+test("smooth search preserves editing and passage expansion", async ({
+  page,
+}) => {
+  await mock(page);
+  await page.goto("/");
+  const input = page.getByRole("textbox", { name: "Search lectures" });
+  await input.fill("Sliding window");
+  await input.press("Home");
+  await input.press("ArrowRight");
+  await input.press("Delete");
+  await expect(input).toHaveValue("Siding window");
+  await input.fill("Kadane");
+  await expect(page.locator(".smooth-caret")).toHaveCount(1);
+  await page.getByRole("button", { name: "Find a moment" }).click();
+  await page.getByRole("button", { name: "Read full passage" }).click();
+  await expect(
+    page.getByRole("button", { name: "Collapse passage" }),
+  ).toHaveAttribute("aria-expanded", "true");
+  await expect(page.locator("article.result")).toHaveClass(/expanded/);
+  await page.getByRole("button", { name: "Collapse passage" }).click();
+  await expect(page.locator("article.result")).not.toHaveClass(/expanded/);
+  const gif = await page.request.get("/motion/theme-type1.gif");
+  expect(gif.status()).toBe(200);
+  expect((await gif.body()).subarray(0, 3).toString()).toBe("GIF");
 });

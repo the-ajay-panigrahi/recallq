@@ -20,6 +20,8 @@ import {
   X,
 } from "lucide-react";
 import "./style.css";
+import { SmoothInput } from "./components/SmoothInput";
+import { ReadingProgress } from "./components/ReadingProgress";
 
 type Source = {
   source_id: string;
@@ -159,6 +161,8 @@ function App() {
     [summaryError, setSummaryError] = useState(""),
     [storageWarning, setStorageWarning] = useState("");
   const [playerStarted, setPlayerStarted] = useState(false);
+  const [expandedPassage, setExpandedPassage] = useState<string | null>(null);
+  const resultsColumn = useRef<HTMLDivElement>(null);
   const searchController = useRef<AbortController | null>(null),
     summaryController = useRef<AbortController | null>(null),
     keyTrigger = useRef<HTMLButtonElement>(null);
@@ -364,7 +368,7 @@ function App() {
             <label className="sr-only" htmlFor="query">
               Search lectures
             </label>
-            <input
+            <SmoothInput
               id="query"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
@@ -434,7 +438,8 @@ function App() {
         )}
         {results && (
           <section className="workspace" aria-label="Search workspace">
-            <div className="results-column">
+            <div className="results-column" ref={resultsColumn}>
+              <ReadingProgress target={resultsColumn} />
               <div className="section-heading">
                 <h2>
                   {results.results.length
@@ -456,7 +461,7 @@ function App() {
               )}
               {results.results.map((r, i) => (
                 <article
-                  className={`result ${selected?.source_id === r.source_id ? "selected" : ""}`}
+                  className={`result ${selected?.source_id === r.source_id ? "selected" : ""} ${expandedPassage === r.source_id ? "expanded" : ""}`}
                   key={r.source_id}
                   style={{ animationDelay: `${i * 35}ms` }}
                 >
@@ -476,7 +481,21 @@ function App() {
                   <h3>
                     <button onClick={() => select(r)}>{r.video_title}</button>
                   </h3>
-                  <p>{r.excerpt}</p>
+                  <p id={`passage-${r.source_id}`}>{r.excerpt}</p>
+                  <button
+                    className="passage-expand"
+                    aria-expanded={expandedPassage === r.source_id}
+                    aria-controls={`passage-${r.source_id}`}
+                    onClick={() =>
+                      setExpandedPassage(
+                        expandedPassage === r.source_id ? null : r.source_id,
+                      )
+                    }
+                  >
+                    {expandedPassage === r.source_id
+                      ? "Collapse passage"
+                      : "Read full passage"}
+                  </button>
                   <div className="result-bottom">
                     <span>
                       <Clock3 size={12} />
@@ -648,7 +667,17 @@ function App() {
             RecallQ <span className="footer-divider">/</span> Made for the
             moments worth revisiting.
           </span>
-          <span>Answers belong to the lectures.</span>
+          <span>
+            Answers belong to the lectures.{" "}
+            <a
+              className="motion-credit"
+              href="https://skiper-ui.com"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Motion by Skiper UI
+            </a>
+          </span>
         </footer>
       </main>
       <Dialog.Root

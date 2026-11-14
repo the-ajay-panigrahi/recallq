@@ -82,3 +82,12 @@ The project uses Vercel Hobby and Qdrant Free. No billing was enabled. CLI deplo
 The Lovable design guide from OpenDesignMD is preserved in DESIGN.md with its MIT notice. The supplied Camera Plain font was unavailable; the user requested an improved replacement, so DM Sans is self-hosted with its SIL Open Font License in frontend/public/fonts/OFL.txt. Warm charcoal is the default theme, and the original cream palette is available through the saved theme toggle. Native View Transitions and CSS animate the switch and icons, with reduced-motion and browser fallbacks. Motion reference: https://skiper-ui.com/v1/skiper26. No paid UI or animation dependency is used.
 
 Transcript source: https://github.com/perryvegehan/padho_with_pratyush_Ai_Enginner. Application code and processing tools are independently implemented. MiniLM model attribution and Apache-2.0 license are in backend/MINILM-LICENSE.txt. PROJECT_CONTEXT.md records product requirements and implementation decisions.
+
+
+### Skiper UI refinements
+
+Search uses the free Skiper UI SmoothInput (skiper106), adapted to the existing field without its demo control panel. Attribution: https://skiper-ui.com/v1/skiper106. Framer Motion drives the spring caret. Native input editing and selection are retained; touch, IME composition, and reduced-motion preferences use a native caret.
+
+Theme changes use Skiper UI skiper26’s GIF variant, type 1, blur disabled. The original GIF is hosted at /motion/theme-type1.gif and preloaded. Source: https://skiper-ui.com/v1/skiper26; GIF: https://media.giphy.com/media/KBbr4hHl9DSahKvInO/giphy.gif. Reduced motion and unavailable View Transitions retain immediate theme switching.
+
+A scroll-linked SVG rail beside results is inspired by https://skiper-ui.com/v1/skiper19. Cards preview more text on hover/focus, with an explicit accessible Read full passage button for touch and keyboard users. Five results remain directly accessible. The crowd canvas and stacked-scroll layouts were reviewed and left out of the reading workspace. All reused/adapted free Skiper UI components are attributed here and in the app footer. No Pro components are included.

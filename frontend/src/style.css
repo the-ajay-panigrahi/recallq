@@ -1185,3 +1185,117 @@ input::placeholder {
     animation: none !important;
   }
 }
+
+/* Skiper UI 106: spring caret, retaining the real native input underneath. */
+.smooth-input {
+  flex: 1;
+  min-width: 0;
+}
+.smooth-input-track {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+.smooth-input-field {
+  grid-area: 1 / 1;
+  width: 100%;
+}
+.smooth-measure {
+  position: absolute;
+  visibility: hidden;
+  white-space: pre;
+  pointer-events: none;
+}
+.smooth-caret {
+  grid-area: 1 / 1;
+  align-self: center;
+  width: 2px;
+  height: 1.05em;
+  background: var(--ink);
+  pointer-events: none;
+}
+/* Skiper UI 26, GIF type 1, blur disabled. */
+::view-transition-new(root) {
+  clip-path: none;
+  mask: url("/motion/theme-type1.gif") center / 0 no-repeat;
+  animation: gif-theme-reveal 3s both;
+  filter: none;
+}
+@keyframes gif-theme-reveal {
+  0% {
+    mask-size: 0;
+  }
+  10%,
+  90% {
+    mask-size: 50vmax;
+  }
+  100% {
+    mask-size: 2000vmax;
+  }
+}
+.results-column {
+  position: relative;
+}
+.reading-progress {
+  position: absolute;
+  top: 0;
+  left: -22px;
+  width: 12px;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.reading-progress path {
+  stroke: var(--muted);
+  stroke-width: 2;
+  fill: none;
+  vector-effect: non-scaling-stroke;
+}
+.reading-progress .reading-track {
+  stroke: var(--line);
+}
+.reading-progress circle {
+  fill: var(--ink);
+}
+.result p {
+  -webkit-line-clamp: 6;
+  max-height: 5.1em;
+  transition: max-height 250ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .result:hover p,
+  .result:focus-within p {
+    max-height: 10.2em;
+  }
+}
+.result.expanded p {
+  display: block;
+  max-height: none;
+  -webkit-line-clamp: unset;
+}
+.passage-expand {
+  background: transparent;
+  font-size: 11px;
+  color: var(--muted);
+  padding: 8px 0 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.motion-credit {
+  margin-left: 10px;
+  text-underline-offset: 3px;
+}
+@media (max-width: 800px) {
+  .reading-progress {
+    left: -15px;
+    width: 8px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .smooth-caret {
+    display: none;
+  }
+  .smooth-input-field {
+    caret-color: auto !important;
+  }
+}

@@ -396,3 +396,12 @@ Consult current official documentation when implementing library or hosting deta
 - [YouTube IFrame Player API](https://developers.google.com/youtube/iframe_api_reference)
 - [Lovable design reference supplied by the user](https://opendesignmd.com/designs/lovable-dev/)
 - [OpenDesignMD license information](https://opendesignmd.com/licenses/)
+
+
+### Skiper UI refinements
+
+Search uses the free Skiper UI SmoothInput (skiper106), adapted to the existing field without its demo control panel. Attribution: https://skiper-ui.com/v1/skiper106. Framer Motion drives the spring caret. Native input editing and selection are retained; touch, IME composition, and reduced-motion preferences use a native caret.
+
+Theme changes use Skiper UI skiper26’s GIF variant, type 1, blur disabled. The original GIF is hosted at /motion/theme-type1.gif and preloaded. Source: https://skiper-ui.com/v1/skiper26; GIF: https://media.giphy.com/media/KBbr4hHl9DSahKvInO/giphy.gif. Reduced motion and unavailable View Transitions retain immediate theme switching.
+
+A scroll-linked SVG rail beside results is inspired by https://skiper-ui.com/v1/skiper19. Cards preview more text on hover/focus, with an explicit accessible Read full passage button for touch and keyboard users. Five results remain directly accessible. The crowd canvas and stacked-scroll layouts were reviewed and left out of the reading workspace. All reused/adapted free Skiper UI components are attributed here and in the app footer. No Pro components are included.

@@ -14,7 +14,7 @@ Camera Plain Variable was not supplied. The application deliberately uses self-h
 
 Show at most five strongest matches, without Show more or a second results page. The summary uses the visible matches. Remove the decorative line before the lecture eyebrow. Keep source titles and excerpts readable on desktop and mobile.
 
-Use the browser View Transition API for a short circular theme reveal and rotating sun/moon icons. Reference: https://skiper-ui.com/v1/skiper26. The implementation is independent native browser/CSS code and uses no paid Skiper components or extra animation dependency. Add gentle hover cues and brief result entrances; avoid continuous decorative motion. Respect prefers-reduced-motion, blocked browser storage, and browsers without View Transition support.
+Use the browser View Transition API for a GIF type 1 theme reveal with blur disabled and rotating sun/moon icons. Reference: https://skiper-ui.com/v1/skiper26. The implementation is independent native browser/CSS code and uses no paid Skiper components. The smooth input uses the free Framer Motion dependency. Add gentle hover cues and brief result entrances; avoid continuous decorative motion. Respect prefers-reduced-motion, blocked browser storage, and browsers without View Transition support.
 
 
 ## Original user supplied guide
@@ -387,3 +387,12 @@ Use semantic landmarks, headings, labeled form fields and native buttons or link
 Retain the soft focus aesthetic while verifying actual contrast and visibility. Do not copy low-opacity treatments onto essential text if they make it unreadable. Accessibility requirements take precedence over incidental measurements from a screenshot-derived guide.
 
 Define shared tokens for colors, spacing, radii, typography and shadows, then use them consistently. Use component primitives where they help behavior and accessibility; the guide does not require adopting every library it mentions. Evaluate desktop, mobile, real long titles, long excerpts and error states before declaring the interface complete.
+
+
+### Skiper UI refinements
+
+Search uses the free Skiper UI SmoothInput (skiper106), adapted to the existing field without its demo control panel. Attribution: https://skiper-ui.com/v1/skiper106. Framer Motion drives the spring caret. Native input editing and selection are retained; touch, IME composition, and reduced-motion preferences use a native caret.
+
+Theme changes use Skiper UI skiper26’s GIF variant, type 1, blur disabled. The original GIF is hosted at /motion/theme-type1.gif and preloaded. Source: https://skiper-ui.com/v1/skiper26; GIF: https://media.giphy.com/media/KBbr4hHl9DSahKvInO/giphy.gif. Reduced motion and unavailable View Transitions retain immediate theme switching.
+
+A scroll-linked SVG rail beside results is inspired by https://skiper-ui.com/v1/skiper19. Cards preview more text on hover/focus, with an explicit accessible Read full passage button for touch and keyboard users. Five results remain directly accessible. The crowd canvas and stacked-scroll layouts were reviewed and left out of the reading workspace. All reused/adapted free Skiper UI components are attributed here and in the app footer. No Pro components are included.
