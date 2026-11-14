@@ -321,9 +321,6 @@ function App() {
           </span>
           Recall<span>Q</span>
         </a>
-        <span className="header-note">
-          A little less searching. A little more learning.
-        </span>
         <div className="header-actions">
           <button
             className="theme-toggle"
@@ -352,72 +349,74 @@ function App() {
         </div>
       </header>
       <main>
-        <section className={`intro ${results ? "compact" : ""}`}>
-          <div className="eyebrow">Keep learning at your own pace.</div>
-          <h1>
-            Find where you
-            <br className="desktop-break" />{" "}
-            <span className="soft">learned it.</span>
-          </h1>
-          <p>
-            That concept you remember. That explanation you need.
-            <br /> Find the right moment in your DSA lectures.
-          </p>
-        </section>
-        <Crowd />
-        <section className="search-section" aria-label="Search lectures">
-          <form
-            className="search-box"
-            onSubmit={(e) => {
-              e.preventDefault();
-              void search();
-            }}
-          >
-            <Search className="search-icon" size={21} />
-            <label className="sr-only" htmlFor="query">
-              Search lectures
-            </label>
-            <SmoothInput
-              id="query"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="What would you like to revisit?"
-              maxLength={1000}
-            />
-            <button
-              className="primary search-submit"
-              aria-label="Find a moment"
-              disabled={busy || !query.trim()}
-              type="submit"
+        <div className={`hero-layout ${results ? "has-results" : ""}`}>
+          <section className={`intro ${results ? "compact" : ""}`}>
+            <div className="eyebrow">Keep learning at your own pace.</div>
+            <h1>
+              Find where you
+              <br className="desktop-break" />{" "}
+              <span className="soft">learned it.</span>
+            </h1>
+            <p>
+              That concept you remember. That explanation you need.
+              <br /> Find the right moment in your DSA lectures.
+            </p>
+          </section>
+          <Crowd />
+          <section className="search-section" aria-label="Search lectures">
+            <form
+              className="search-box"
+              onSubmit={(e) => {
+                e.preventDefault();
+                void search();
+              }}
             >
-              {busy ? (
-                <LoaderCircle className="spin" size={18} />
-              ) : (
-                <>
-                  <span>Find a moment</span>
-                  <ArrowRight size={17} />
-                </>
-              )}
-            </button>
-          </form>
-          <div className="search-help">
-            <span>Ask in English or Hinglish</span>
-            <span>
-              <KeyRound size={12} />
-              Free search. Your key for summaries.
-            </span>
-          </div>
-          {!results && !busy && (
-            <div className="suggestions">
-              {examples.map((text) => (
-                <button key={text} onClick={() => void search(text)}>
-                  {text}
-                  <ArrowUpRight size={12} />
-                </button>
-              ))}
+              <Search className="search-icon" size={21} />
+              <label className="sr-only" htmlFor="query">
+                Search lectures
+              </label>
+              <SmoothInput
+                id="query"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="What would you like to revisit?"
+                maxLength={1000}
+              />
+              <button
+                className="primary search-submit"
+                aria-label="Find a moment"
+                disabled={busy || !query.trim()}
+                type="submit"
+              >
+                {busy ? (
+                  <LoaderCircle className="spin" size={18} />
+                ) : (
+                  <>
+                    <span>Find a moment</span>
+                    <ArrowRight size={17} />
+                  </>
+                )}
+              </button>
+            </form>
+            <div className="search-help">
+              <span>Ask in English or Hinglish</span>
+              <span>
+                <KeyRound size={12} />
+                Free search. Your key for summaries.
+              </span>
             </div>
-          )}
-        </section>
+            {!results && !busy && (
+              <div className="suggestions">
+                {examples.map((text) => (
+                  <button key={text} onClick={() => void search(text)}>
+                    {text}
+                    <ArrowUpRight size={12} />
+                  </button>
+                ))}
+              </div>
+            )}
+          </section>
+        </div>
         {storageWarning && (
           <p className="notice" role="status">
             {storageWarning}

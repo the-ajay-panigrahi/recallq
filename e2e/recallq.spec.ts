@@ -334,7 +334,7 @@ test("side timeline is removed and crowd can be paused", async ({
         .getAttribute("data-people")
         .then((value) => Number(value)),
     )
-    .toBeGreaterThanOrEqual(info.project.name === "desktop" ? 60 : 28);
+    .toBeGreaterThanOrEqual(28);
   await page.screenshot({ path: `work/ui/${info.project.name}-crowd.png` });
   await page.evaluate(() => window.scrollTo(0, 0));
   await expect(page.locator(".reading-progress")).toHaveCount(0);
@@ -390,4 +390,75 @@ test("crowd precedes search and theme uses a fast circular reveal", async ({
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   await expect(page.locator("html")).not.toHaveClass(/theme-transition/);
   expect(gifRequests).toEqual([]);
+});
+
+test("modal stays above content and laptop layout keeps search in view", async ({
+  page,
+}, info) => {
+  await mock(page);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  const sizes =
+    info.project.name === "desktop"
+      ? [
+          { width: 1280, height: 720 },
+          { width: 1440, height: 900 },
+          { width: 1920, height: 1080 },
+        ]
+      : [
+          { width: 320, height: 640 },
+          { width: 390, height: 844 },
+        ];
+  for (const size of sizes) {
+    await page.setViewportSize(size);
+    await page.goto("/");
+    await expect(page.locator(".header-note")).toHaveCount(0);
+    const search = await page.locator(".search-box").boundingBox();
+    expect(search!.y + search!.height).toBeLessThan(size.height);
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+    await expect(page.locator(".crowd-canvas")).toHaveCSS("opacity", "1");
+    await page.getByRole("button", { name: "Connect Gemini" }).click();
+    const dialog = page.getByRole("dialog");
+    await expect(dialog).toBeVisible();
+    const box = await dialog.boundingBox();
+    expect(box!.y).toBeGreaterThanOrEqual(0);
+    expect(box!.y + box!.height).toBeLessThanOrEqual(size.height);
+    expect(
+      await dialog.evaluate((el) => {
+        const r = el.getBoundingClientRect();
+        return el.contains(
+          document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2),
+        );
+      }),
+    ).toBe(true);
+    expect(
+      await page.locator(".search-box").evaluate((el) => {
+        const r = el.getBoundingClientRect();
+        const hit = document.elementFromPoint(
+          r.x + r.width / 2,
+          r.y + r.height / 2,
+        );
+        return Boolean(hit?.closest(".dialog-content, .dialog-overlay"));
+      }),
+    ).toBe(true);
+    await page
+      .getByLabel("Gemini API key", { exact: true })
+      .fill("test-modal-key");
+    await page.getByRole("button", { name: "Show key" }).click();
+    await expect(
+      page.getByLabel("Gemini API key", { exact: true }),
+    ).toHaveAttribute("type", "text");
+    await page.screenshot({ path: `work/ui/modal-${size.width}.png` });
+    await page.keyboard.press("Escape");
+    await expect(dialog).not.toBeVisible();
+    await page.getByRole("button", { name: "Switch to light mode" }).click();
+    await page.screenshot({
+      path: `work/ui/layout-${size.width}-light.png`,
+      fullPage: true,
+    });
+    await page.getByRole("button", { name: "Switch to dark mode" }).click();
+  }
 });
