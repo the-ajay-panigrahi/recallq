@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import "./style.css";
 import { SmoothInput } from "./components/SmoothInput";
-import { ScrollTrail } from "./components/ScrollTrail";
+import { motion, useReducedMotion } from "framer-motion";
 import { Crowd } from "./components/Crowd";
 
 type Source = {
@@ -54,9 +54,6 @@ type Corpus = {
 };
 const STORAGE = "recallq.gemini-key";
 const THEME_STORAGE = "recallq.theme";
-const themeGifReady = fetch("/motion/theme-type1.gif")
-  .then((response) => (response.ok ? response.blob() : null))
-  .catch(() => null);
 const RESULT_LIMIT = 5;
 const examples = [
   "Sliding window intuition",
@@ -104,7 +101,8 @@ function App() {
     document.documentElement.dataset.theme === "light" ? "light" : "dark",
   );
   const themeTransition = useRef<ViewTransition | null>(null);
-  async function toggleTheme() {
+  const reducedMotion = useReducedMotion();
+  function toggleTheme(event: React.MouseEvent<HTMLButtonElement>) {
     const next = theme === "dark" ? "light" : "dark";
     const root = document.documentElement;
     const change = () => {
@@ -126,22 +124,16 @@ function App() {
       change();
       return;
     }
-    const gif = await themeGifReady;
-    if (!gif) {
-      change();
-      return;
-    }
-    const gifUrl = URL.createObjectURL(gif);
-    const image = new Image();
-    image.src = gifUrl;
-    try {
-      await image.decode();
-    } catch {
-      URL.revokeObjectURL(gifUrl);
-      change();
-      return;
-    }
-    root.style.setProperty("--theme-gif", `url("${gifUrl}")`);
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const x = bounds.left + bounds.width / 2;
+    const y = bounds.top + bounds.height / 2;
+    const radius = Math.hypot(
+      Math.max(x, innerWidth - x),
+      Math.max(y, innerHeight - y),
+    );
+    root.style.setProperty("--theme-x", `${x}px`);
+    root.style.setProperty("--theme-y", `${y}px`);
+    root.style.setProperty("--theme-radius", `${radius}px`);
     themeTransition.current?.skipTransition();
     root.classList.add("theme-transition");
     try {
@@ -151,14 +143,12 @@ function App() {
       void transition.finished
         .catch(() => {})
         .finally(() => {
-          URL.revokeObjectURL(gifUrl);
           if (themeTransition.current === transition) {
             root.classList.remove("theme-transition");
             themeTransition.current = null;
           }
         });
     } catch {
-      URL.revokeObjectURL(gifUrl);
       root.classList.remove("theme-transition");
       change();
     }
@@ -337,7 +327,7 @@ function App() {
         <div className="header-actions">
           <button
             className="theme-toggle"
-            onClick={() => void toggleTheme()}
+            onClick={toggleTheme}
             aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
             title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
           >
@@ -361,7 +351,6 @@ function App() {
           </button>
         </div>
       </header>
-      <ScrollTrail />
       <main>
         <section className={`intro ${results ? "compact" : ""}`}>
           <div className="eyebrow">Keep learning at your own pace.</div>
@@ -375,6 +364,7 @@ function App() {
             <br /> Find the right moment in your DSA lectures.
           </p>
         </section>
+        <Crowd />
         <section className="search-section" aria-label="Search lectures">
           <form
             className="search-box"
@@ -478,10 +468,17 @@ function App() {
                 </p>
               )}
               {results.results.map((r, i) => (
-                <article
+                <motion.article
                   className={`result ${selected?.source_id === r.source_id ? "selected" : ""} ${expandedPassage === r.source_id ? "expanded" : ""}`}
                   key={r.source_id}
-                  style={{ animationDelay: `${i * 35}ms` }}
+                  layout="position"
+                  initial={reducedMotion ? false : { opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    opacity: { duration: 0.2, delay: i * 0.035 },
+                    y: { duration: 0.25, delay: i * 0.035 },
+                    layout: { type: "spring", stiffness: 380, damping: 34 },
+                  }}
                 >
                   <div className="result-top">
                     <span className="result-number">
@@ -526,7 +523,7 @@ function App() {
                       </span>
                     )}
                   </div>
-                </article>
+                </motion.article>
               ))}
             </div>
             <aside className="player-column">
@@ -680,7 +677,6 @@ function App() {
             {corpus && <p className="quality-note">{corpus.quality_status}</p>}
           </section>
         )}
-        <Crowd />
         <footer className="site-footer">
           <div className="footer-brand">
             <a href="/">RecallQ</a>

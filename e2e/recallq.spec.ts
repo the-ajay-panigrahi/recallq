@@ -293,9 +293,6 @@ test("smooth search preserves editing and passage expansion", async ({
   await expect(page.locator("article.result")).toHaveClass(/expanded/);
   await page.getByRole("button", { name: "Collapse passage" }).click();
   await expect(page.locator("article.result")).not.toHaveClass(/expanded/);
-  const gif = await page.request.get("/motion/theme-type1.gif");
-  expect(gif.status()).toBe(200);
-  expect((await gif.body()).subarray(0, 3).toString()).toBe("GIF");
 });
 
 test("side timeline is removed and crowd can be paused", async ({
@@ -350,37 +347,28 @@ test("side timeline is removed and crowd can be paused", async ({
   ).toBe("rgb(52, 52, 48)");
 });
 
-test("curved illustration is controlled by scroll and theme uses full-page GIF", async ({
+test("crowd precedes search and theme uses a fast circular reveal", async ({
   page,
 }) => {
   await mock(page);
   await page.emulateMedia({ reducedMotion: "no-preference" });
+  const gifRequests: string[] = [];
+  page.on("request", (request) => {
+    if (request.url().includes("theme-type1.gif"))
+      gifRequests.push(request.url());
+  });
   await page.goto("/");
-  const trail = page.locator(".creative-scroll");
-  const geometry = await page.evaluate(() => ({
-    top: 0,
-    range: document.documentElement.scrollHeight - innerHeight,
-  }));
-  await expect(trail).toHaveAttribute("data-progress", "0");
-  await page.evaluate(
-    ({ top, range }) => scrollTo(0, top + range * 0.5),
-    geometry,
-  );
-  await expect(trail).toHaveAttribute("data-progress", "50");
+  await expect(page.locator(".creative-scroll")).toHaveCount(0);
   expect(
-    await trail
-      .locator("path")
-      .evaluate((el) => parseFloat(getComputedStyle(el).strokeDashoffset)),
-  ).toBeCloseTo(0.5, 1);
-  await page.evaluate(({ top, range }) => scrollTo(0, top + range), geometry);
-  await expect(trail).toHaveAttribute("data-progress", "100");
-  await page.evaluate(
-    ({ top, range }) => scrollTo(0, top + range * 0.5),
-    geometry,
-  );
-  await expect(trail).toHaveAttribute("data-progress", "50");
-  await page.evaluate(() => scrollTo(0, 0));
-  await expect(trail).toHaveAttribute("data-progress", "0");
+    await page.evaluate(() => {
+      const crowd = document.querySelector(".crowd-section")!;
+      const search = document.querySelector(".search-section")!;
+      return Boolean(
+        crowd.compareDocumentPosition(search) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+      );
+    }),
+  ).toBe(true);
   await page.getByRole("button", { name: "Switch to light mode" }).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
   const styles = await page.evaluate(() => {
@@ -388,27 +376,18 @@ test("curved illustration is controlled by scroll and theme uses full-page GIF",
       document.documentElement,
       "::view-transition-new(root)",
     );
-    const accent = getComputedStyle(
-      document.querySelector(".theme-toggle")!,
-      "::before",
-    );
     return {
       mask: reveal.maskImage,
       animation: reveal.animationName,
-      accent: accent.content,
+      duration: reveal.animationDuration,
     };
   });
-  expect(styles.mask).toContain("blob:");
-  expect(styles.animation).toBe("gif-full-page");
-  expect(styles.accent).toBe("none");
-  expect(
-    await page
-      .locator(".theme-icon")
-      .evaluate((el) => getComputedStyle(el).viewTransitionName),
-  ).toBe("none");
-  await page.screenshot({
-    path: `work/ui/${test.info().project.name}-gif-full-page.png`,
-    animations: "allow",
-  });
+  expect(styles.mask).toBe("none");
+  expect(styles.animation).toBe("theme-circle");
+  expect(parseFloat(styles.duration)).toBeLessThanOrEqual(0.5);
   await expect(page.locator("html")).not.toHaveClass(/theme-transition/);
+  await page.getByRole("button", { name: "Switch to dark mode" }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await expect(page.locator("html")).not.toHaveClass(/theme-transition/);
+  expect(gifRequests).toEqual([]);
 });

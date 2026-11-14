@@ -1192,51 +1192,24 @@ input::placeholder {
   background: var(--ink);
   pointer-events: none;
 }
-/* GIF type 1 is the full-viewport reveal, never a button decoration. */
+/* A lightweight reveal from the toggle, with no GIF download or decode. */
 ::view-transition-old(root) {
   animation: none;
 }
 ::view-transition-new(root) {
-  clip-path: none;
-  mask-image:
-    var(--theme-gif, url("/motion/theme-type1.gif")),
-    linear-gradient(to right, transparent, black 8%, black 92%, transparent),
-    linear-gradient(to bottom, transparent, black 8%, black 92%, transparent);
-  mask-position: center;
-  mask-repeat: no-repeat;
-  mask-composite: intersect;
-  mask-size:
-    0 0,
-    0 0,
-    0 0;
-  animation: gif-full-page 3s both;
+  mask-image: none;
+  animation: theme-circle 450ms cubic-bezier(0.22, 1, 0.36, 1) both;
   mix-blend-mode: normal;
   filter: none;
 }
-@keyframes gif-full-page {
-  0% {
-    mask-size:
-      0px calc(0px * 1.01265823),
-      0px calc(0px * 1.01265823),
-      0px calc(0px * 1.01265823);
+@keyframes theme-circle {
+  from {
+    clip-path: circle(0px at var(--theme-x, 95%) var(--theme-y, 40px));
   }
-  10% {
-    mask-size:
-      50vmax calc(50vmax * 1.01265823),
-      50vmax calc(50vmax * 1.01265823),
-      50vmax calc(50vmax * 1.01265823);
-  }
-  90% {
-    mask-size:
-      50vmax calc(50vmax * 1.01265823),
-      50vmax calc(50vmax * 1.01265823),
-      50vmax calc(50vmax * 1.01265823);
-  }
-  100% {
-    mask-size:
-      2000vmax calc(2000vmax * 1.01265823),
-      2000vmax calc(2000vmax * 1.01265823),
-      2000vmax calc(2000vmax * 1.01265823);
+  to {
+    clip-path: circle(
+      var(--theme-radius, 150vmax) at var(--theme-x, 95%) var(--theme-y, 40px)
+    );
   }
 }
 
@@ -1747,5 +1720,59 @@ main {
   }
   .eyebrow {
     font-size: 13px;
+  }
+}
+
+/* The crowd leads into search rather than closing the page. */
+.crowd-section {
+  max-width: 1040px;
+  margin: 20px auto 28px;
+  padding-top: 0;
+  border-top: 0;
+}
+.crowd-heading p {
+  font-size: 16px;
+}
+.crowd-canvas {
+  height: 145px;
+}
+.crowd-credit {
+  font-size: 11px;
+  margin-top: 4px;
+}
+.result {
+  animation: none;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    box-shadow 180ms ease;
+}
+/* A reading-focused adaptation of Skiper53's vertical hover expansion. */
+@media (hover: hover) and (pointer: fine) {
+  .result:hover,
+  .result:focus-within {
+    background: var(--hover);
+    box-shadow: 0 8px 24px rgb(0 0 0 / 0.06);
+  }
+}
+@media (max-width: 480px) {
+  .crowd-section {
+    margin-top: 12px;
+    margin-bottom: 24px;
+  }
+  .crowd-canvas {
+    height: 120px;
+  }
+  .crowd-credit {
+    font-size: 10px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .result,
+  .result p {
+    transition: none;
+  }
+  ::view-transition-new(root) {
+    animation: none;
   }
 }

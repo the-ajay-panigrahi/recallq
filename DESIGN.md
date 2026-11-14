@@ -393,14 +393,10 @@ Define shared tokens for colors, spacing, radii, typography and shadows, then us
 
 Search uses the free Skiper UI SmoothInput (skiper106), adapted to the existing field without its demo control panel. Attribution: https://skiper-ui.com/v1/skiper106. Framer Motion drives the spring caret. Native input editing and selection are retained; touch, IME composition, and reduced-motion preferences use a native caret.
 
-Theme changes use Skiper UI skiper26’s GIF variant, type 1, blur disabled. The original GIF is hosted at /motion/theme-type1.gif and preloaded. Source: https://skiper-ui.com/v1/skiper26; GIF: https://media.giphy.com/media/KBbr4hHl9DSahKvInO/giphy.gif. Reduced motion and unavailable View Transitions retain immediate theme switching.
+Theme changes use a 450ms circular View Transition originating at the toggle. There is no GIF loading, masking, or decoding. Reduced motion and unsupported browsers switch immediately. This replaces the GIF variant following the user's decision to prioritize smoothness.
 
-Cards preview more text on hover/focus, with an explicit accessible Read full passage button for touch and keyboard users. Five results remain directly accessible. The results-side timeline is removed.
+The Open Peeps crowd sits between the hero copy and search. It retains pause/resume, offscreen suspension, reduced-motion support, dense sprites, and feathered canvas edges. Illustrations: https://www.openpeeps.com/ (CC0). Crowd concept: https://skiper-ui.com/v1/skiper39.
 
-The original curved SVG from Skiper19 is a fixed decorative margin drawing controlled by whole-document scroll progress in both directions. Its original proportions are preserved rather than stretched into a tall line. It is hidden on narrow screens to protect reading space.
+The side flower/scroll illustration is removed. Results retain five accessible cards. Their hover expansion is a reading-focused adaptation of https://skiper-ui.com/v1/skiper53, with spring layout movement, a gentle surface/shadow response, and an explicit Read full passage button for touch and keyboard. Staggered entry and movement respect reduced motion. No Pro components are used.
 
-The themed Open Peeps crowd appears above the footer, with pause/resume, offscreen suspension, and reduced-motion support. Density is 28 mobile, 60 medium, or 80 wide-canvas sprites, moving at 55–73px/s. Canvas edges fade gently into the page. Sprite source: https://skiper-ui.com/images/peeps/all-peeps.png; Open Peeps illustrations by Pablo Stanley (https://www.openpeeps.com/, CC0). Native canvas follows Skiper39’s crowd concept without GSAP. No Pro components are included.
-
-The full-page GIF type 1 reveal follows Skiper26’s original 3-second 0/50vmax/50vmax/2000vmax sequence, with blur disabled. Each transition decodes a fresh GIF instance. Intersected gradient masks feather the GIF canvas edges to avoid a hard straight boundary. There is no circular reveal or GIF decoration inside the toggle, and no separate icon View Transition.
-
-“Keep learning at your own pace.” sits above the hero headline. The crowd heading is “One concept at a time.” The shared main container is capped at 1440px with responsive gutters; the query stays within 840px and reading prose within 70 characters. The footer follows the main container width, with playlist, source, and back-to-top links.
+“Keep learning at your own pace.” sits above the headline. The shared main container is capped at 1440px with responsive gutters; the query stays within 840px and reading prose within 70 characters. The footer follows the main container width, with playlist, source, and back-to-top links.

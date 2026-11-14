@@ -25,12 +25,13 @@ export function Crowd() {
       const count = width < 600 ? 28 : width > 1200 ? 80 : 60;
       canvas.dataset.people = String(count);
       const perRow = Math.ceil(count / 3);
+      const scale = Math.min(height / 180, 1);
       const sw = image.naturalWidth / 15,
         sh = image.naturalHeight / 7;
       for (let index = 0; index < count; index++) {
         const sprite = (index * 11 + 3) % 105;
         const row = Math.floor(index / perRow);
-        const h = 85 + row * 20 + (index % 3) * 4;
+        const h = (85 + row * 20 + (index % 3) * 4) * scale;
         const w = (sw / sh) * h;
         const direction = index % 2 ? -1 : 1;
         const distance =
@@ -39,7 +40,11 @@ export function Crowd() {
           (width + w * 2);
         const x = direction > 0 ? distance - w : width - distance + w;
         const y =
-          height - h - 5 - (2 - row) * 38 + Math.sin(elapsed * 8 + index) * 2;
+          height -
+          h -
+          5 -
+          (2 - row) * 38 * scale +
+          Math.sin(elapsed * 8 + index) * 2;
         context.save();
         context.translate(x + (direction < 0 ? w : 0), y);
         context.scale(direction, 1);
