@@ -2,9 +2,25 @@
 
 Find where you learned it. Search a curated YouTube DSA playlist, jump to timestamped explanations, and request summaries grounded in the retrieved passages.
 
-React + TypeScript + Vite, Python + FastAPI, Qdrant Cloud, and MiniLM embeddings. Gemini is used only for optional summaries with the visitor’s own key. Search needs no API key. Two matches are shown first, with Show more revealing up to five. Summaries use the currently visible passages.
+React + TypeScript + Vite, Python + FastAPI, Qdrant Cloud, and MiniLM embeddings. Gemini is used only for optional summaries with the visitor’s own key. Visitors need no Gemini key for search. Two matches are shown first, with Show more revealing up to five. Summaries use the currently visible passages.
 
 [Live demo](https://recallq-app.vercel.app) · [GitHub repository](https://github.com/the-ajay-panigrahi/recallq)
+
+## Why I built it
+
+During DSA revision, remembering an explanation is easier than remembering which video and timestamp it came from. RecallQ searches inside one indexed playlist so I can return to the relevant passage without replaying entire lectures.
+
+## What it does
+
+- Accepts English or Hinglish questions and retrieves relevant transcript passages.
+- Shows two matches first, with up to five available through Show more.
+- Opens the selected lecture at its passage timestamp, with an embedded player and YouTube link.
+- Generates short, cited explanations only when requested, using the visitor's Gemini key.
+- Supports temporary or remembered keys, responsive light/dark themes, and keyboard controls.
+
+## Search flow
+
+Question → FastAPI on Vercel → MiniLM embedding → Qdrant similarity search → relevance filtering → timestamped passages. Gemini is called only for optional summaries, not for embeddings or result cards. The model is bundled with the backend and runs on Vercel's CPU, not the visitor's laptop. This is retrieval over indexed transcripts, not training a new model.
 
 ## Run locally
 
@@ -75,30 +91,15 @@ npx vercel --prod
 
 The project uses Vercel Hobby and Qdrant Free. No billing was enabled. CLI deployments work; automatic GitHub deployments require the account’s GitHub integration. The root .vercel directory is ignored.
 
-## Attribution
+## Interface and credits
 
-The Lovable design guide from OpenDesignMD is preserved in DESIGN.md with its MIT notice. The supplied Camera Plain font was unavailable; the user requested an improved replacement, so DM Sans is self-hosted with its SIL Open Font License in frontend/public/fonts/OFL.txt. Warm charcoal is the default theme, and the original cream palette is available through the saved theme toggle. Native View Transitions and CSS animate the switch and icons, with reduced-motion and browser fallbacks. Motion reference: https://skiper-ui.com/v1/skiper26. No paid UI or animation dependency is used.
+The interface uses self-hosted DM Sans, charcoal/cream themes, a responsive playlist cover, and a reduced-motion-aware crowd illustration. Text passages expand through an accessible button; new searches show two matches initially. Clearing the question returns to the library view.
 
-MiniLM model attribution and Apache-2.0 license are in backend/MINILM-LICENSE.txt. PROJECT_CONTEXT.md records product requirements and implementation decisions.
+The Lovable design guide from OpenDesignMD is preserved in DESIGN.md with its MIT notice. DM Sans is distributed under the SIL Open Font License in frontend/public/fonts/OFL.txt. MiniLM's Apache-2.0 license is in backend/MINILM-LICENSE.txt.
 
+Free Skiper UI references: [SmoothInput](https://skiper-ui.com/v1/skiper106), [vertical hover expansion](https://skiper-ui.com/v1/skiper53), [crowd concept](https://skiper-ui.com/v1/skiper39), and [theme transitions](https://skiper-ui.com/v1/skiper26). Framer Motion animates the caret and result cards; the current theme reveal is a 450ms native circular View Transition. No Pro components are used, and the required Skiper attribution appears in the footer. Crowd artwork is [Open Peeps by Pablo Stanley](https://www.openpeeps.com/), distributed under CC0.
 
-### Skiper UI refinements
-
-Search uses the free Skiper UI SmoothInput (skiper106), adapted to the existing field without its demo control panel. Attribution: https://skiper-ui.com/v1/skiper106. Framer Motion drives the spring caret. Native input editing and selection are retained; touch, IME composition, and reduced-motion preferences use a native caret.
-
-Theme changes use a 450ms circular View Transition originating at the toggle. There is no GIF loading, masking, or decoding. Reduced motion and unsupported browsers switch immediately. This replaces the GIF variant following the user's decision to prioritize smoothness.
-
-The Open Peeps crowd sits between the hero copy and search. It retains pause/resume, offscreen suspension, reduced-motion support, dense sprites, and feathered canvas edges. Illustrations: https://www.openpeeps.com/ (CC0). Crowd concept: https://skiper-ui.com/v1/skiper39.
-
-The side flower/scroll illustration is removed. Results retain five accessible cards. Their hover expansion is a reading-focused adaptation of https://skiper-ui.com/v1/skiper53, with spring layout movement, a gentle surface/shadow response, and an explicit Read full passage button for touch and keyboard. Staggered entry and movement respect reduced motion. No Pro components are used.
-
-“Keep learning at your own pace.” sits above the headline. The shared main container is capped at 1440px with responsive gutters; the query stays within 840px and reading prose within 70 characters. The footer follows the main container width, with playlist, source, and back-to-top links.
-
-Responsive refinement: the key dialog portal uses explicit overlay/content layers (100/101), above the page and filtered canvas. Short laptop screens place hero copy and the larger crowd side by side above search; smaller screens stack them. The middle header tagline is removed. Crowd uses balanced monochrome tones, and body/supporting text is larger. The dialog scrolls internally on small screens.
-
-Search displays two results initially, with Show more revealing at most five. Low semantic scores and candidates too far below the leading match are removed; lower-scoring candidates also need meaningful query terms in their passage or title. This is a relevance heuristic, not a guarantee of correctness. Summary generation uses the currently visible passages. The bookshelf uses a linked cover image from the playlist's opening video.
-
-Playlist presentation: equal-width desktop columns give the 16:9 cover and explanation equal visual weight. The cover uses YouTube's native 16:9 thumbnail without cropping, and stacks above the text on narrow screens. Product copy describes a personal DSA revision companion grounded only in this indexed playlist, not a model trained on it. Summary instructions start from the simplest supported idea, explain necessary terms, and avoid filler or outside prerequisites. The optional Open Peeps credit under the crowd is removed (CC0); the required free Skiper attribution remains once in the footer.
+PROJECT_CONTEXT.md records product requirements and implementation decisions.
 
 ## Public-demo protection
 
