@@ -297,3 +297,53 @@ test("smooth search preserves editing and passage expansion", async ({
   expect(gif.status()).toBe(200);
   expect((await gif.body()).subarray(0, 3).toString()).toBe("GIF");
 });
+
+test("reading rail completes after expansion and crowd can be paused", async ({
+  page,
+}, info) => {
+  await mock(page);
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.route("**/api/search", (route) =>
+    route.fulfill({
+      json: {
+        query: "Kadane",
+        corpus_revision: "initial",
+        match_state: "matches",
+        results: Array.from({ length: 5 }, (_, index) => ({
+          ...source,
+          source_id: source.source_id.slice(0, -1) + index,
+          excerpt: "Keep the best sum ending here. ".repeat(70),
+        })),
+      },
+    }),
+  );
+  await page.goto("/");
+  await page.getByRole("textbox", { name: "Search lectures" }).fill("Kadane");
+  await page.getByRole("button", { name: "Find a moment" }).click();
+  await page.getByRole("button", { name: "Read full passage" }).first().click();
+  await page.mouse.move(0, 0);
+  await page.evaluate(() =>
+    window.scrollTo(0, document.documentElement.scrollHeight),
+  );
+  await expect(page.locator(".reading-progress")).toHaveAttribute(
+    "data-progress",
+    "100",
+  );
+  await page.getByRole("button", { name: "Pause animation" }).click();
+  await expect(
+    page.getByRole("button", { name: "Resume animation" }),
+  ).toBeVisible();
+  await page.screenshot({ path: `work/ui/${info.project.name}-crowd.png` });
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await expect(page.locator(".reading-progress")).toHaveAttribute(
+    "data-progress",
+    "0",
+  );
+  const input = page.getByRole("textbox", { name: "Search lectures" });
+  await input.selectText();
+  expect(
+    await input.evaluate(
+      (el) => getComputedStyle(el, "::selection").backgroundColor,
+    ),
+  ).toBe("rgb(52, 52, 48)");
+});

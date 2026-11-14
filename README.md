@@ -18,7 +18,7 @@ uv run python -m scripts.prepare_embeddings
 uv run uvicorn backend.main:app --reload --port 8000
 ```
 
-In another terminal, run `npm run dev` and open http://127.0.0.1:5173. Set the scoped QDRANT_URL, QDRANT_API_KEY, and QDRANT_COLLECTION in the ignored .env. A separate QDRANT_WRITE_KEY is needed only for offline indexing. Never commit keys or use a VITE_ prefix for secrets.
+The backend can also be started with `npm run dev:api`. Keep it running. In another terminal, run `npm run dev` and open http://127.0.0.1:5173. Set the scoped QDRANT_URL, QDRANT_API_KEY, and QDRANT_COLLECTION in the ignored .env. A separate QDRANT_WRITE_KEY is needed only for offline indexing. Never commit keys or use a VITE_ prefix for secrets.
 
 ## Embeddings and search
 
@@ -90,4 +90,7 @@ Search uses the free Skiper UI SmoothInput (skiper106), adapted to the existing 
 
 Theme changes use Skiper UI skiper26’s GIF variant, type 1, blur disabled. The original GIF is hosted at /motion/theme-type1.gif and preloaded. Source: https://skiper-ui.com/v1/skiper26; GIF: https://media.giphy.com/media/KBbr4hHl9DSahKvInO/giphy.gif. Reduced motion and unavailable View Transitions retain immediate theme switching.
 
-A scroll-linked SVG rail beside results is inspired by https://skiper-ui.com/v1/skiper19. Cards preview more text on hover/focus, with an explicit accessible Read full passage button for touch and keyboard users. Five results remain directly accessible. The crowd canvas and stacked-scroll layouts were reviewed and left out of the reading workspace. All reused/adapted free Skiper UI components are attributed here and in the app footer. No Pro components are included.
+A scroll-linked SVG rail beside results is inspired by https://skiper-ui.com/v1/skiper19. Cards preview more text on hover/focus, with an explicit accessible Read full passage button for touch and keyboard users. Five results remain directly accessible. The themed Open Peeps crowd canvas now appears above the footer, with pause/resume, offscreen suspension, and reduced-motion support. Stacked-scroll layouts are left out of the reading workspace. All reused/adapted free Skiper UI components are attributed here and in the app footer. No Pro components are included.
+
+
+The reading rail now measures actual document bounds, clamps to the reachable bottom, and remeasures after passage/viewport changes. Skiper19’s original curved SVG path is also included as a separate scroll-drawn illustration above the crowd. Search selection and autofill use the current warm surface and text palette. Crowd sprites: https://skiper-ui.com/images/peeps/all-peeps.png; original Open Peeps illustrations by Pablo Stanley (https://www.openpeeps.com/, CC0). Native canvas animation follows Skiper39’s crowd concept without adding GSAP. The crowd moves at 30–38px per second; the GIF reveal lasts 1.6 seconds. Offscreen and reduced-motion modes avoid continuous rendering.

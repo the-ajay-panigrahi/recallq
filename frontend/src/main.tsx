@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import "./style.css";
 import { SmoothInput } from "./components/SmoothInput";
+import { Crowd } from "./components/Crowd";
 import { ReadingProgress } from "./components/ReadingProgress";
 
 type Source = {
@@ -662,6 +663,7 @@ function App() {
             {corpus && <p className="quality-note">{corpus.quality_status}</p>}
           </section>
         )}
+        <Crowd />
         <footer>
           <span>
             RecallQ <span className="footer-divider">/</span> Made for the
