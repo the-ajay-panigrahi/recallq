@@ -22,7 +22,6 @@ import {
 import "./style.css";
 import { SmoothInput } from "./components/SmoothInput";
 import { Crowd } from "./components/Crowd";
-import { ReadingProgress } from "./components/ReadingProgress";
 
 type Source = {
   source_id: string;
@@ -54,6 +53,9 @@ type Corpus = {
 };
 const STORAGE = "recallq.gemini-key";
 const THEME_STORAGE = "recallq.theme";
+const themeGifReady = fetch("/motion/theme-type1.gif")
+  .then((response) => (response.ok ? response.blob() : null))
+  .catch(() => null);
 const RESULT_LIMIT = 5;
 const examples = [
   "Sliding window intuition",
@@ -101,7 +103,7 @@ function App() {
     document.documentElement.dataset.theme === "light" ? "light" : "dark",
   );
   const themeTransition = useRef<ViewTransition | null>(null);
-  function toggleTheme(button: HTMLButtonElement) {
+  async function toggleTheme() {
     const next = theme === "dark" ? "light" : "dark";
     const root = document.documentElement;
     const change = () => {
@@ -123,10 +125,23 @@ function App() {
       change();
       return;
     }
+    const gif = await themeGifReady;
+    if (!gif) {
+      change();
+      return;
+    }
+    const gifUrl = URL.createObjectURL(gif);
+    const image = new Image();
+    image.src = gifUrl;
+    try {
+      await image.decode();
+    } catch {
+      URL.revokeObjectURL(gifUrl);
+      change();
+      return;
+    }
+    root.style.setProperty("--theme-gif", `url("${gifUrl}")`);
     themeTransition.current?.skipTransition();
-    const rect = button.getBoundingClientRect();
-    root.style.setProperty("--theme-x", `${rect.left + rect.width / 2}px`);
-    root.style.setProperty("--theme-y", `${rect.top + rect.height / 2}px`);
     root.classList.add("theme-transition");
     try {
       const transition = document.startViewTransition(change);
@@ -135,12 +150,14 @@ function App() {
       void transition.finished
         .catch(() => {})
         .finally(() => {
+          URL.revokeObjectURL(gifUrl);
           if (themeTransition.current === transition) {
             root.classList.remove("theme-transition");
             themeTransition.current = null;
           }
         });
     } catch {
+      URL.revokeObjectURL(gifUrl);
       root.classList.remove("theme-transition");
       change();
     }
@@ -163,7 +180,6 @@ function App() {
     [storageWarning, setStorageWarning] = useState("");
   const [playerStarted, setPlayerStarted] = useState(false);
   const [expandedPassage, setExpandedPassage] = useState<string | null>(null);
-  const resultsColumn = useRef<HTMLDivElement>(null);
   const searchController = useRef<AbortController | null>(null),
     summaryController = useRef<AbortController | null>(null),
     keyTrigger = useRef<HTMLButtonElement>(null);
@@ -320,7 +336,7 @@ function App() {
         <div className="header-actions">
           <button
             className="theme-toggle"
-            onClick={(event) => toggleTheme(event.currentTarget)}
+            onClick={() => void toggleTheme()}
             aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
             title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
           >
@@ -439,8 +455,7 @@ function App() {
         )}
         {results && (
           <section className="workspace" aria-label="Search workspace">
-            <div className="results-column" ref={resultsColumn}>
-              <ReadingProgress target={resultsColumn} />
+            <div className="results-column">
               <div className="section-heading">
                 <h2>
                   {results.results.length

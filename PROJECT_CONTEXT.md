@@ -411,3 +411,6 @@ The reading rail now measures actual document bounds, clamps to the reachable bo
 
 
 Latest animation repair: the animated GIF no longer masks the entire page, which could produce frame-to-frame cutouts. A stable 650ms circular View Transition now changes the theme with no blur; the original GIF remains a small accent around the toggle. The curved Skiper19 illustration is larger and uses a 1.4-second viewport-entry stroke animation, replaying when scrolled out and back in. It is a decorative drawing, not a measure of learning progress.
+
+
+Current user decision: retain only the full-page GIF type 1 theme reveal, with blur disabled. No circular reveal and no GIF decoration inside/around the toggle. The GIF is decoded before snapshotting and reveals the viewport over 1.2 seconds. The results-side timeline is removed. The original curved illustration now occupies a large sticky section; its stroke is directly controlled by scroll position in both directions, not by a timed viewport-entry animation. The crowd remains below it.

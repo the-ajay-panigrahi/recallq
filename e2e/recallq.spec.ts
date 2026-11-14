@@ -298,7 +298,7 @@ test("smooth search preserves editing and passage expansion", async ({
   expect((await gif.body()).subarray(0, 3).toString()).toBe("GIF");
 });
 
-test("reading rail completes after expansion and crowd can be paused", async ({
+test("side timeline is removed and crowd can be paused", async ({
   page,
 }, info) => {
   await mock(page);
@@ -325,20 +325,14 @@ test("reading rail completes after expansion and crowd can be paused", async ({
   await page.evaluate(() =>
     window.scrollTo(0, document.documentElement.scrollHeight),
   );
-  await expect(page.locator(".reading-progress")).toHaveAttribute(
-    "data-progress",
-    "100",
-  );
+  await expect(page.locator(".reading-progress")).toHaveCount(0);
   await page.getByRole("button", { name: "Pause animation" }).click();
   await expect(
     page.getByRole("button", { name: "Resume animation" }),
   ).toBeVisible();
   await page.screenshot({ path: `work/ui/${info.project.name}-crowd.png` });
   await page.evaluate(() => window.scrollTo(0, 0));
-  await expect(page.locator(".reading-progress")).toHaveAttribute(
-    "data-progress",
-    "0",
-  );
+  await expect(page.locator(".reading-progress")).toHaveCount(0);
   const input = page.getByRole("textbox", { name: "Search lectures" });
   await input.selectText();
   expect(
@@ -348,40 +342,60 @@ test("reading rail completes after expansion and crowd can be paused", async ({
   ).toBe("rgb(52, 52, 48)");
 });
 
-test("curved illustration visibly draws and replays on scroll", async ({
+test("curved illustration is controlled by scroll and theme uses full-page GIF", async ({
   page,
 }) => {
   await mock(page);
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.goto("/");
-  const path = page.locator(".creative-scroll svg path");
-  await expect
-    .poll(() =>
-      path.evaluate((el) => parseFloat(getComputedStyle(el).strokeDasharray)),
-    )
-    .toBe(0);
-  await page.locator(".creative-scroll").scrollIntoViewIfNeeded();
-  await expect
-    .poll(() =>
-      path.evaluate((el) => parseFloat(getComputedStyle(el).strokeDasharray)),
-    )
-    .toBeGreaterThan(0.98);
-  await page.evaluate(() => window.scrollTo(0, 0));
-  await expect
-    .poll(() =>
-      path.evaluate((el) => parseFloat(getComputedStyle(el).strokeDasharray)),
-    )
-    .toBe(0);
+  const trail = page.locator(".creative-scroll");
+  const geometry = await trail.evaluate((el) => ({
+    top: el.getBoundingClientRect().top + scrollY,
+    range: el.getBoundingClientRect().height - innerHeight,
+  }));
+  await expect(trail).toHaveAttribute("data-progress", "0");
+  await page.evaluate(
+    ({ top, range }) => scrollTo(0, top + range * 0.5),
+    geometry,
+  );
+  await expect(trail).toHaveAttribute("data-progress", "50");
+  expect(
+    await trail
+      .locator("path")
+      .evaluate((el) => parseFloat(getComputedStyle(el).strokeDashoffset)),
+  ).toBeCloseTo(0.5, 1);
+  await page.evaluate(({ top, range }) => scrollTo(0, top + range), geometry);
+  await expect(trail).toHaveAttribute("data-progress", "100");
+  await page.evaluate(
+    ({ top, range }) => scrollTo(0, top + range * 0.5),
+    geometry,
+  );
+  await expect(trail).toHaveAttribute("data-progress", "50");
+  await page.evaluate(() => scrollTo(0, 0));
+  await expect(trail).toHaveAttribute("data-progress", "0");
   await page.getByRole("button", { name: "Switch to light mode" }).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
-  expect(
-    await page.evaluate(
-      () =>
-        getComputedStyle(
-          document.documentElement,
-          "::view-transition-new(root)",
-        ).maskImage,
-    ),
-  ).toBe("none");
+  const styles = await page.evaluate(() => {
+    const reveal = getComputedStyle(
+      document.documentElement,
+      "::view-transition-new(root)",
+    );
+    const accent = getComputedStyle(
+      document.querySelector(".theme-toggle")!,
+      "::before",
+    );
+    return {
+      mask: reveal.maskImage,
+      animation: reveal.animationName,
+      accent: accent.content,
+    };
+  });
+  expect(styles.mask).toContain("blob:");
+  expect(styles.animation).toBe("gif-full-page");
+  expect(styles.accent).toBe("none");
+  await page.screenshot({
+    path: `work/ui/${test.info().project.name}-gif-full-page.png`,
+    animations: "allow",
+  });
   await expect(page.locator("html")).not.toHaveClass(/theme-transition/);
 });

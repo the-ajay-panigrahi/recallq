@@ -1083,10 +1083,7 @@ input::placeholder {
 ::view-transition-old(root) {
   animation: none;
 }
-::view-transition-new(root) {
-  animation: theme-reveal 420ms cubic-bezier(0.22, 1, 0.36, 1);
-  mix-blend-mode: normal;
-}
+
 ::view-transition-group(theme-icon) {
   animation: none;
 }
@@ -1095,14 +1092,6 @@ input::placeholder {
 }
 ::view-transition-new(theme-icon) {
   animation: icon-arrive 360ms ease-out both;
-}
-@keyframes theme-reveal {
-  from {
-    clip-path: circle(0 at var(--theme-x) var(--theme-y));
-  }
-  to {
-    clip-path: circle(150vmax at var(--theme-x) var(--theme-y));
-  }
 }
 @keyframes icon-arrive {
   from {
@@ -1214,60 +1203,35 @@ input::placeholder {
   background: var(--ink);
   pointer-events: none;
 }
-/* Stable page reveal; the original GIF is only a small toggle accent. */
+/* GIF type 1 is the full-viewport reveal, never a button decoration. */
 ::view-transition-old(root) {
-  animation: theme-old-out 650ms ease both;
+  animation: none;
 }
 ::view-transition-new(root) {
-  mask: none;
-  clip-path: circle(0 at var(--theme-x) var(--theme-y));
-  animation: theme-reveal 650ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  clip-path: none;
+  mask: var(--theme-gif, url("/motion/theme-type1.gif")) center / 0 no-repeat;
+  animation: gif-full-page 1.2s ease-in-out both;
   mix-blend-mode: normal;
   filter: none;
 }
-@keyframes theme-old-out {
-  from {
-    opacity: 1;
+@keyframes gif-full-page {
+  0% {
+    mask-size: 0;
   }
-  to {
-    opacity: 1;
+  20% {
+    mask-size: 100vmax;
   }
-}
-.theme-toggle {
-  position: relative;
-}
-.theme-transition .theme-toggle::before {
-  content: "";
-  position: absolute;
-  inset: -12px;
-  background: url("/motion/theme-type1.gif") center / contain no-repeat;
-  opacity: 0.16;
-  pointer-events: none;
+  70% {
+    mask-size: 140vmax;
+  }
+  100% {
+    mask-size: 2000vmax;
+  }
 }
 .results-column {
   position: relative;
 }
-.reading-progress {
-  position: absolute;
-  top: 0;
-  left: -22px;
-  width: 12px;
-  height: 100%;
-  overflow: visible;
-  pointer-events: none;
-}
-.reading-progress path {
-  stroke: var(--muted);
-  stroke-width: 2;
-  fill: none;
-  vector-effect: non-scaling-stroke;
-}
-.reading-progress .reading-track {
-  stroke: var(--line);
-}
-.reading-progress circle {
-  fill: var(--ink);
-}
+
 .result p {
   -webkit-line-clamp: 6;
   max-height: 5.1em;
@@ -1297,10 +1261,6 @@ input::placeholder {
   text-underline-offset: 3px;
 }
 @media (max-width: 800px) {
-  .reading-progress {
-    left: -15px;
-    width: 8px;
-  }
 }
 @media (prefers-reduced-motion: reduce) {
   .smooth-caret {
@@ -1435,5 +1395,67 @@ input::placeholder {
 @media (prefers-reduced-motion: reduce) {
   .theme-toggle::before {
     display: none;
+  }
+}
+
+/* A large sticky illustration, directly scrubbed by scroll, not a timer. */
+.creative-scroll {
+  display: block;
+  height: 160vh;
+  min-height: 900px;
+  position: relative;
+}
+.scroll-stage {
+  position: sticky;
+  top: 12vh;
+  height: 72vh;
+  min-height: 380px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+}
+.scroll-stage > div {
+  max-width: 460px;
+}
+.creative-scroll p {
+  font-size: clamp(28px, 3.4vw, 46px);
+  line-height: 1.15;
+  letter-spacing: -1px;
+}
+.creative-scroll svg {
+  width: clamp(200px, 28vw, 340px);
+  height: min(68vh, 650px);
+  flex-shrink: 0;
+  opacity: 0.8;
+}
+@media (max-width: 600px) {
+  .creative-scroll {
+    height: 150vh;
+    min-height: 850px;
+  }
+  .scroll-stage {
+    gap: 12px;
+  }
+  .creative-scroll svg {
+    width: 42%;
+    height: 62vh;
+  }
+  .creative-scroll p {
+    font-size: 26px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .creative-scroll {
+    height: auto;
+    min-height: 0;
+  }
+  .scroll-stage {
+    position: static;
+    height: auto;
+    min-height: 300px;
+  }
+  .creative-scroll svg {
+    height: 280px;
   }
 }
