@@ -71,12 +71,13 @@ test("temporary key clears on refresh; search and summary are independent", asyn
   await expect(
     page.getByRole("heading", { name: "Moments to revisit" }),
   ).toBeVisible();
-  // The native player is already present before any result is played.
-  await expect(page.getByTitle("Selected lecture video")).toBeVisible();
-  await expect(page.getByTitle("Selected lecture video")).toHaveAttribute(
+  // A real video poster is present before playback, not a blank iframe.
+  await expect(page.getByAltText("Selected lecture thumbnail")).toBeVisible();
+  await expect(page.getByAltText("Selected lecture thumbnail")).toHaveAttribute(
     "src",
-    /autoplay=0/,
+    /N8vJ8RyQEes/,
   );
+  await expect(page.getByTitle("Selected lecture video")).toHaveCount(0);
   expect(summaries).toBe(0);
   expect(await page.evaluate(() => localStorage.length)).toBe(0);
   await page.getByRole("button", { name: /Play Kadane/ }).click();

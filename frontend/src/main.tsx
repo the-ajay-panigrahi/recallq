@@ -437,14 +437,38 @@ function App() {
                 {selected && (
                   <>
                     <div className="video-frame">
-                      <iframe
-                        key={`${selected.video_id}:${selected.playback_sec}`}
-                        title="Selected lecture video"
-                        src={`https://www.youtube.com/embed/${selected.video_id}?start=${selected.playback_sec}&autoplay=${playerStarted ? 1 : 0}&rel=0`}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        referrerPolicy="strict-origin-when-cross-origin"
-                        allowFullScreen
-                      />
+                      {playerStarted ? (
+                        <iframe
+                          key={`${selected.video_id}:${selected.playback_sec}`}
+                          title="Selected lecture video"
+                          src={`https://www.youtube.com/embed/${selected.video_id}?start=${selected.playback_sec}&autoplay=1&rel=0`}
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          referrerPolicy="strict-origin-when-cross-origin"
+                          allowFullScreen
+                        />
+                      ) : (
+                        <button
+                          className="video-placeholder"
+                          onClick={() => setPlayerStarted(true)}
+                          aria-label="Play selected lecture"
+                        >
+                          <img
+                            className="video-thumbnail"
+                            src={`https://i.ytimg.com/vi/${selected.video_id}/hqdefault.jpg`}
+                            alt="Selected lecture thumbnail"
+                          />
+                          <span
+                            className="thumbnail-shade"
+                            aria-hidden="true"
+                          />
+                          <span className="play-circle">
+                            <Play size={24} fill="currentColor" />
+                          </span>
+                          <span className="thumbnail-caption">
+                            Play from {time(selected.playback_sec)}
+                          </span>
+                        </button>
+                      )}
                     </div>
                     <div className="video-caption">
                       <h3>{selected.video_title}</h3>
