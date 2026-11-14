@@ -112,3 +112,5 @@ A limited request shows a short retry message and preserves the last usable resu
 Search editing keeps the last results labelled with their original question. Clearing the field (including whitespace-only text) cancels pending searches/summaries and returns to the initial library view. Aborted responses cannot restore cleared results.
 
 Summary repair: use all retrieved top matches (up to five) as evidence even when only two cards are expanded. Gemini returns a structured status and individually cited sentences; the backend validates source numbers and renders the existing plain-text summary response. Partial but relevant evidence can produce a limited summary. Empty, malformed, blocked, or invalidly cited model output is a retryable provider error, not a false insufficient-evidence answer. Genuine lack of support still produces an honest no-evidence response.
+
+Temporary Gemini HTTP 500/502/503/504 failures are retried once after a short delay; key, quota, and validation errors are not automatically retried.

@@ -57,3 +57,21 @@ async def test_truncated_model_output_is_retryable(sources,monkeypatch):
     with pytest.raises(core.ServiceError) as exc:
         await core.summarize("Kadane","v1",["one"],"test-key")
     assert exc.value.code=="SUMMARY_INCOMPLETE"
+
+
+@pytest.mark.parametrize("statuses,expected_calls", [([503,200],2),([503,503],2),([429],1),([401],1)])
+async def test_only_transient_gemini_server_errors_retry_once(monkeypatch,statuses,expected_calls):
+    import httpx
+    calls=[]
+    async def handle(request):
+        status=statuses[min(len(calls),len(statuses)-1)]
+        calls.append(1)
+        return httpx.Response(status,json={"ok":True})
+    original=httpx.AsyncClient
+    monkeypatch.setattr(core.httpx,"AsyncClient",lambda **kwargs: original(transport=httpx.MockTransport(handle),**kwargs))
+    if statuses[-1]==200:
+        assert await core.request_json("POST",core.GEMINI+"/test:generateContent",headers={}) == {"ok":True}
+    else:
+        with pytest.raises(core.ServiceError):
+            await core.request_json("POST",core.GEMINI+"/test:generateContent",headers={})
+    assert len(calls)==expected_calls

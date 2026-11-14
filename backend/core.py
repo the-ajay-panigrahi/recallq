@@ -24,7 +24,7 @@ def config(name: str, default: str = "") -> str:
     return os.environ.get(name, default)
 
 
-async def request_json(method: str, url: str, *, headers: dict, body=None):
+async def request_json(method: str, url: str, *, headers: dict, body=None, _retry=True):
     try:
         async with httpx.AsyncClient(timeout=40, follow_redirects=False) as client:
             response = await client.request(method, url, headers=headers, json=body)
@@ -36,6 +36,9 @@ async def request_json(method: str, url: str, *, headers: dict, body=None):
         raise ServiceError(
             503, "NETWORK_ERROR", "Could not reach the service. Please try again."
         ) from None
+    if _retry and url.startswith(GEMINI) and response.status_code in (500, 502, 503, 504):
+        await asyncio.sleep(0.5)
+        return await request_json(method, url, headers=headers, body=body, _retry=False)
     if response.is_error:
         provider = "GEMINI" if url.startswith(GEMINI) else "INDEX"
         if provider == "GEMINI" and response.status_code in (400, 401, 403):
