@@ -89,10 +89,14 @@ async function api<T>(
     body: body ? JSON.stringify(body) : undefined,
     signal,
   });
-  const data = await response.json();
+  if (response.status === 429 && path === "search")
+    throw new Error(
+      "You’re searching quickly. Please wait a minute and try again.",
+    );
+  const data = await response.json().catch(() => null);
   if (!response.ok)
     throw new Error(
-      data.error?.message || "Something went wrong. Please try again.",
+      data?.error?.message || "Something went wrong. Please try again.",
     );
   return data;
 }
@@ -195,15 +199,11 @@ function App() {
     summaryController.current?.abort();
     const controller = new AbortController();
     searchController.current = controller;
-    setShowAllResults(false);
     setBusy(true);
     setError("");
     setSummary(null);
     setSummaryError("");
     setSummaryBusy(false);
-    setResults(null);
-    setSelected(null);
-    setPlayerStarted(false);
     try {
       const found = await api<Results>(
         "search",
@@ -216,6 +216,9 @@ function App() {
           ...found,
           results: found.results.slice(0, RESULT_LIMIT),
         };
+        setShowAllResults(false);
+        setPlayerStarted(false);
+        setExpandedPassage(null);
         setResults(topResults);
         setSelected(topResults.results[0] || null);
       }

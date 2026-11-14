@@ -3,11 +3,12 @@ from uuid import uuid4
 import httpx
 import pytest
 from backend.main import app
-from backend import core
+from backend import core, search_cache
 
 
 @pytest.fixture
 def client():
+    search_cache._cache.clear()
     return httpx.AsyncClient(
         transport=httpx.ASGITransport(app=app), base_url="http://test"
     )

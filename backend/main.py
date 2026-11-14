@@ -8,7 +8,7 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field, field_validator
 
-from backend import core
+from backend import core, search_cache
 
 app = FastAPI(title="RecallQ API", version="0.1.0")
 
@@ -79,7 +79,7 @@ def corpus():
 async def search(
     body: SearchRequest, x_gemini_api_key: Annotated[str | None, Header()] = None
 ):
-    return await core.search(body.query, min(body.limit, 5), "")
+    return await search_cache.search(body.query, min(body.limit, 5))
 
 
 @app.post("/api/summarize")

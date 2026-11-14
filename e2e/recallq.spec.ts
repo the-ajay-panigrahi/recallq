@@ -482,3 +482,46 @@ test("modal stays above content and laptop layout keeps search in view", async (
     await page.getByRole("button", { name: "Switch to dark mode" }).click();
   }
 });
+
+test("search rate limit keeps previous results and allows retry", async ({
+  page,
+}) => {
+  await mock(page);
+  let count = 0;
+  await page.route("**/api/search", (route) => {
+    count++;
+    if (count === 2)
+      return route.fulfill({
+        status: 429,
+        contentType: "text/html",
+        body: "Too Many Requests",
+      });
+    return route.fulfill({
+      json: {
+        query: count === 1 ? "Kadane" : "Sliding window",
+        corpus_revision: "initial",
+        match_state: "matches",
+        results: [source],
+      },
+    });
+  });
+  await page.goto("/");
+  const input = page.getByRole("textbox", { name: "Search lectures" });
+  await input.fill("Kadane");
+  await page.getByRole("button", { name: "Find a moment" }).click();
+  await expect(page.locator("article.result")).toHaveCount(1);
+  await input.fill("Sliding window");
+  await page.getByRole("button", { name: "Find a moment" }).click();
+  await expect(page.getByRole("alert")).toContainText("Please wait a minute");
+  await expect(page.locator("article.result")).toHaveCount(1);
+  await expect(page.locator(".result-query")).toContainText("Kadane");
+  await expect(input).toHaveValue("Sliding window");
+  await expect(
+    page.getByRole("button", { name: "Find a moment" }),
+  ).toBeEnabled();
+  await page.getByRole("button", { name: "Play selected lecture" }).click();
+  await expect(page.locator("iframe")).toBeVisible();
+  await page.getByRole("button", { name: "Find a moment" }).click();
+  await expect(page.getByRole("alert")).toHaveCount(0);
+  await expect(page.locator(".result-query")).toContainText("Sliding window");
+});
