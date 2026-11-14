@@ -1077,22 +1077,11 @@ input::placeholder {
   place-items: center;
   width: 20px;
   height: 20px;
-  view-transition-name: theme-icon;
-  animation: icon-arrive 260ms ease-out;
 }
 ::view-transition-old(root) {
   animation: none;
 }
 
-::view-transition-group(theme-icon) {
-  animation: none;
-}
-::view-transition-old(theme-icon) {
-  animation: icon-leave 180ms ease-in both;
-}
-::view-transition-new(theme-icon) {
-  animation: icon-arrive 360ms ease-out both;
-}
 @keyframes icon-arrive {
   from {
     opacity: 0;
@@ -1210,7 +1199,7 @@ input::placeholder {
 ::view-transition-new(root) {
   clip-path: none;
   mask: var(--theme-gif, url("/motion/theme-type1.gif")) center / 0 no-repeat;
-  animation: gif-full-page 1.2s ease-in-out both;
+  animation: gif-full-page 3s both;
   mix-blend-mode: normal;
   filter: none;
 }
@@ -1218,11 +1207,11 @@ input::placeholder {
   0% {
     mask-size: 0;
   }
-  20% {
-    mask-size: 100vmax;
+  10% {
+    mask-size: 50vmax;
   }
-  70% {
-    mask-size: 140vmax;
+  90% {
+    mask-size: 50vmax;
   }
   100% {
     mask-size: 2000vmax;
@@ -1457,5 +1446,196 @@ input::placeholder {
   }
   .creative-scroll svg {
     height: 280px;
+  }
+}
+
+/* Global scroll artwork stays in the page margin, never in a separate section. */
+.creative-scroll {
+  position: fixed;
+  top: 90px;
+  bottom: 40px;
+  left: max(8px, calc((100vw - 1300px) / 2 - 65px));
+  width: 65px;
+  height: auto;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  opacity: 0.35;
+  z-index: 0;
+  pointer-events: none;
+}
+.creative-scroll svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+  color: var(--soft);
+}
+main,
+.header {
+  position: relative;
+  z-index: 1;
+}
+.intro > p {
+  font-size: 18px;
+}
+.header-note,
+.search-help,
+.course-meta,
+.quality-note,
+.result-query,
+.player-tip,
+.crowd-credit {
+  font-size: 13px;
+}
+.small-label,
+.eyebrow,
+.library-heading,
+.section-heading > span {
+  font-size: 11px;
+}
+.course-info p,
+.summary-card > p,
+.result p {
+  font-size: 15px;
+}
+.result-bottom,
+.result-number,
+.player-column .section-heading > span {
+  font-size: 12px;
+}
+.timestamp,
+.passage-expand,
+.crowd-heading,
+.text-button,
+.video-caption a {
+  font-size: 13px;
+}
+.summary-text {
+  font-size: 16px;
+}
+.crowd-canvas {
+  height: 220px;
+}
+.site-footer {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 32px;
+  padding: 40px 0 24px;
+  font-size: 14px;
+}
+.footer-brand > a {
+  color: var(--ink);
+  font-size: 25px;
+  font-weight: 600;
+  letter-spacing: -0.8px;
+  text-decoration: none;
+}
+.footer-brand p {
+  margin-top: 10px;
+  color: var(--ink);
+  font-size: 16px;
+}
+.footer-brand small {
+  display: block;
+  margin-top: 6px;
+  font-size: 13px;
+}
+.site-footer nav {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: flex-start;
+}
+.site-footer nav a,
+.site-footer nav button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  text-decoration: none;
+  font-size: 14px;
+}
+.site-footer nav a:hover,
+.site-footer nav button:hover {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.footer-bottom {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  border-top: 1px solid var(--line);
+  padding-top: 22px;
+  font-size: 12px;
+}
+@media (max-width: 1400px) {
+  .creative-scroll {
+    width: 50px;
+    left: 4px;
+    opacity: 0.4;
+  }
+}
+@media (max-width: 700px) {
+  .creative-scroll {
+    width: 14px;
+    left: 1px;
+    opacity: 0.2;
+  }
+}
+@media (max-width: 480px) {
+  .intro > p {
+    font-size: 16px;
+  }
+  .search-help {
+    font-size: 11px;
+    gap: 12px;
+  }
+  .course-info p {
+    font-size: 13px;
+  }
+  .site-footer {
+    grid-template-columns: 1fr;
+    gap: 26px;
+  }
+  .footer-bottom {
+    flex-direction: column;
+  }
+  .crowd-canvas {
+    height: 190px;
+  }
+}
+
+@media (max-width: 1200px) and (min-width: 701px) {
+  .creative-scroll {
+    width: 24px;
+    left: 3px;
+  }
+}
+.library-heading > span:last-child {
+  font-size: 11px;
+}
+.section-heading h2 {
+  font-size: 16px;
+}
+.key-privacy,
+.get-key,
+.dialog-content label:not(.checkbox) {
+  font-size: 13px;
+}
+.crowd-heading p {
+  font-size: 20px;
+  line-height: 1.35;
+  font-weight: 500;
+  letter-spacing: -0.3px;
+}
+@media (max-width: 1200px) and (min-width: 701px) {
+  .creative-scroll {
+    width: 20px;
+    left: 2px;
   }
 }

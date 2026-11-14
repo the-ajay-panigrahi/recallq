@@ -330,6 +330,9 @@ test("side timeline is removed and crowd can be paused", async ({
   await expect(
     page.getByRole("button", { name: "Resume animation" }),
   ).toBeVisible();
+  await expect
+    .poll(() => page.locator(".crowd-canvas").getAttribute("data-people"))
+    .toBe(info.project.name === "desktop" ? "60" : "28");
   await page.screenshot({ path: `work/ui/${info.project.name}-crowd.png` });
   await page.evaluate(() => window.scrollTo(0, 0));
   await expect(page.locator(".reading-progress")).toHaveCount(0);
@@ -349,9 +352,9 @@ test("curved illustration is controlled by scroll and theme uses full-page GIF",
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.goto("/");
   const trail = page.locator(".creative-scroll");
-  const geometry = await trail.evaluate((el) => ({
-    top: el.getBoundingClientRect().top + scrollY,
-    range: el.getBoundingClientRect().height - innerHeight,
+  const geometry = await page.evaluate(() => ({
+    top: 0,
+    range: document.documentElement.scrollHeight - innerHeight,
   }));
   await expect(trail).toHaveAttribute("data-progress", "0");
   await page.evaluate(
@@ -393,6 +396,11 @@ test("curved illustration is controlled by scroll and theme uses full-page GIF",
   expect(styles.mask).toContain("blob:");
   expect(styles.animation).toBe("gif-full-page");
   expect(styles.accent).toBe("none");
+  expect(
+    await page
+      .locator(".theme-icon")
+      .evaluate((el) => getComputedStyle(el).viewTransitionName),
+  ).toBe("none");
   await page.screenshot({
     path: `work/ui/${test.info().project.name}-gif-full-page.png`,
     animations: "allow",

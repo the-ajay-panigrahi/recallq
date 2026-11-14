@@ -414,3 +414,6 @@ Latest animation repair: the animated GIF no longer masks the entire page, which
 
 
 Current user decision: retain only the full-page GIF type 1 theme reveal, with blur disabled. No circular reveal and no GIF decoration inside/around the toggle. The GIF is decoded before snapshotting and reveals the viewport over 1.2 seconds. The results-side timeline is removed. The original curved illustration now occupies a large sticky section; its stroke is directly controlled by scroll position in both directions, not by a timed viewport-entry animation. The crowd remains below it.
+
+
+Latest refinement: the curved Skiper19 illustration is now a fixed decorative margin drawing driven by whole-document scroll progress. Its separate sticky section is removed. Crowd density increases to 60 desktop / 28 mobile sprites, moving at 55–73px/s. Secondary typography and the footer are enlarged and the footer includes playlist, source, and back-to-top links. GIF theme timing follows Skiper26’s original 3-second 0/50vmax/50vmax/2000vmax sequence; the separate named icon View Transition is removed so the full page is captured as one layer. Blur remains disabled.

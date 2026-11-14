@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import "./style.css";
 import { SmoothInput } from "./components/SmoothInput";
+import { ScrollTrail } from "./components/ScrollTrail";
 import { Crowd } from "./components/Crowd";
 
 type Source = {
@@ -360,6 +361,7 @@ function App() {
           </button>
         </div>
       </header>
+      <ScrollTrail />
       <main>
         <section className={`intro ${results ? "compact" : ""}`}>
           <div className="eyebrow">YOUR LECTURES, WITH A WAY BACK</div>
@@ -679,22 +681,49 @@ function App() {
           </section>
         )}
         <Crowd />
-        <footer>
-          <span>
-            RecallQ <span className="footer-divider">/</span> Made for the
-            moments worth revisiting.
-          </span>
-          <span>
-            Answers belong to the lectures.{" "}
+        <footer className="site-footer">
+          <div className="footer-brand">
+            <a href="/">RecallQ</a>
+            <p>Find where you learned it.</p>
+            <small>Every revisit is a step forward.</small>
+          </div>
+          <nav aria-label="Footer links">
             <a
-              className="motion-credit"
-              href="https://skiper-ui.com"
+              href="https://www.youtube.com/playlist?list=PLbJhGqY-mq47k_WLUtzVjmarUm1EuXPj2"
               target="_blank"
               rel="noreferrer"
             >
+              Explore the playlist <ArrowUpRight size={14} />
+            </a>
+            <a
+              href="https://github.com/the-ajay-panigrahi/recallq"
+              target="_blank"
+              rel="noreferrer"
+            >
+              View source <ArrowUpRight size={14} />
+            </a>
+            <button
+              onClick={() =>
+                window.scrollTo({
+                  top: 0,
+                  behavior: matchMedia("(prefers-reduced-motion: reduce)")
+                    .matches
+                    ? "instant"
+                    : "smooth",
+                })
+              }
+            >
+              Back to top ↑
+            </button>
+          </nav>
+          <div className="footer-bottom">
+            <span>
+              Built for curious minds. Answers belong to the lectures.
+            </span>
+            <a href="https://skiper-ui.com" target="_blank" rel="noreferrer">
               Motion by Skiper UI
             </a>
-          </span>
+          </div>
         </footer>
       </main>
       <Dialog.Root

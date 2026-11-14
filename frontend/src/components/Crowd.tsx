@@ -1,6 +1,5 @@
 // Sprite artwork: Open Peeps. Canvas concept: Skiper UI 39 / Zadvorsky.
 import { useEffect, useRef, useState } from "react";
-import { ScrollTrail } from "./ScrollTrail";
 import { useReducedMotion } from "framer-motion";
 
 export function Crowd() {
@@ -23,19 +22,24 @@ export function Crowd() {
     const draw = () => {
       if (!loaded) return;
       context.clearRect(0, 0, width, height);
-      const count = width < 600 ? 8 : 14;
+      const count = width < 600 ? 28 : 60;
+      canvas.dataset.people = String(count);
+      const perRow = Math.ceil(count / 3);
       const sw = image.naturalWidth / 15,
         sh = image.naturalHeight / 7;
       for (let index = 0; index < count; index++) {
-        const sprite = (index * 7 + 3) % 105;
-        const h = 100 + (index % 4) * 12;
+        const sprite = (index * 11 + 3) % 105;
+        const row = Math.floor(index / perRow);
+        const h = 85 + row * 20 + (index % 3) * 4;
         const w = (sw / sh) * h;
         const direction = index % 2 ? -1 : 1;
         const distance =
-          ((index * width) / count + elapsed * (30 + (index % 5) * 2)) %
+          ((((index % perRow) + row * 0.4) * width) / perRow +
+            elapsed * (55 + (index % 7) * 3)) %
           (width + w * 2);
         const x = direction > 0 ? distance - w : width - distance + w;
-        const y = height - h - 3 + Math.sin(elapsed * 7 + index) * 2;
+        const y =
+          height - h - 5 - (2 - row) * 38 + Math.sin(elapsed * 8 + index) * 2;
         context.save();
         context.translate(x + (direction < 0 ? w : 0), y);
         context.scale(direction, 1);
@@ -101,7 +105,6 @@ export function Crowd() {
   }, [paused, reduced]);
   return (
     <section className="crowd-section" aria-label="Learning crowd illustration">
-      <ScrollTrail />
       <div className="crowd-heading">
         <p>Keep learning, at your own pace.</p>
         {!reduced && (
