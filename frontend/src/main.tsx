@@ -128,6 +128,7 @@ function App() {
     try {
       const transition = document.startViewTransition(change);
       themeTransition.current = transition;
+      void transition.ready.catch(() => {});
       void transition.finished
         .catch(() => {})
         .finally(() => {

@@ -249,3 +249,23 @@ test("reduced motion and blocked storage keep theme switching usable", async ({
   await page.getByRole("button", { name: "Switch to dark mode" }).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
 });
+
+test("cancelled native transitions still change the theme without page errors", async ({ page }) => {
+  await mock(page);
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.addInitScript(() => {
+    const native = document.startViewTransition.bind(document);
+    document.startViewTransition = (update) => {
+      const transition = native(update);
+      transition.skipTransition();
+      return transition;
+    };
+  });
+  const errors: string[] = [];
+  page.on("pageerror", error => errors.push(error.message));
+  await page.goto("/");
+  await page.getByRole("button", { name: "Switch to light mode" }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await expect(page.locator("html")).not.toHaveClass(/theme-transition/);
+  expect(errors).toEqual([]);
+});
