@@ -2110,3 +2110,13 @@ main {
     gap: 22px;
   }
 }
+/* A slightly smaller cover, still centered within the balanced row. */
+.playlist-cover {
+  width: 94%;
+  justify-self: center;
+}
+@media (max-width: 800px) {
+  .playlist-cover {
+    width: 100%;
+  }
+}
