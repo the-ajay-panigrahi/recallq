@@ -331,8 +331,13 @@ test("side timeline is removed and crowd can be paused", async ({
     page.getByRole("button", { name: "Resume animation" }),
   ).toBeVisible();
   await expect
-    .poll(() => page.locator(".crowd-canvas").getAttribute("data-people"))
-    .toBe(info.project.name === "desktop" ? "60" : "28");
+    .poll(() =>
+      page
+        .locator(".crowd-canvas")
+        .getAttribute("data-people")
+        .then((value) => Number(value)),
+    )
+    .toBeGreaterThanOrEqual(info.project.name === "desktop" ? 60 : 28);
   await page.screenshot({ path: `work/ui/${info.project.name}-crowd.png` });
   await page.evaluate(() => window.scrollTo(0, 0));
   await expect(page.locator(".reading-progress")).toHaveCount(0);

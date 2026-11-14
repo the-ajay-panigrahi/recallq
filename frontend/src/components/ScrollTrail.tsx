@@ -40,7 +40,7 @@ export function ScrollTrail() {
     >
       <svg
         viewBox="-80 -30 1450 2780"
-        preserveAspectRatio="none"
+        preserveAspectRatio="xMidYMin meet"
         fill="none"
         aria-hidden="true"
       >

@@ -22,7 +22,7 @@ export function Crowd() {
     const draw = () => {
       if (!loaded) return;
       context.clearRect(0, 0, width, height);
-      const count = width < 600 ? 28 : 60;
+      const count = width < 600 ? 28 : width > 1200 ? 80 : 60;
       canvas.dataset.people = String(count);
       const perRow = Math.ceil(count / 3);
       const sw = image.naturalWidth / 15,
@@ -106,7 +106,7 @@ export function Crowd() {
   return (
     <section className="crowd-section" aria-label="Learning crowd illustration">
       <div className="crowd-heading">
-        <p>Keep learning, at your own pace.</p>
+        <p>One concept at a time.</p>
         {!reduced && (
           <button className="text-button" onClick={() => setPaused(!paused)}>
             {paused ? "Resume animation" : "Pause animation"}

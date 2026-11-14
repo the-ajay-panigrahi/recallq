@@ -364,7 +364,7 @@ function App() {
       <ScrollTrail />
       <main>
         <section className={`intro ${results ? "compact" : ""}`}>
-          <div className="eyebrow">YOUR LECTURES, WITH A WAY BACK</div>
+          <div className="eyebrow">Keep learning at your own pace.</div>
           <h1>
             Find where you
             <br className="desktop-break" />{" "}
